@@ -20,6 +20,12 @@ class Game {
   areAllPlayersJoined(){
     return this.maxPlayers==this.getPlayerCount();
   }
+  getPlayerNameOf(id){
+    if (this.players[id]) {
+      return this.players[id].name;
+    }
+    return '';
+  }
 }
 
 module.exports=Game;

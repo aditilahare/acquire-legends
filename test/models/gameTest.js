@@ -41,7 +41,8 @@ describe('game test', () => {
       assert.isOk(game.isVacancy());
     });
   })
-  ;describe('areAllPlayersJoined',()=>{
+  ;
+  describe('areAllPlayersJoined',()=>{
     it('should return true if all players have joined',()=>{
       let game = new Game(0);
       assert.isOk(game.areAllPlayersJoined());
@@ -49,6 +50,25 @@ describe('game test', () => {
     it('should return false if all players have not joined',()=>{
       let game = new Game(1);
       assert.isNotOk(game.areAllPlayersJoined());
+    });
+  });
+  describe('getPlayerNameOf',()=>{
+
+    it('should return player name of given id',()=>{
+      let game = new Game(3);
+      let player1={
+        name:'pragya',
+        ID:0
+      };
+      let player2={
+        name:'gupta',
+        ID:1
+      };
+      game.addPlayer(player1);
+      game.addPlayer(player2);
+      assert.equal('pragya',game.getPlayerNameOf(0));
+      assert.equal('gupta',game.getPlayerNameOf(1));
+      assert.equal('',game.getPlayerNameOf(2));
     });
   });
 });

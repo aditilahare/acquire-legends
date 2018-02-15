@@ -5,15 +5,22 @@ const app = require('../../app.js');
 const MockFs = require('../helpers/fsSimulator.js');
 const Game = require('../../src/models/game.js');
 
-describe('waiting page', function(){
-  it('should serve the waiting page for /wait', function(done){
+describe('/wait', function(){
+  it('should serve the waiting page', function(done){
     let fs=new MockFs();
     let fileName = './public/waitingPage.html';
     let content = 'Waiting For Other Players To Join';
     fs.addFile(fileName,content);
     app.fs=fs;
+    app.game=new Game(1);
+    let player={
+      name:'pragya',
+      ID:0
+    };
+    app.game.addPlayer(player);
     request(app)
       .get('/wait')
+      .set('Cookie','playerId=0')
       .expect(200)
       .expect(/Waiting For Other Players To Join/)
       .end(done);
