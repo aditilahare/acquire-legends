@@ -1,12 +1,10 @@
 const express = require('express');
-const fs=require('fs');
 
 const cookieParser =require('cookie-parser');
 const app = express();
 const getWaitingPage = require('./src/routes/wait.js');
 const areAllPlayersJoined = require('./src/routes/areAllPlayersJoined.js');
 const logRequest = require('./src/utils/logger');
-app.fs=fs;
 
 app.use(express.urlencoded({extended:false}));
 app.use(express.json());
