@@ -17,6 +17,9 @@ class Game {
   getPlayerCount(){
     return this.players.length;
   }
+  areAllPlayersJoined(){
+    return this.maxPlayers==this.getPlayerCount();
+  }
 }
 
 module.exports=Game;

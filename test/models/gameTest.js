@@ -32,13 +32,23 @@ describe('game test', () => {
     });
   });
   describe('isVacancy',()=>{
-    it('shoud return false if maximum players are  reached',()=>{
+    it('should return false if maximum players are  reached',()=>{
       let game = new Game(0);
       assert.isNotOk(game.isVacancy());
     });
-    it('shoud return true if maximum players are not reached',()=>{
+    it('should return true if maximum players are not reached',()=>{
       let game = new Game(1);
       assert.isOk(game.isVacancy());
+    });
+  })
+  ;describe('areAllPlayersJoined',()=>{
+    it('should return true if all players have joined',()=>{
+      let game = new Game(0);
+      assert.isOk(game.areAllPlayersJoined());
+    });
+    it('should return false if all players have not joined',()=>{
+      let game = new Game(1);
+      assert.isNotOk(game.areAllPlayersJoined());
     });
   });
 });
