@@ -30,6 +30,17 @@ describe('App Test',()=>{
         .expect(/Maximum number of players joined/)
         .end(done);
     });
+    describe('/create',()=>{
+      it('should create game and add the payer to game ',(done)=>{
+        request(app)
+          .post('/create')
+          .send('playerName=Aditi&numberOfPlayers=3')
+          .expect(302)
+          .expect('Location','/wait')
+          .expect(shouldHaveIdCookie)
+          .end(done);
+      });
+    });
     describe('/areAllPlayersJoined', function(){
       it('should respond with true if all players have joined', function(done){
         app.game=new Game(0);
