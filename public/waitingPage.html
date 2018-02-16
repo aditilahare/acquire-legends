@@ -5,6 +5,29 @@
     <script src="js/waiting.js" charset="utf-8"></script>
     <title>Waiting...</title>
   </head>
+  <style>
+.loader {
+  margin: 100px;
+  border: 10px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 10px solid #3498db;
+  width: 50px;
+  height: 50px;
+  -webkit-animation: spin 2s linear infinite; /* Safari */
+  animation: spin 2s linear infinite;
+}
+
+/* Safari */
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+</style>
   <body>
     <header>
       <h1>ACQUIRE</h1>
@@ -13,6 +36,7 @@
     <main>
       <h3>Waiting For Other Players To Join...</h3>
     </main>
+    <div class="loader"></div>
     <footer>
       <hr>
       <h6>Devoloped and maintained by Legends | &copy;2018</h6>

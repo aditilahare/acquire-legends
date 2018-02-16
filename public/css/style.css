@@ -1,0 +1,32 @@
+header{
+  font-family: cursive;
+  font-size: 50px;
+}
+.outerDiv{
+  margin-left: 100px;
+  margin-top: 50px;
+  border: 1px solid black;
+  height: 400px;
+  width:1206px;
+}
+
+.main{
+  border: 1px solid black;
+  height: 400px;
+  width: 400px;
+  float: left;
+}
+
+.create{
+  border: 1px solid black;
+  height: 400px;
+  width: 400px;
+  float: left;
+}
+
+.join{
+  border: 1px solid black;
+  height: 400px;
+  width: 400px;
+  float: left;
+}

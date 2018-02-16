@@ -26,6 +26,12 @@ class Game {
     }
     return '';
   }
+
+  isValidPlayer(id){
+    return this.players.some(function(player){
+      return id==player.id;
+    });
+  }
 }
 
 module.exports=Game;

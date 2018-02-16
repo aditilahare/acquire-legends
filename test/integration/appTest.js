@@ -96,5 +96,41 @@ describe('App Test',()=>{
           .end(done);
       });
     });
+
+    describe('/join.html /wait /game', function(){
+      it('should redirect to / when game is not created', function(done){
+        delete app.game;
+        request(app)
+          .get('/wait')
+          .expect(302)
+          .expect('Location','/')
+          .end(done);
+      });
+    });
+
+    describe('/', function(){
+      it('should redirect to /join when game is  created\
+           and there is vacancy', function(done){
+        app.game=new Game(1);
+        request(app)
+          .get('/')
+          .expect(302)
+          .expect('Location','/join.html')
+          .end(done);
+      });
+    });
+    describe('/join', function(){
+      it('should redirect to /wait when already \
+      registered player comes to /\/ /join.html ', function(done){
+        app.game=new Game(1);
+        app.game.addPlayer({name:'veera',id:0});
+        request(app)
+          .get('/join.html')
+          .set('Cookie','playerId=0')
+          .expect(302)
+          .expect('Location','/wait')
+          .end(done);
+      });
+    });
   });
 });
