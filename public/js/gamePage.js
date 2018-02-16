@@ -69,21 +69,22 @@ const displayPlayerDetails = function () {
 
 const displayHotelNames = function(allHotelsDetails){
   let hotelsHtml=allHotelsDetails.reduce((prev,cur)=>{
-    prev +=`<div class="fakeContent" id="${cur.name}" style="background-color:${cur.color}">${cur.name}</div><br>`;
+    prev +=`<div class="fakeContent" id="${cur.name}" \
+    style="background-color:${cur.color}">${cur.name}</div><br>`;
     return prev;
   },'');
   document.getElementById('hotels-place').innerHTML=hotelsHtml;
-}
+};
 
 const getAllHotelsDetails = function () {
   sendAjaxRequest('GET','/hotelDetails','',displayHotelDetails);
   return;
-}
+};
 
 const displayHotelDetails = function () {
   let allHotelsDetails = JSON.parse(this.responseText);
   displayHotelNames(allHotelsDetails);
-}
+};
 
 window.onload = function(){
   generateTable();

@@ -161,13 +161,9 @@ describe('game test', () => {
       let game = new Game(2);
       let player1 = new Player(0, 'veera');
       let player2 = new Player(1, 'pragya');
-      let hotelsData = [{
-        name: 'zeta',
-        color: 'yellow'
-      }];
-      let zetaHotel = {
-        name: 'zeta',
-        color: 'yellow'
+      let hydraHotel = {
+        name: 'Hydra',
+        color: 'orange'
       };
 
       game.addPlayer(player1);
@@ -175,7 +171,7 @@ describe('game test', () => {
       assert.equal(game.getAvailableCashOf(0), 0);
       assert.equal(game.getAvailableCashOf(1), 0);
       game.start();
-      assert.deepEqual(game.getHotel('zeta'),zetaHotel);
+      assert.deepEqual(game.getHotel('Hydra'),hydraHotel);
       assert.equal(game.getAvailableCashOf(0), 6000);
       assert.equal(game.getAvailableCashOf(1), 6000);
       assert.deepEqual(player1.getTiles(), ['1A', '2A', '3A', '4A', '5A', '6A']);
