@@ -31,10 +31,20 @@ const generateTilesAsButton = function(tiles,tile){
   return tiles;
 };
 
+/* formatting money as rupee*/
+const getCashInRupee = function (money) {
+  return `<h2 class='myCash'> &#8377; ${money}<h2>`;
+};
+
 /*Display Player tiles*/
 
 const displayTiles = function(tiles){
   document.getElementById('tileBox').innerHTML = generateTiles(tiles);
+  return;
+};
+
+const displayMoney = function(money){
+  document.getElementById('wallet').innerHTML = getCashInRupee(money);
   return;
 };
 
@@ -48,6 +58,7 @@ const displayPlayerDetails = function () {
   console.log(this.responseText);
   let playerDetails = JSON.parse(this.responseText);
   displayTiles(playerDetails.tiles);
+  displayMoney(playerDetails.availableMoney);
 };
 
 window.onload = function(){

@@ -22,7 +22,8 @@ class Player {
   }
   getDetails(){
     return {
-      tiles:this.getTiles()
+      tiles:this.getTiles(),
+      availableMoney : this.getAvalibleCash()
     };
   }
 }

@@ -147,6 +147,18 @@ describe('App Test',()=>{
         .expect(/tiles/i)
         .end(done);
     });
+    it('should give tiles of player with given id', function(done){
+      app.game=new Game(1);
+      let veera=new Player(0,'veera');
+      app.game.addPlayer(veera);
+      app.game.distributeInitialTiles();
+      request(app)
+        .get('/playerDetails')
+        .set('Cookie','playerId=0')
+        .expect(200)
+        .expect(/availableMoney/i)
+        .end(done);
+    });
   });
   describe('/game.html', function(){
     it('should start game if game exists but not started',function(done){
