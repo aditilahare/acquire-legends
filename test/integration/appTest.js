@@ -41,11 +41,11 @@ describe('App Test',()=>{
           .end(done);
       });
     });
-    describe('/areAllPlayersJoined', function(){
+    describe('/haveAllPlayersJoined', function(){
       it('should respond with true if all players have joined', function(done){
         app.game=new Game(0);
         request(app)
-          .get('/areAllPlayersJoined')
+          .get('/haveAllPlayersJoined')
           .expect(200)
           .expect(/true/)
           .end(done);
@@ -54,7 +54,7 @@ describe('App Test',()=>{
        have not joined', function(done){
         app.game=new Game(1);
         request(app)
-          .get('/areAllPlayersJoined')
+          .get('/haveAllPlayersJoined')
           .expect(200)
           .expect(/false/)
           .end(done);
@@ -69,7 +69,7 @@ describe('App Test',()=>{
         app.game.addPlayer(player);
         app.game.addPlayer(player);
         request(app)
-          .get('/areAllPlayersJoined')
+          .get('/haveAllPlayersJoined')
           .expect(200)
           .expect(/true/)
           .end(done);

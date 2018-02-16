@@ -1,10 +1,25 @@
 const TileBox = require('./tileBox');
+const Bank = require('./bank');
+const Hotel = require('./hotel');
+const INITIAL_MONEY = 100000;
+const STARTING_BALANCE = 6000;
+const HOTEL_DATA=[
+  {name: 'sackson',color: 'red'},
+  {name: 'zeta',color: 'yellow'},
+  {name: 'hydra',color: 'orange'},
+  {name: 'fusion',color: 'green'},
+  {name: 'america',color: 'blue'},
+  {name: 'phoenix',color: 'violet'},
+  {name: 'quantum',color: 'cyan'}
+];
 class Game {
-  constructor(maxPlayers) {
+  constructor(maxPlayers,bank=new Bank(INITIAL_MONEY)) {
     this.maxPlayers=maxPlayers;
     this.minPlayers=3;
     this.players=[];
+    this.hotels=[];
     this.tileBox = new TileBox(12,9);
+    this.bank=bank;
   }
   isVacancy(){
     return this.getPlayerCount()<this.maxPlayers;
@@ -19,7 +34,7 @@ class Game {
   getPlayerCount(){
     return this.players.length;
   }
-  areAllPlayersJoined(){
+  haveAllPlayersJoined(){
     return this.maxPlayers==this.getPlayerCount();
   }
   findPlayerBy(id){
@@ -33,17 +48,18 @@ class Game {
     }
     return '';
   }
-  giveMoneyToPlayer(id,money){
+  disrtibuteMoneyToPlayer(id,money){
     let player=this.findPlayerBy(id);
     player.addMoney(money);
   }
-  getAvalibleCashOf(id){
+  getAvailableCashOf(id){
     let player=this.findPlayerBy(id);
-    return player.getAvalibleCash();
+    return player.getAvailableCash();
   }
   distributeInitialMoney(initialMoney){
     this.players.forEach(player=>{
-      this.giveMoneyToPlayer(player.id,initialMoney);
+      this.disrtibuteMoneyToPlayer(player.id,initialMoney);
+      this.bank.reduceMoney(initialMoney);
     });
   }
   isValidPlayer(id){
@@ -59,7 +75,17 @@ class Game {
   }
   start(){
     this.distributeInitialTiles();
-    this.distributeInitialMoney(6000);
+    this.distributeInitialMoney(STARTING_BALANCE);
+    this.createHotels(HOTEL_DATA);
+  }
+  createHotels(hotelsData){
+    let self = this;
+    hotelsData.forEach(function (hotel) {
+      self.hotels.push(new Hotel(hotel.name,hotel.color))
+    });
+  }
+  getHotel(hotelName){
+    return this.hotels.find(hotel=>{return hotel.getName()==hotelName});
   }
 }
 module.exports=Game;

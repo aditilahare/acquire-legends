@@ -14,7 +14,7 @@ class Player {
   addTiles(tiles){
     this.tiles=tiles;
   }
-  getAvalibleCash() {
+  getAvailableCash() {
     return this.availableMoney;
   }
   addMoney(money) {

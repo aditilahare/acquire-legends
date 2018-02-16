@@ -1,4 +1,4 @@
-let areAllPlayersJoined = function() {
+let haveAllPlayersJoined = function() {
   let waitReq = new XMLHttpRequest();
 
   function reqListener() {
@@ -7,12 +7,12 @@ let areAllPlayersJoined = function() {
     }
   }
   waitReq.addEventListener("load", reqListener);
-  waitReq.open("GET", "/areAllPlayersJoined");
+  waitReq.open("GET", "/haveAllPlayersJoined");
   waitReq.send();
 };
 
 const actionPerformed = function() {
-  setInterval(areAllPlayersJoined,2000);
+  setInterval(haveAllPlayersJoined,2000);
 };
 
 window.onload = actionPerformed;
