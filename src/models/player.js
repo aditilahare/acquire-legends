@@ -7,6 +7,12 @@ class Player {
   addTile(tile){
     this.tiles.push(tile);
   }
+  getTiles(){
+    return this.tiles;
+  }
+  addTiles(tiles){
+    this.tiles=tiles;
+  }
 }
 
 module.exports = Player;

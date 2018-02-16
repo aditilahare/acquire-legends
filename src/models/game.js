@@ -1,8 +1,10 @@
+const TileBox = require('./tileBox');
 class Game {
   constructor(maxPlayers) {
     this.maxPlayers=maxPlayers;
     this.minPlayers=3;
     this.players=[];
+    this.tileBox = new TileBox(12,9);
   }
   isVacancy(){
     return this.getPlayerCount()<this.maxPlayers;
@@ -31,6 +33,15 @@ class Game {
     return this.players.some(function(player){
       return id==player.id;
     });
+  }
+  distributeInitialTiles(){
+    let tileBox=this.tileBox;
+    this.players.forEach(function(player){
+      player.addTiles(tileBox.getNTiles(6));
+    });
+  }
+  startGame(){
+    this.distributeInitialTiles();
   }
 }
 

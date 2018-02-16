@@ -1,5 +1,7 @@
 const assert = require('chai').assert;
 const Game = require('../../src/models/game.js');
+const Player = require('../../src/models/player.js');
+
 
 describe('game test', () => {
   describe('getPlayerCount',()=>{
@@ -15,7 +17,7 @@ describe('game test', () => {
       let game = new Game(3);
       let player={
         name:'pragya',
-        ID:0
+        id:0
       };
       let actual=game.addPlayer(player);
       assert.isOk(actual);
@@ -25,7 +27,7 @@ describe('game test', () => {
       let game = new Game(0);
       let player={
         name:'pragya',
-        ID:0
+        id:0
       };
       let actual=game.addPlayer(player);
       assert.isNotOk(actual);
@@ -53,22 +55,33 @@ describe('game test', () => {
     });
   });
   describe('getPlayerNameOf',()=>{
-
     it('should return player name of given id',()=>{
       let game = new Game(3);
       let player1={
         name:'pragya',
-        ID:0
+        id:0
       };
       let player2={
         name:'gupta',
-        ID:1
+        id:1
       };
       game.addPlayer(player1);
       game.addPlayer(player2);
       assert.equal('pragya',game.getPlayerNameOf(0));
       assert.equal('gupta',game.getPlayerNameOf(1));
       assert.equal('',game.getPlayerNameOf(2));
+    });
+  });
+  describe('distributeInitialTiles',()=>{
+    it('should give 6 tiles to all players',()=>{
+      let game = new Game(2);
+      let veera=new Player(0,'veera');
+      let aditi=new Player(0,'aditi');
+      game.addPlayer(veera);
+      game.addPlayer(aditi);
+      game.distributeInitialTiles();
+      assert.deepEqual(veera.getTiles(),['1A','2A','3A','4A','5A','6A']);
+      assert.deepEqual(aditi.getTiles(),['7A','8A','9A','10A','11A','12A']);
     });
   });
 });
