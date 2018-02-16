@@ -20,6 +20,7 @@ class Game {
     this.hotels=[];
     this.tileBox = new TileBox(12,9);
     this.bank=bank;
+    this.MODE='wait';
   }
   isVacancy(){
     return this.getPlayerCount()<this.maxPlayers;
@@ -77,15 +78,25 @@ class Game {
     this.distributeInitialTiles();
     this.distributeInitialMoney(STARTING_BALANCE);
     this.createHotels(HOTEL_DATA);
+    this.MODE='play';
   }
   createHotels(hotelsData){
     let self = this;
     hotelsData.forEach(function (hotel) {
-      self.hotels.push(new Hotel(hotel.name,hotel.color))
+      self.hotels.push(new Hotel(hotel.name,hotel.color));
     });
   }
   getHotel(hotelName){
-    return this.hotels.find(hotel=>{return hotel.getName()==hotelName});
+    return this.hotels.find(hotel=>{
+      return hotel.getName()==hotelName;
+    });
+  }
+  getPlayerDetails(id){
+    let player=this.findPlayerBy(id);
+    return player.getDetails();
+  }
+  isInPlayMode(){
+    return this.MODE=='play';
   }
 }
 module.exports=Game;
