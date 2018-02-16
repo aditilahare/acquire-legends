@@ -1,0 +1,121 @@
+* {
+  box-sizing: border-box;
+}
+
+/* Css for shares */
+.shares {
+  float: left;
+  width: 700px;
+  border: 1px solid black;
+  height: inherit;
+}
+/* Css for tiles  */
+.tiles {
+  float: left;
+  width: 500px;
+  border: 1px solid black;
+  height: inherit;
+}
+/* Css for cash  */
+.cash {
+  float: left;
+  width: 182px;
+  border: 1px solid black;
+  height: inherit;
+}
+
+/* Add a gray background color with some padding */
+
+body {
+  font-family: Arial;
+  padding: 20px;
+  background: #f1f1f1;
+}
+
+/* Header/Blog Title */
+
+.header {
+  padding: 10px;
+  font-size: 10px;
+  text-align: center;
+  background: white;
+}
+
+/* Create two unequal columns that floats next to each other */
+
+/* Left column */
+td{
+  text-align: center;
+  height: 57px;
+  width: 57px;
+  border: 1px solid black;
+}
+
+.centercolumn {
+  float: left;
+  width: 55%;
+  height: 55%;
+  padding-left: 20px;
+}
+
+/* left column */
+
+.leftcolumn {
+  float: left;
+  width: 20%;
+  padding-left: 0px;
+}
+
+/* Right column */
+
+.rightcolumn {
+  float: left;
+  width: 25%;
+  padding-left: 20px;
+}
+
+/* Fake content */
+
+.fakeContent {
+  background-color: #aaa;
+  width: 100%;
+  height: 50px;
+  padding: 10px;
+}
+
+/* Add a card effect for articles */
+
+.region {
+  background-color: white;
+  padding: 20px;
+  margin-top: 20px;
+}
+
+/* Clear floats after the columns */
+
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* Footer */
+
+.footer {
+  height: 100px;
+  background: #f1f1f1;
+  margin-top: 20px;
+  border: 1px solid red;
+
+}
+
+/* Responsive layout - when the screen is less than 800px wide, make the two columns stack on top of each other instead of next to each other */
+
+@media (max-width: 800px) {
+  .leftcolumn,
+  .center,
+  .rightcolumn {
+    width: 100%;
+    padding: 0;
+  }
+}

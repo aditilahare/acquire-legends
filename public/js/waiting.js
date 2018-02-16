@@ -3,7 +3,7 @@ let areAllPlayersJoined = function() {
 
   function reqListener() {
     if (eval(this.responseText)) {
-      window.location = '/game';
+      window.location = '/game.html';
     }
   }
   waitReq.addEventListener("load", reqListener);

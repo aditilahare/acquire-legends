@@ -40,8 +40,14 @@ class Game {
     return player.getAvalibleCash();
   }
   distributeInitialMoney(initialMoney){
-    this.players.forEach(player=>{this.giveMoneyToPlayer(player.id,initialMoney)});
+    this.players.forEach(player=>{
+      this.giveMoneyToPlayer(player.id,initialMoney);
+    });
+  }
+  isValidPlayer(id){
+    return this.players.some(function(player){
+      return id==player.id;
+    });
   }
 }
-
 module.exports=Game;
