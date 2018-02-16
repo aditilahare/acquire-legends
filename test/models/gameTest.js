@@ -84,4 +84,92 @@ describe('game test', () => {
       assert.deepEqual(aditi.getTiles(),['7A','8A','9A','10A','11A','12A']);
     });
   });
+  describe('findPlayerBy',()=>{
+    it('should return player of given id',()=>{
+      let game = new Game(3);
+      let player1={
+        name:'pragya',
+        id:0
+      };
+      let player2={
+        name:'gupta',
+        id:1
+      };
+      game.addPlayer(player1);
+      game.addPlayer(player2);
+      assert.deepEqual(player1,game.findPlayerBy(0));
+      assert.deepEqual(player2,game.findPlayerBy(1));
+      assert.deepEqual(undefined,game.findPlayerBy(2));
+    });
+  });
+  describe('giveMoneyToPlayer',()=>{
+    it('should give money to player of given id',()=>{
+      let game = new Game(3);
+      let player1={
+        name:'pragya',
+        id:0,
+        availableMoney: 0,
+        getAvalibleCash:function(){
+          return this.availableMoney;
+        },
+        addMoney:function(money) {
+          this.availableMoney += money;
+        }
+      };
+      game.addPlayer(player1);
+      assert.equal(game.getAvalibleCashOf(0),0);
+      game.giveMoneyToPlayer(0,4000);
+      assert.equal(game.getAvalibleCashOf(0),4000);
+    });
+  });
+  describe('distributeInitialMoney',()=>{
+    it('should disribute money to all players',()=>{
+      let game = new Game(3);
+      let player1={
+        name:'pragya',
+        id:0,
+        availableMoney: 0,
+        getAvalibleCash:function(){
+          return this.availableMoney;
+        },
+        addMoney:function(money) {
+          this.availableMoney += money;
+        }
+      };
+      let player2={
+        name:'sree',
+        id:1,
+        availableMoney: 0,
+        getAvalibleCash:function(){
+          return this.availableMoney;
+        },
+        addMoney:function(money) {
+          this.availableMoney += money;
+        }
+      };
+      game.addPlayer(player1);
+      game.addPlayer(player2);
+      assert.equal(game.getAvalibleCashOf(0),0);
+      assert.equal(game.getAvalibleCashOf(1),0);
+      game.distributeInitialMoney(6000);
+      assert.equal(game.getAvalibleCashOf(0),6000);
+      assert.equal(game.getAvalibleCashOf(1),6000);
+    });
+  });
+  describe('start',()=>{
+    it('should disribute money and tiles to all players',()=>{
+      let game = new Game(2);
+      let player1=new Player(0,'veera');
+      let player2=new Player(1,'pragya');
+      game.addPlayer(player1);
+      game.addPlayer(player2);
+      assert.equal(game.getAvalibleCashOf(0),0);
+      assert.equal(game.getAvalibleCashOf(1),0);
+      game.start();
+      assert.equal(game.getAvalibleCashOf(0),6000);
+      assert.equal(game.getAvalibleCashOf(1),6000);
+      assert.deepEqual(player1.getTiles(),['1A','2A','3A','4A','5A','6A']);
+      assert.deepEqual(player2.getTiles(),['7A','8A','9A','10A','11A','12A']);
+    });
+  });
 });

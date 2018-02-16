@@ -9,7 +9,7 @@ const joinGame = require('./src/routes/join.js').joinGame;
 const createGame = require('./src/routes/create');
 
 const redirectToHomeIfGameNotCreated=function(req,res,next){
-  let urls =['/join.html','/wait','/game'];
+  let urls =['/join.html','/wait','/game.html','/join'];
   if(urls.includes(req.url)&&!req.app.game){
     res.redirect('/');
     return ;
@@ -19,7 +19,8 @@ const redirectToHomeIfGameNotCreated=function(req,res,next){
 
 const redirectToJoinIfGameExists=function(req,res,next){
   let game=req.app.game;
-  if(req.url=='/' && game &&game.isVacancy() ){
+  let urls=['/','/index.html'];
+  if(urls.includes(req.url) && game &&game.isVacancy() ){
     res.redirect('/join.html');
     return ;
   }
@@ -29,7 +30,7 @@ const redirectToJoinIfGameExists=function(req,res,next){
 const redirectToWaitIfPlayerIsValid=function(req,res,next){
   let game = req.app.game;
   let id =req.cookies.playerId;
-  if(req.url=='/join.html' && game.isValidPlayer(id)){
+  if(req.url=='/join.html' && game.isValidPlayer(id) ){
     res.redirect('/wait');
     return ;
   }

@@ -1,8 +1,9 @@
 class Player {
-  constructor(playerId,playerName) {
+  constructor(playerId, playerName) {
     this.name = playerName;
     this.id = playerId;
     this.tiles=[];
+    this.availableMoney = 0;
   }
   addTile(tile){
     this.tiles.push(tile);
@@ -12,6 +13,12 @@ class Player {
   }
   addTiles(tiles){
     this.tiles=tiles;
+  }
+  getAvalibleCash() {
+    return this.availableMoney;
+  }
+  addMoney(money) {
+    this.availableMoney += money;
   }
 }
 
