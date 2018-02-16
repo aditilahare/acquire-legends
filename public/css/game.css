@@ -1,7 +1,11 @@
 * {
   box-sizing: border-box;
 }
-
+/*CSS for headng*/
+.heading{
+  font-family: 'Aclonica';
+  font-size: 50px;
+}
 /* Css for shares */
 .shares {
   float: left;
@@ -118,4 +122,10 @@ td{
     width: 100%;
     padding: 0;
   }
+}
+
+#playerName{
+  float: right;
+  font-family: 'Fontdiner Swanky';font-size: 22px;
+  font-size: 20px;
 }

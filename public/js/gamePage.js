@@ -42,23 +42,29 @@ const displayTiles = function(tiles){
   document.getElementById('tileBox').innerHTML = generateTiles(tiles);
   return;
 };
-
+/*Display Player Money*/
 const displayMoney = function(money){
   document.getElementById('wallet').innerHTML = getCashInRupee(money);
   return;
 };
 
+/*Display player name */
 
+const displayPlayerName = function (name) {
+  document.getElementById('playerName').innerHTML = `<p>Hello ${name} !</p>`;
+};
+
+/*Get player details*/
 const getPlayerDetails = function () {
   sendAjaxRequest('GET','/playerDetails','',displayPlayerDetails);
   return;
 };
 
 const displayPlayerDetails = function () {
-  console.log(this.responseText);
   let playerDetails = JSON.parse(this.responseText);
   displayTiles(playerDetails.tiles);
   displayMoney(playerDetails.availableMoney);
+  displayPlayerName(playerDetails.name);
 };
 
 window.onload = function(){
