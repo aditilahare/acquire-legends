@@ -20,11 +20,27 @@ class Game {
   areAllPlayersJoined(){
     return this.maxPlayers==this.getPlayerCount();
   }
+  findPlayerBy(id){
+    return this.players.find(player=>{
+      return player.id==id;
+    });
+  }
   getPlayerNameOf(id){
-    if (this.players[id]) {
-      return this.players[id].name;
+    if (this.findPlayerBy(id)) {
+      return this.findPlayerBy(id).name;
     }
     return '';
+  }
+  giveMoneyToPlayer(id,money){
+    let player=this.findPlayerBy(id);
+    player.addMoney(money);
+  }
+  getAvalibleCashOf(id){
+    let player=this.findPlayerBy(id);
+    return player.getAvalibleCash();
+  }
+  distributeInitialMoney(initialMoney){
+    this.players.forEach(player=>{this.giveMoneyToPlayer(player.id,initialMoney)});
   }
 }
 
