@@ -61,5 +61,9 @@ class Game {
     this.distributeInitialTiles();
     this.distributeInitialMoney(6000);
   }
+  getPlayerDetails(id){
+    let player=this.findPlayerBy(id);
+    return player.getDetails();
+  }
 }
 module.exports=Game;

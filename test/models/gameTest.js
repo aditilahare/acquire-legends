@@ -172,4 +172,16 @@ describe('game test', () => {
       assert.deepEqual(player2.getTiles(),['7A','8A','9A','10A','11A','12A']);
     });
   });
+  describe('getPlayerDetails',()=>{
+    it('should disribute money and tiles to all players',()=>{
+      let game = new Game(2);
+      let player1=new Player(0,'veera');
+      let player2=new Player(1,'pragya');
+      game.addPlayer(player1);
+      game.addPlayer(player2);
+
+      player1.addTiles(['1A','2A','3A','4A','5A','6A']);
+      assert.deepEqual(game.getPlayerDetails(0).tiles,['1A','2A','3A','4A','5A','6A']);
+    });
+  });
 });

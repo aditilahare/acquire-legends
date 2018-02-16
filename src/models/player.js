@@ -20,6 +20,11 @@ class Player {
   addMoney(money) {
     this.availableMoney += money;
   }
+  getDetails(){
+    return {
+      tiles:this.getTiles()
+    };
+  }
 }
 
 module.exports = Player;

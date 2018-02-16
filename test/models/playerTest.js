@@ -40,4 +40,12 @@ describe('Player', () => {
       assert.equal(actual,6000);
     });
   });
+  describe('getDetails',()=>{
+    it('should return player detail by given id',()=>{
+      let pragya=new Player(0,'pragya');
+      pragya.addTiles(["1A","2A","3A","4A","5A","6A"]);
+
+      assert.deepEqual(["1A","2A","3A","4A","5A","6A"],pragya.getDetails(0).tiles);
+    });
+  });
 });
