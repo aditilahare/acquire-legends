@@ -4,13 +4,13 @@ const Hotel = require('./hotel');
 const INITIAL_MONEY = 100000;
 const STARTING_BALANCE = 6000;
 const HOTEL_DATA=[
-  {name: 'sackson',color: 'red'},
-  {name: 'zeta',color: 'yellow'},
-  {name: 'hydra',color: 'orange'},
-  {name: 'fusion',color: 'green'},
-  {name: 'america',color: 'blue'},
-  {name: 'phoenix',color: 'violet'},
-  {name: 'quantum',color: 'cyan'}
+  {name: 'Sackson',color: 'rgb(205, 61, 65)'},
+  {name: 'Zeta',color: 'rgb(236, 222, 34)'},
+  {name: 'Hydra',color: 'orange'},
+  {name: 'Fusion',color: 'green'},
+  {name: 'America',color: 'rgb(23, 60, 190)'},
+  {name: 'Phoenix',color: 'violet'},
+  {name: 'Quantum',color: 'cyan'}
 ];
 class Game {
   constructor(maxPlayers,bank=new Bank(INITIAL_MONEY)) {
