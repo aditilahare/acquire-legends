@@ -2,19 +2,47 @@
 <html>
   <head>
     <meta charset="utf-8">
+    <link rel="stylesheet" href="./css/index.css">
+    <script src="./js/index.js" charset="utf-8"></script>
     <title>acquire - legends</title>
   </head>
   <body>
-    <h1>Hello</h1>
-    <form  action="/create" method="post">
-     <input type="text" name="playerName" placeholder="Enter Name" value="">
-     <select class="" name="numberOfPlayers">
-       <option value="3">3</option>
-       <option value="4">4</option>
-       <option value="5">5</option>
-       <option value="6">6</option>
-     </select>
-     <button type="submit"  name="button">Create</button>
-   </form>
+    <div class='container centered'>
+    <header>
+      <h1>Acquire</h1>
+    </header>
+    <div class="buttonBlock">
+      <input type="button"  onclick="toggle('create-game-form')" name="showCreateForm" value="Create Game">
+      <input type="button"  onclick="toggle('join-game-form')" name="showJoinForm" value="Join Game">
+    </div>
+    <div class="centered" id="form-holder">
+
+    </div>
+    <div class="createGame hidden centered" id="create-game-form">
+      <form  action="/create" method="post">
+        <input type="text" name="playerName" placeholder="Enter Name" value="">
+        <select class="" name="numberOfPlayers">
+
+          <option value="3">3</option>
+          <option value="4">4</option>
+
+          <option value="5">5</option>
+          <option value="6">6</option>
+        </select>
+        <button type="submit"  name="button">Create</button>
+      </form>
+    </div>
+    <br><br><br>
+    <div class="joinGame hidden centered" id="join-game-form">
+      <form action="/join" method="post">
+        <input type="text" name="playerName" value=""/></br></br>
+        <input type="submit"  value="Join game"/>
+      </form>
+    </div>
+    <footer>
+      <hr>
+      <h6>Devoloped and maintained by Legends | &copy;2018</h6>
+    </footer>
+  </div>
   </body>
 </html>
