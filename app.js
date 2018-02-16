@@ -8,6 +8,7 @@ const logRequest = require('./src/utils/logger');
 const joinGame = require('./src/routes/join.js').joinGame;
 const createGame = require('./src/routes/create');
 const playerDetails = require('./src/routes/playerDetails');
+const hotelDetails = require('./src/routes/hotelDetails');
 
 const redirectToHomeIfGameNotCreated=function(req,res,next){
   let urls =['/join.html','/wait','/game.html','/join'];
@@ -59,5 +60,6 @@ app.get('/haveAllPlayersJoined',haveAllPlayersJoined);
 app.post('/join',joinGame);
 app.post('/create',createGame);
 app.get('/playerDetails',playerDetails);
+app.get('/hotelDetails',hotelDetails);
 app.use(express.static('public'));
 module.exports=app;

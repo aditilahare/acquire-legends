@@ -98,5 +98,8 @@ class Game {
   isInPlayMode(){
     return this.MODE=='play';
   }
+  getAllHotelsDetails(){
+    return this.hotels;
+  }
 }
 module.exports=Game;

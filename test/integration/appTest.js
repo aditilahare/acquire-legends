@@ -172,4 +172,23 @@ describe('App Test',()=>{
         .end(done);
     });
   });
+  describe('/hotelDetails', function(){
+    it('should give empty data of all hotels', function(done){
+      app.game=new Game(1);
+      request(app)
+        .get('/hotelDetails')
+        .expect(200)
+        .expect('[]')
+        .end(done);
+    });
+    it('should give details of all hotels', function(done){
+      app.game=new Game(1);
+      app.game.createHotels([{name:'zeta',color:'yellow'}]);
+      request(app)
+        .get('/hotelDetails')
+        .expect(200)
+        .expect(`[{"name":"zeta","color":"yellow"}]`)
+        .end(done);
+    });
+  });
 });

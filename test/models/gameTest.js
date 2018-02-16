@@ -2,6 +2,7 @@
 const assert = require('chai').assert;
 const Game = require('../../src/models/game.js');
 const Player = require('../../src/models/player.js');
+const Hotel = require('../../src/models/hotel.js');
 
 
 describe('game test', () => {
@@ -225,6 +226,18 @@ describe('game test', () => {
       game.addPlayer(player2);
       game.start();
       assert.isOk(game.isInPlayMode());
+    });
+  });
+  describe('getAllHotelsDetails', function(){
+    it('can tell all the hotel details in game', function(){
+      let game = new Game(2);
+      let hotelsData = [{
+        name: 'zeta',
+        color: 'yellow'
+      }];
+      let expected = [new Hotel('zeta','yellow')];
+      game.createHotels(hotelsData);
+      assert.deepEqual(game.getAllHotelsDetails(),expected);
     });
   });
 });
