@@ -42,10 +42,10 @@ describe('Player', () => {
   });
   describe('getDetails',()=>{
     it('should return player detail by given id',()=>{
+      let expected =['1A','2A','3A','4A','5A','6A'];
       let pragya=new Player(0,'pragya');
-      pragya.addTiles(["1A","2A","3A","4A","5A","6A"]);
-
-      assert.deepEqual(["1A","2A","3A","4A","5A","6A"],pragya.getDetails(0).tiles);
+      pragya.addTiles(['1A','2A','3A','4A','5A','6A']);
+      assert.deepEqual(expected,pragya.getDetails(0).tiles);
     });
   });
 });

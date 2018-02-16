@@ -5,6 +5,7 @@ class Game {
     this.minPlayers=3;
     this.players=[];
     this.tileBox = new TileBox(12,9);
+    this.MODE='wait';
   }
   isVacancy(){
     return this.getPlayerCount()<this.maxPlayers;
@@ -60,10 +61,14 @@ class Game {
   start(){
     this.distributeInitialTiles();
     this.distributeInitialMoney(6000);
+    this.MODE='play';
   }
   getPlayerDetails(id){
     let player=this.findPlayerBy(id);
     return player.getDetails();
+  }
+  isInPlayMode(){
+    return this.MODE=='play';
   }
 }
 module.exports=Game;

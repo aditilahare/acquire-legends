@@ -175,13 +175,32 @@ describe('game test', () => {
   describe('getPlayerDetails',()=>{
     it('should disribute money and tiles to all players',()=>{
       let game = new Game(2);
+      let expected = ['1A','2A','3A','4A','5A','6A'];
       let player1=new Player(0,'veera');
       let player2=new Player(1,'pragya');
       game.addPlayer(player1);
       game.addPlayer(player2);
-
       player1.addTiles(['1A','2A','3A','4A','5A','6A']);
-      assert.deepEqual(game.getPlayerDetails(0).tiles,['1A','2A','3A','4A','5A','6A']);
+      assert.deepEqual(game.getPlayerDetails(0).tiles,expected);
+    });
+  });
+  describe('isInPlayMode',()=>{
+    it('should return false when game is not in play mode ',()=>{
+      let game = new Game(2);
+      let player1=new Player(0,'veera');
+      let player2=new Player(1,'pragya');
+      game.addPlayer(player1);
+      game.addPlayer(player2);
+      assert.isNotOk(game.isInPlayMode());
+    });
+    it('should return true if game is in play mode ',()=>{
+      let game = new Game(2);
+      let player1=new Player(0,'veera');
+      let player2=new Player(1,'pragya');
+      game.addPlayer(player1);
+      game.addPlayer(player2);
+      game.start();
+      assert.isOk(game.isInPlayMode());
     });
   });
 });

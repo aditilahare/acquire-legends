@@ -148,4 +148,18 @@ describe('App Test',()=>{
         .end(done);
     });
   });
+  describe('/game.html', function(){
+    it('should start game if game exists but not started',function(done){
+      app.game=new Game(1);
+      let veera=new Player(0,'veera');
+      app.game.addPlayer(veera);
+      app.game.distributeInitialTiles();
+      request(app)
+        .get('/game.html')
+        .set('Cookie','playerId=0')
+        .expect(200)
+        .expect(/hotels/i)
+        .end(done);
+    });
+  });
 });
