@@ -1,0 +1,13 @@
+div.container{
+  text-align: center;
+  height:300px;
+  width: 250px;
+  border: 2px solid black;
+}
+div.hidden{
+  display: none;
+}
+div.show{
+  text-align: center;
+  display: block;
+}
