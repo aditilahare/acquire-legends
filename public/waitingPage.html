@@ -2,43 +2,21 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <link href="https://fonts.googleapis.com/css?family=Merriweather:300,300i,400,400i" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:100,200,300,400,700" rel="stylesheet">
     <link rel="stylesheet" href="/css/waitingPage.css">
+    <script src="js/ajaxRequest.js" charset="utf-8"></script>
     <script src="js/waiting.js" charset="utf-8"></script>
     <title>Waiting...</title>
   </head>
-  <style>
-.loader {
-  margin: 100px;
-  border: 10px solid #f3f3f3;
-  border-radius: 50%;
-  border-top: 10px solid #3498db;
-  width: 50px;
-  height: 50px;
-  -webkit-animation: spin 2s linear infinite; /* Safari */
-  animation: spin 2s linear infinite;
-}
-
-/* Safari */
-@-webkit-keyframes spin {
-  0% { -webkit-transform: rotate(0deg); }
-  100% { -webkit-transform: rotate(360deg); }
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-</style>
   <body>
     <header>
       <h1>ACQUIRE</h1>
-      <h4>{{playerName}}</h4>
     </header>
     <main>
+      <div class="loader"></div>
       <h3>Waiting For Other Players To Join...</h3>
+      <div id = "playerNames"><div>
     </main>
-    <div class="loader"></div>
     <footer>
       <hr>
       <h6>Devoloped and maintained by Legends | &copy;2018</h6>

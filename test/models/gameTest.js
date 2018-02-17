@@ -236,4 +236,18 @@ describe('game test', () => {
       assert.deepEqual(game.getAllHotelsDetails(),expected);
     });
   });
+  describe('getAllPlayerNames',()=>{
+    it('can give empty list if no player is present',()=>{
+      let game = new Game(2);
+      assert.deepEqual(game.getAllPlayerNames(),[]);
+    });
+    it('can give all player names',()=>{
+      let game = new Game(2);
+      let player1=new Player(0,'veera');
+      let player2=new Player(1,'pragya');
+      game.addPlayer(player1);
+      game.addPlayer(player2);
+      assert.deepEqual(game.getAllPlayerNames(),['veera','pragya']);
+    });
+  });
 });

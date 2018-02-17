@@ -203,4 +203,20 @@ describe('App Test',()=>{
         .end(done);
     });
   });
+  describe('/getAllPlayerNames', function(){
+    it('can give all player names who have joined the game', function(done){
+      app.game=new Game(1);
+      let player={
+        name:'pragya',
+        ID:0
+      };
+      app.game.addPlayer(player);
+      request(app)
+        .get('/getAllPlayerNames')
+        .set('Cookie','playerId=0')
+        .expect(200)
+        .expect(/pragya/)
+        .end(done);
+    });
+  });
 });

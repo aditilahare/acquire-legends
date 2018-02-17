@@ -20,7 +20,7 @@
     </div>
     <div class="createGame hidden centered" id="create-game-form">
       <form  action="/create" method="post">
-        <input type="text" name="playerName" placeholder="Enter Name" value="">
+        <input type="text" name="playerName" placeholder="Enter Name" required>
         <select class="" name="numberOfPlayers">
 
           <option value="3">3</option>
@@ -35,7 +35,7 @@
     <br><br><br>
     <div class="joinGame hidden centered" id="join-game-form">
       <form action="/join" method="post">
-        <input type="text" name="playerName" value=""/></br></br>
+        <input type="text" name="playerName" placeholder="Enter Name" required/></br></br>
         <input type="submit"  value="Join game"/>
       </form>
     </div>

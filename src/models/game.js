@@ -101,5 +101,10 @@ class Game {
   getAllHotelsDetails(){
     return this.hotels;
   }
+  getAllPlayerNames(){
+    return this.players.map((player)=>{
+      return player.name;
+    });
+  }
 }
 module.exports=Game;
