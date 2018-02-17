@@ -11,8 +11,12 @@ const playerDetails = require('./src/routes/playerDetails');
 const hotelDetails = require('./src/routes/hotelDetails');
 const getAllPlayerNames = require('./src/routes/getAllPlayerNames');
 
+const verifyGameReq = function(game,id){
+  return game && game.isValidPlayer(id) && !game.isInPlayMode();
+};
+
 const redirectToHomeIfGameNotCreated=function(req,res,next){
-  let urls =['/join.html','/wait','/game.html','/join'];
+  let urls =['/wait','/game.html','/join'];
   if(urls.includes(req.url)&&!req.app.game){
     res.redirect('/');
     return ;
@@ -20,20 +24,13 @@ const redirectToHomeIfGameNotCreated=function(req,res,next){
   next();
 };
 
-const redirectToJoinIfGameExists=function(req,res,next){
-  let game=req.app.game;
-  let urls=['/','/index.html'];
-  if(urls.includes(req.url) && game &&game.isVacancy() ){
-    res.redirect('/join.html');
-    return ;
-  }
-  next();
-};
 
 const redirectToWaitIfPlayerIsValid=function(req,res,next){
   let game = req.app.game;
   let id =req.cookies.playerId;
-  if(req.url=='/join.html' && game.isValidPlayer(id) ){
+  let urls = ['/','/game.html'];
+  if(urls.includes(req.url) && verifyGameReq(game,id) &&
+  !game.haveAllPlayersJoined()){
     res.redirect('/wait');
     return ;
   }
@@ -42,7 +39,9 @@ const redirectToWaitIfPlayerIsValid=function(req,res,next){
 
 const startGame = function(req,res,next){
   let game=req.app.game;
-  if(req.url=='/game.html' && game && !game.isInPlayMode() ){
+  let id=req.cookies.playerId;
+  if(req.url=='/game.html' && verifyGameReq(game,id)&&
+  game.haveAllPlayersJoined()){
     game.start();
   }
   next();
@@ -53,7 +52,6 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(logRequest);
 app.use(redirectToHomeIfGameNotCreated);
-app.use(redirectToJoinIfGameExists);
 app.use(redirectToWaitIfPlayerIsValid);
 app.use(startGame);
 app.get('/wait',getWaitingPage);
