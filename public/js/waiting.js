@@ -11,7 +11,7 @@ const haveAllPlayersJoined = function() {
 };
 
 const namesInHtmlForm = function (names,name) {
-  names += `<h5>${name} has joined the game </h5>`;
+  names += `<h4>${name} has joined the game </h4>`;
   return names;
 };
 
