@@ -1,48 +1,65 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="utf-8">
-    <link rel="stylesheet" href="./css/index.css">
-    <script src="./js/index.js" charset="utf-8"></script>
-    <title>acquire - legends</title>
+    <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+    <link rel="stylesheet" href="/css/home.css">
+    <script src="/js/home.js" charset="utf-8"></script>
+    <title>Acquire</title>
   </head>
   <body>
-    <div class='container centered'>
-    <header>
-      <h1>Acquire</h1>
-    </header>
-    <div class="buttonBlock">
-      <input type="button"  onclick="toggle('create-game-form')" name="showCreateForm" value="Create Game">
-      <input type="button"  onclick="toggle('join-game-form')" name="showJoinForm" value="Join Game">
-    </div>
-    <div class="centered" id="form-holder">
+    <center>
+      <div class="center">
+        <div id="heading">
+          <h1>ACQUIRE</h1>
+        </div>
+        <div >
+          <center>
+            <button onclick="document.getElementById('create').style.display='block'"  class='options' name="button">Create</button></br>
+            <div id="create" class="modal">
+              <form class="modal-content animate" action="/create" method="post">
+                <div class="closeButton">
+                  <span onclick="document.getElementById('create').style.display='none'" class="close" title="Close Modal">&times;</span>
+                </div>
+                <div class="container">
+                  <label for="playerName"><b>Player Name</b></label>
+                  <input type="text" id="playerName" placeholder="Enter name" name="playerName" required>
+                  <label for="numberOfPlayers"><b>Number of Players</b></label>
+                  <select class="" id="numberOfPlayers" name="numberOfPlayers">
 
-    </div>
-    <div class="createGame hidden centered" id="create-game-form">
-      <form  action="/create" method="post">
-        <input type="text" name="playerName" placeholder="Enter Name" value="">
-        <select class="" name="numberOfPlayers">
+                    <option value="3">3</option>
+                    <option value="4">4</option>
 
-          <option value="3">3</option>
-          <option value="4">4</option>
-
-          <option value="5">5</option>
-          <option value="6">6</option>
-        </select>
-        <button type="submit"  name="button">Create</button>
-      </form>
-    </div>
-    <br><br><br>
-    <div class="joinGame hidden centered" id="join-game-form">
-      <form action="/join" method="post">
-        <input type="text" name="playerName" value=""/></br></br>
-        <input type="submit"  value="Join game"/>
-      </form>
-    </div>
-    <footer>
-      <hr>
-      <h6>Devoloped and maintained by Legends | &copy;2018</h6>
-    </footer>
-  </div>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                  </select>
+                  <button type="submit">Create</button>
+                </div>
+                <div class="container" style="background-color:#f1f1f1">
+                </div>
+              </form>
+            </div>
+            <button onclick="document.getElementById('join').style.display='block'"  class='options' name="button">Join</button></br>
+            <div id="join" class="modal">
+              <form action="/join" method="post" class="modal-content animate">
+                <div class="closeButton">
+                  <span onclick="document.getElementById('join').style.display='none'" class="close" title="Close Modal">&times;</span>
+                </div>
+                <div class="container">
+                  <label for="playerName"><b>Player Name</b></label>
+                  <input type="text" id="playerName" placeholder="Enter name" name="playerName" required>
+                  <button type="submit">Join</button>
+                </div>
+                <div class="container" style="background-color:#f1f1f1">
+                </div>
+              </form>
+            </div>
+            <button class='options' name="button">Rule Book</button></br>
+            <button class='options' name="button">About</button>
+          </center>
+        </div>
+      </div>
+    </center>
   </body>
 </html>
