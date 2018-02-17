@@ -33,7 +33,16 @@ describe('App Test',()=>{
     });
   });
   describe('/create',()=>{
+    it('should display error message when game is already created ',(done)=>{
+      request(app)
+        .post('/create')
+        .send('playerName=Aditi&numberOfPlayers=3')
+        .expect(200)
+        .expect(/Number of players/i)
+        .end(done);
+    });
     it('should create game and add the payer to game ',(done)=>{
+      delete app.game;
       request(app)
         .post('/create')
         .send('playerName=Aditi&numberOfPlayers=3')
@@ -109,23 +118,12 @@ describe('App Test',()=>{
     });
   });
   describe('/', function(){
-    it('should redirect to /join when game is  created\
-         and there is vacancy', function(done){
-      app.game=new Game(1);
-      request(app)
-        .get('/')
-        .expect(302)
-        .expect('Location','/join.html')
-        .end(done);
-    });
-  });
-  describe('/join', function(){
     it('should redirect to /wait when already \
-    registered player comes to /\/ /join.html ', function(done){
-      app.game=new Game(1);
+    registered player comes to / ', function(done){
+      app.game=new Game(2);
       app.game.addPlayer({name:'veera',id:0});
       request(app)
-        .get('/join.html')
+        .get('/')
         .set('Cookie','playerId=0')
         .expect(302)
         .expect('Location','/wait')
@@ -175,7 +173,6 @@ describe('App Test',()=>{
       app.game=new Game(1);
       let veera=new Player(0,'veera');
       app.game.addPlayer(veera);
-      app.game.distributeInitialTiles();
       request(app)
         .get('/game.html')
         .set('Cookie','playerId=0')
@@ -216,6 +213,24 @@ describe('App Test',()=>{
         .set('Cookie','playerId=0')
         .expect(200)
         .expect(/pragya/)
+        .end(done);
+    });
+  });
+  describe('/isGameExisted', function(){
+    it('should respond with true if game existed', function(done){
+      app.game=new Game(0);
+      request(app)
+        .get('/isGameExisted')
+        .expect(200)
+        .expect(/true/)
+        .end(done);
+    });
+    it('should respond with true if game existed', function(done){
+      delete app.game;
+      request(app)
+        .get('/isGameExisted')
+        .expect(200)
+        .expect(/false/)
         .end(done);
     });
   });
