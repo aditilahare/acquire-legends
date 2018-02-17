@@ -66,7 +66,12 @@ td{
 
 /* left column */
 
+#hotel-heading{
+  color: black;
+}
+
 .leftcolumn {
+  color: white;
   float: left;
   width: 20%;
   padding-left: 0px;
@@ -116,7 +121,7 @@ td{
 
 /* Responsive layout - when the screen is less than 800px wide, make the two columns stack on top of each other instead of next to each other */
 
-@media (max-width: 1450px) {
+@media (max-width: 800px) {
   .leftcolumn,
   .center,
   .rightcolumn {

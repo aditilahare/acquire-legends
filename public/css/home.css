@@ -15,6 +15,7 @@ body {
 input[type="button"]:disabled{
   background-color: #575757;
   box-shadow:none;
+  cursor:default;
 }
 
 div.mainContainer {
