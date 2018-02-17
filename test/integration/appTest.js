@@ -216,4 +216,22 @@ describe('App Test',()=>{
         .end(done);
     });
   });
+  describe('/isGameExisted', function(){
+    it('should respond with true if game existed', function(done){
+      app.game=new Game(0);
+      request(app)
+        .get('/isGameExisted')
+        .expect(200)
+        .expect(/true/)
+        .end(done);
+    });
+    it('should respond with true if game existed', function(done){
+      delete app.game;
+      request(app)
+        .get('/isGameExisted')
+        .expect(200)
+        .expect(/false/)
+        .end(done);
+    });
+  });
 });

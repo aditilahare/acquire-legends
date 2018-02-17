@@ -10,6 +10,7 @@ const createGame = require('./src/routes/create');
 const playerDetails = require('./src/routes/playerDetails');
 const hotelDetails = require('./src/routes/hotelDetails');
 const getAllPlayerNames = require('./src/routes/getAllPlayerNames');
+const isGameExisted = require('./src/routes/isGameExisted');
 
 const verifyGameReq = function(game,id){
   return game && game.isValidPlayer(id) && !game.isInPlayMode();
@@ -54,6 +55,7 @@ app.use(logRequest);
 app.use(redirectToHomeIfGameNotCreated);
 app.use(redirectToWaitIfPlayerIsValid);
 app.use(startGame);
+app.get('/isGameExisted',isGameExisted);
 app.get('/wait',getWaitingPage);
 app.get('/haveAllPlayersJoined',haveAllPlayersJoined);
 app.get('/getAllPlayerNames',getAllPlayerNames);

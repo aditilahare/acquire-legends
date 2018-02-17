@@ -5,6 +5,7 @@
     <meta charset="utf-8">
     <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
     <link rel="stylesheet" href="/css/home.css">
+    <script src="/js/ajaxRequest.js" charset="utf-8"></script>
     <script src="/js/home.js" charset="utf-8"></script>
     <title>Acquire</title>
   </head>
@@ -16,7 +17,7 @@
         </div>
         <div >
           <center>
-            <button onclick="document.getElementById('create').style.display='block'"  class='options' name="button">Create</button></br>
+            <button onclick="document.getElementById('create').style.display='block'"  id="create-bt" class='options' name="button">Create</button></br>
             <div id="create" class="modal">
               <form class="modal-content animate" action="/create" method="post">
                 <div class="closeButton">
@@ -40,7 +41,7 @@
                 </div>
               </form>
             </div>
-            <button onclick="document.getElementById('join').style.display='block'"  class='options' name="button">Join</button></br>
+            <button onclick="document.getElementById('join').style.display='block'" id="join-bt" class='options' name="button">Join</button></br>
             <div id="join" class="modal">
               <form action="/join" method="post" class="modal-content animate">
                 <div class="closeButton">
