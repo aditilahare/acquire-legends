@@ -12,7 +12,7 @@ const tableGenerator = function(rows,columns){
     }
     grid+=`<tr>${cols}</tr>`;
   }
-  return `<table>${grid}</table>`;
+  return `<table id="grid">${grid}</table>`;
 };
 
 const generateTable = function () {
@@ -27,13 +27,13 @@ const generateTiles = function (tiles){
 };
 
 const generateTilesAsButton = function(tiles,tile){
-  tiles+=`<button value=${tile}>${tile}</button>`;
+  tiles+=`<button class='tile' value=${tile}><span>${tile}</span></button>`;
   return tiles;
 };
 
 /* formatting money as rupee*/
 const getCashInRupee = function (money) {
-  return `<h2 class='myCash'> &#8377; ${money}<h2>`;
+  return `<center><h2 class='myCash'> &#8377; ${money}<h2></center>`;
 };
 
 /*Display Player tiles*/
