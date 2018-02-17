@@ -18,9 +18,9 @@
           </div>
           <div >
             <center>
-              <input type="button" onclick="document.getElementById('create').style.display='block'"  class='options' name="button" value="Create"/></br>
+              <input type="button" onclick="document.getElementById('create').style.display='block'"  class='options' name="button" id="create-bt" value="Create"/></br>
               <div id="create" class="modal">
-                <form class="modal-content animate" action="/create" method="post">
+                <form class="modal-content animate" action="/create" method="post" onsubmit="verfifyUserName()">
                   <div class="closeButton">
                     <span onclick="document.getElementById('create').style.display='none'" class="close" title="Close Modal">&times;</span>
                   </div>
@@ -40,9 +40,9 @@
                   </div>
                 </form>
               </div>
-              <input type="button" onclick="document.getElementById('join').style.display='block'"  class='options' name="button" value="Join"/></br>
+              <input type="button" onclick="document.getElementById('join').style.display='block'"  class='options' id="join-bt" name="button" value="Join"/></br>
               <div id="join" class="modal">
-                <form action="/join" method="post" class="modal-content animate">
+                <form action="/join" method="post" class="modal-content animate" onsubmit="verfifyUserName()">
                   <div class="closeButton">
                     <span onclick="document.getElementById('join').style.display='none'" class="close" title="Close Modal">&times;</span>
                   </div>

@@ -12,6 +12,11 @@ body {
   font-weight: 200;
 }
 
+input[type="button"]:disabled{
+  background-color: #575757;
+  box-shadow:none;
+}
+
 div.mainContainer {
   height: 800px;
   width: auto;
@@ -28,7 +33,7 @@ h1 {
 .options {
   font-size: 17px;
   border-radius: 15px;
-  background-color: #A9A9A9;
+  background-color: #F1F1F1;
   box-shadow: 0 4px #000;
   margin-bottom: 10px;
   border: white;

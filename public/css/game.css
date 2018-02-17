@@ -3,28 +3,27 @@
 }
 /*CSS for headng*/
 .heading{
-  font-family: 'Aclonica';
   font-size: 50px;
 }
 /* Css for shares */
 .shares {
   float: left;
-  width: 700px;
-  border: 1px solid black;
-  height: inherit;
-}
-/* Css for tiles  */
-.tiles {
-  float: left;
-  width: 500px;
+  width: 57.9%;
   border: 1px solid black;
   height: inherit;
 }
 /* Css for cash  */
 .cash {
   padding-top: 10px;
-  float: left;
-  width: 182px;
+  float: right;
+  width: 10%;
+  border: 1px solid black;
+  height: inherit;
+}
+/* Css for tiles  */
+.tiles {
+  float: right;
+  width: 30%;
   border: 1px solid black;
   height: inherit;
 }
@@ -32,7 +31,7 @@
 /* Add a gray background color with some padding */
 
 body {
-  font-family: Arial;
+  font-family: 'Montserrat', sans-serif;;
   padding: 20px;
   background: #f1f1f1;
 }
@@ -113,12 +112,11 @@ td{
   background: #ceb19c;
   margin-top: 20px;
   border: 1px solid red;
-
 }
 
 /* Responsive layout - when the screen is less than 800px wide, make the two columns stack on top of each other instead of next to each other */
 
-@media (max-width: 800px) {
+@media (max-width: 1450px) {
   .leftcolumn,
   .center,
   .rightcolumn {
@@ -129,13 +127,11 @@ td{
 
 #playerName{
   float: right;
-  font-family: 'Fontdiner Swanky';font-size: 22px;
-  font-size: 20px;
+  font-size: 22px;
 }
 
 /*CSS for tiles*/
 .tile{
-
   color: white;
   border: 2px solid white;
   background-color: #2d2016;

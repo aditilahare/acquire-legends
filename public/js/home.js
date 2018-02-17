@@ -29,6 +29,11 @@ const doesGameExisted = function(){
   sendAjaxRequest('GET','/isGameExisted','',toggleButtons);
 };
 
+const verfifyUserName =function(){
+  let form = event.target;
+  console.log(event);
+};
+
 window.onload = function () {
   doesGameExisted();
 };
