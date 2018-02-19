@@ -52,7 +52,8 @@ const generateTiles = function (tiles){
 };
 
 const generateTilesAsButton = function(tiles,tile){
-  tiles+=`<button class='tile' value=${tile} ondblclick="placeTile(event)">\
+  tiles+=`<button class='tile' value=${tile}\
+   ondblclick="placeTile(this.value)">\
  <span>${tile}</span></button>`;
   return tiles;
 };
@@ -86,6 +87,32 @@ const getPlayerDetails = function () {
   return;
 };
 
+const processShareDetails = function(sharesDiv,sharesDetails){
+  let hotelsNames = Object.keys(sharesDetails);
+  let html = `<h2>Shares</h2>`;
+  hotelsNames.forEach(function(hotelName){
+    html += `<div>${hotelName}=${sharesDetails[hotelName]}</div>`;
+  });
+  return html;
+};
+
+const displaySharesDetails = function(sharesDetails){
+  let sharesDiv = document.getElementById('playerShares');
+  sharesDiv.innerHTML = processShareDetails(sharesDiv,sharesDetails);
+  return;
+};
+
+const updatePlayerData = function (){
+  let playerDetails = JSON.parse(this.responseText);
+  displaySharesDetails(playerDetails);
+  return;
+};
+
+const getPlayerData = function (){
+  sendAjaxRequest('GET','/playerSharesDetails','',updatePlayerData);
+  return;
+};
+
 const displayPlayerDetails = function () {
   let playerDetails = JSON.parse(this.responseText);
   displayTiles(playerDetails.tiles);
@@ -115,9 +142,7 @@ const displayHotelDetails = function () {
   displayHotelNames(allHotelsDetails);
 };
 
-
-const placeTile = function(event){
-  let tile=event.target.value;
+const placeTile = function(tile){
   sendAjaxRequest('POST','/placeTile',`tile=${tile}`,getIndependentTiles);
   return;
 };
@@ -161,7 +186,8 @@ const actionsPerformed = function () {
   generateTable();
   setInterval(getPlayerDetails,500);
   getAllHotelsDetails();
-  setInterval(getIndependentTiles,500);
+  setInterval(getPlayerData,1000);
+  setInterval(getIndependentTiles,1000);
   setInterval(getTurnDetails,500);
 
 };

@@ -23,13 +23,10 @@ describe('App Test', () => {
         .expect(shouldHaveIdCookie)
         .end(done);
     });
-    it('should not allow players to join if  maximum players joined', (done) => {
-      game = new Game(1);
-      game.addPlayer({
-        name: 'veera',
-        id: 1
-      });
-      app.game = game;
+    it('should not allow players to join if  maximum players joined',(done)=>{
+      game=new Game(1);
+      game.addPlayer(new Player(1,'veera'));
+      app.game=game;
       request(app)
         .post('/join')
         .send('playerName=Aditi')
@@ -76,12 +73,9 @@ describe('App Test', () => {
         .end(done);
     });
     it('should respond with true if all players\
-       have not joined', function(done) {
-      app.game = new Game(2);
-      let player = {
-        name: 'pragya',
-        ID: 0
-      };
+       have not joined', function(done){
+      app.game=new Game(2);
+      let player=new Player(0,'veera');
       app.game.addPlayer(player);
       app.game.addPlayer(player);
       request(app)
@@ -96,13 +90,10 @@ describe('App Test', () => {
       let fs = new MockFs();
       let fileName = './public/waitingPage.html';
       let content = 'Waiting For Other Players To Join';
-      fs.addFile(fileName, content);
-      app.fs = fs;
-      app.game = new Game(1);
-      let player = {
-        name: 'pragya',
-        ID: 0
-      };
+      fs.addFile(fileName,content);
+      app.fs=fs;
+      app.game=new Game(1);
+      let player=new Player(0,'pragya');
       app.game.addPlayer(player);
       request(app)
         .get('/wait')
@@ -123,13 +114,9 @@ describe('App Test', () => {
     });
   });
   describe('/', function() {
-    it('should redirect to /wait when already \
-    registered player comes to / ', function(done) {
-      app.game = new Game(2);
-      app.game.addPlayer({
-        name: 'veera',
-        id: 0
-      });
+    it('should redirect to /wait when already registered player comes to  ', function(done){
+      app.game=new Game(2);
+      app.game.addPlayer(new Player(0,'veera'));
       request(app)
         .get('/')
         .set('Cookie', 'playerId=0')
@@ -175,6 +162,21 @@ describe('App Test', () => {
         .expect(/"name":/i)
         .end(done);
     });
+    it('should give share details of player with given id', function(done){
+      app.game=new Game(1);
+      let aditi=new Player(0,'aditi');
+      app.game.addPlayer(aditi);
+      app.game.addSharesToPlayer(0,'phoenix',2);
+      app.game.addSharesToPlayer(0,'hydra',5);
+      app.game.getPlayerSharesDetails(0);
+      request(app)
+        .get('/playerSharesDetails')
+        .set('Cookie','playerId=0')
+        .expect(200)
+        .expect(/"phoenix":/i)
+        .expect(/"hydra":/i)
+        .end(done);
+    });
   });
   describe('/game.html', function() {
     it('should start game if game exists but not started', function(done) {
@@ -211,13 +213,10 @@ describe('App Test', () => {
         .end(done);
     });
   });
-  describe('/getAllPlayerNames', function() {
-    it('can give all player names who have joined the game', function(done) {
-      app.game = new Game(1);
-      let player = {
-        name: 'pragya',
-        ID: 0
-      };
+  describe('/getAllPlayerNames', function(){
+    it('can give all player names who have joined the game', function(done){
+      app.game=new Game(1);
+      let player=new Player(0,'pragya');
       app.game.addPlayer(player);
       request(app)
         .get('/getAllPlayerNames')
@@ -248,13 +247,7 @@ describe('App Test', () => {
   describe('/placeTile', function() {
     it('can place a tile on market', function(done) {
       app.game = new Game(1);
-      let player = {
-        name: 'pragya',
-        id: 0,
-        getTile: function() {
-          return '1A';
-        }
-      };
+      let player = new Player(0,'pragya');
       app.game.addPlayer(player);
       request(app)
         .post('/placeTile')
@@ -300,13 +293,8 @@ describe('App Test', () => {
   describe('/getIndependentTiles', function() {
     it('can give independent tiles in market', function(done) {
       app.game = new Game(1);
-      let player = {
-        name: 'pragya',
-        id: 0,
-        getTile: function() {
-          return '1A';
-        }
-      };
+      let player = new Player(0,'pragya');
+      player.tiles.push('1A')
       app.game.addPlayer(player);
       app.game.placeTile(0,'1A');
       request(app)
