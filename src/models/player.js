@@ -26,7 +26,8 @@ class Player {
       tiles:this.getTiles(),
       availableMoney : this.getAvailableCash(),
       name:this.name,
-      id:this.id
+      id:this.id,
+      shares:this.shares
     };
   }
   addShares(hotelName,noOfShares){

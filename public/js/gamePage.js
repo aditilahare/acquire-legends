@@ -89,22 +89,12 @@ const displaySharesDetails = function(sharesDetails){
   return;
 };
 
-const updatePlayerData = function (){
-  let playerDetails = JSON.parse(this.responseText);
-  displaySharesDetails(playerDetails);
-  return;
-};
-
-const getPlayerData = function (){
-  sendAjaxRequest('GET','/playerSharesDetails','',updatePlayerData);
-  return;
-};
-
 const displayPlayerDetails = function () {
   let playerDetails = JSON.parse(this.responseText);
   displayTiles(playerDetails.tiles);
   displayMoney(playerDetails.availableMoney);
   displayPlayerName(playerDetails.name);
+  displaySharesDetails(playerDetails.shares);
 };
 
 const displayHotelNames = function(allHotelsDetails){
@@ -168,7 +158,6 @@ const actionsPerformed = function () {
   generateTable();
   setInterval(getPlayerDetails,1000);
   getAllHotelsDetails();
-  setInterval(getPlayerData,1000);
   setInterval(getIndependentTiles,1000);
   setInterval(getTurnDetails,500);
 

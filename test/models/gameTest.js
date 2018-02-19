@@ -118,7 +118,8 @@ describe('game test',function(){
       let player2 = new Player(1, 'pragya');
       let hydraHotel = {
         name: 'Hydra',
-        color: 'orange'
+        color: 'orange',
+        shares:25
       };
 
       game.addPlayer(player1);
@@ -138,11 +139,13 @@ describe('game test',function(){
       let game = new Game(2);
       let hotelsData = [{
         name: 'zeta',
-        color: 'yellow'
+        color: 'yellow',
+        shares:25
       }];
       let zetaHotel = {
         name: 'zeta',
-        color: 'yellow'
+        color: 'yellow',
+        shares:25
       };
       game.createHotels(hotelsData);
       assert.deepEqual(game.getHotel('zeta'),zetaHotel);
@@ -192,17 +195,18 @@ describe('game test',function(){
     });
   });
   describe('getAllHotelsDetails', function(){
-    it('can tell all the hotel details in game', function(){
-      let game = new Game(2);
-      let hotelsData = [{
-        name: 'zeta',
-        color: 'yellow'
-      }];
-      let expected = [new Hotel('zeta','yellow')];
-      game.createHotels(hotelsData);
-      assert.deepEqual(game.getAllHotelsDetails(),expected);
-    });
-  });
+     it('can tell all the hotel details in game', function(){
+       let game = new Game(2);
+       let hotelsData = [{
+         name: 'zeta',
+         color: 'yellow',
+         shares:25
+       }];
+       let expected = [new Hotel('zeta','yellow')];
+       game.createHotels(hotelsData);
+       assert.deepEqual(game.getAllHotelsDetails(),expected);
+     });
+   });
   describe('getAllPlayerNames',()=>{
     it('can give empty list if no player is present',()=>{
       let game = new Game(2);
