@@ -11,6 +11,7 @@ const playerDetails = require('./src/routes/playerDetails');
 const hotelDetails = require('./src/routes/hotelDetails');
 const getAllPlayerNames = require('./src/routes/getAllPlayerNames');
 const isGameExisted = require('./src/routes/isGameExisted');
+const placeTile = require('./src/routes/placeTile');
 
 const verifyGameReq = function(game,id){
   return game && game.isValidPlayer(id) && !game.isInPlayMode();
@@ -61,6 +62,7 @@ app.get('/haveAllPlayersJoined',haveAllPlayersJoined);
 app.get('/getAllPlayerNames',getAllPlayerNames);
 app.post('/join',joinGame);
 app.post('/create',createGame);
+app.post('/placeTile',placeTile);
 app.get('/playerDetails',playerDetails);
 app.get('/hotelDetails',hotelDetails);
 app.use(express.static('public'));

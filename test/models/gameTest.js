@@ -3,9 +3,9 @@ const assert = require('chai').assert;
 const Game = require('../../src/models/game.js');
 const Player = require('../../src/models/player.js');
 const Hotel = require('../../src/models/hotel.js');
+const Market = require('../../src/models/market.js');
 
-
-describe('game test', () => {
+describe('game test',function(){
   describe('getPlayerCount', () => {
     it('should return the number of players', () => {
       let game = new Game(3);
@@ -248,6 +248,19 @@ describe('game test', () => {
       game.addPlayer(player1);
       game.addPlayer(player2);
       assert.deepEqual(game.getAllPlayerNames(),['veera','pragya']);
+    });
+  });
+  describe('placeTile',()=>{
+    it('can place a independent Tile for the player whose id is given',()=>{
+      let game = new Game(1);
+      let player1=new Player(1,'pragya');
+      let market = new Market();
+      player1.addTile('2A');
+      game.addPlayer(player1);
+      game.placeTile(1,'2A');
+      let actual = game.giveIndependentTiles();
+      let expected = ['2A'];
+      assert.deepEqual(actual,expected);
     });
   });
 });

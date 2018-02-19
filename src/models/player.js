@@ -27,6 +27,10 @@ class Player {
       name:this.name
     };
   }
+  getTile(tile){
+    let index = this.tiles.indexOf(tile);
+    return this.tiles.splice(index,1)[0];
+  }
 }
 
 module.exports = Player;
