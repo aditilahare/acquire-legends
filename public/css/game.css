@@ -192,3 +192,7 @@ td{
    background-color: brown;
    color: white
  }
+
+.hidden{
+  display: none;
+}

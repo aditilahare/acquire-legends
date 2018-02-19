@@ -14,6 +14,7 @@ const isGameExisted = require('./src/routes/isGameExisted');
 const placeTile = require('./src/routes/placeTile');
 const giveIndependentTiles = require('./src/routes/giveIndependentTiles');
 const getTurnDetails = require('./src/routes/getTurnDetails');
+const changeTurn = require('./src/routes/changeTurn');
 const verifyGameReq = function(game,id){
   return game && game.isValidPlayer(id) && !game.isInPlayMode();
 };
@@ -68,5 +69,6 @@ app.get('/getIndependentTiles',giveIndependentTiles);
 app.get('/playerDetails',playerDetails);
 app.get('/hotelDetails',hotelDetails);
 app.get('/turnDetails',getTurnDetails);
+app.get('/changeTurn',changeTurn);
 app.use(express.static('public'));
 module.exports=app;

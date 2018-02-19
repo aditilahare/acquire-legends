@@ -274,4 +274,17 @@ describe('game test',function(){
       assert.equal(actual.id,0)
     });
   });
+  describe('changeCurrentPlayer',()=>{
+    it('should change current player and give tile for current player',()=>{
+      let game = new Game(2);
+      let player1=new Player(0,'pragya');
+      game.addPlayer(player1);
+      game.addPlayer(new Player(1,'veera'));
+      game.start();
+      game.changeCurrentPlayer();
+      let actual=game.getCurrentPlayer();
+      assert.equal(actual.id,1)
+      assert.equal(player1.tiles.length,7)
+    });
+  });
 });

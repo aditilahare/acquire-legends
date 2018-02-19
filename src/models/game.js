@@ -133,5 +133,12 @@ class Game {
     let currentPlayerID=this.turn.getCurrentPlayerID();
     return this.getPlayerDetails(currentPlayerID);
   }
+  changeCurrentPlayer(){
+    let tiles=this.tileBox.getNTiles(1);
+    let currentPlayerID=this.turn.getCurrentPlayerID();
+    let currentPlayer=this.findPlayerBy(currentPlayerID);
+    currentPlayer.addTile(tiles[0]);
+    this.turn.updateTurn();
+  }
 }
 module.exports=Game;
