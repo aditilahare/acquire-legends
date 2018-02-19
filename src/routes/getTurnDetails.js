@@ -1,5 +1,6 @@
 const getTurnDetails=function (req,res) {
   let game=req.app.game;
+  let id=req.cookies.playerId;
   let turnDetails={};
   let currentPlayer=game.getCurrentPlayer();
   let otherPlayers=game.getAllPlayerDetails().filter((player)=>{
@@ -9,6 +10,10 @@ const getTurnDetails=function (req,res) {
   turnDetails.otherPlayers = otherPlayers.map((player)=>{
     return player.name;
   });
+  turnDetails.isMyTurn=false;
+  if(currentPlayer.id==id) {
+    turnDetails.isMyTurn=true;
+  }
   res.json(turnDetails);
 };
 

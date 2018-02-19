@@ -253,8 +253,25 @@ describe('App Test', () => {
 
       request(app)
         .get('/turnDetails')
+        .set('Cookie', 'playerId=0')
         .expect(200)
         .expect(/"currentPlayer":"veera"/i)
+        .expect(/"isMyTurn":true/i)
+        .end(done);
+    });
+    it('should give turn details', function(done) {
+      let game = new Game(3);
+      game.addPlayer(new Player(0,'veera'));
+      game.addPlayer(new Player(1,'gupta'));
+      game.addPlayer(new Player(2,'raj'));
+      game.start();
+      app.game=game;
+
+      request(app)
+        .get('/turnDetails')
+        .expect(200)
+        .expect(/"currentPlayer":"veera"/i)
+        .expect(/"isMyTurn":false/i)
         .end(done);
     });
   });
@@ -273,4 +290,19 @@ describe('App Test', () => {
         .end(done);
     });
   });
+  describe('/changeTurn', function() {
+    it('change turn to next player', function(done) {
+      let game = new Game(3);
+      game.addPlayer(new Player(0,'veera'));
+      game.addPlayer(new Player(1,'gupta'));
+      game.addPlayer(new Player(2,'raj'));
+      game.start();
+      app.game=game;
+
+      request(app)
+        .get('/changeTurn')
+        .expect(200)
+        .end(done);
+  });
+});
 });

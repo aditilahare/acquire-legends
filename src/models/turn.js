@@ -6,6 +6,11 @@ class Turn {
   getCurrentPlayerID(){
     return this.playerIDSequence[this.currentPlayerIndex];
   }
+  updateTurn(){
+    this.currentPlayerIndex++;
+    let noOfPlayers = this.playerIDSequence.length;
+    this.currentPlayerIndex = this.currentPlayerIndex % noOfPlayers;
+  }
 }
 
 module.exports=Turn;

@@ -10,7 +10,21 @@ let listToHTML = function(list,className,elementName='p') {
   return html;
 };
 
+const changeTurn = function () {
+  sendAjaxRequest('GET','/changeTurn','');
+};
 
+const showEndTurn = function () {
+  let element=getElement('#change-turn');
+  element.classList.remove('hidden');
+  element=getElement('#change-turn button').onclick=changeTurn;
+};
+
+const hideEndTurn = function () {
+  let element=getElement('#change-turn');
+  element.classList.add('hidden');
+  element=getElement('#change-turn button').onclick='';
+};
 /*Creating Table*/
 
 const tableGenerator = function(rows,columns){
@@ -69,7 +83,6 @@ const displayPlayerName = function (name) {
 
 /*Get player details*/
 const getPlayerDetails = function () {
-  console.log('hi');
   sendAjaxRequest('GET','/playerDetails','',displayPlayerDetails);
   return;
 };
@@ -110,7 +123,7 @@ const displayHotelNames = function(allHotelsDetails){
 const getAllHotelsDetails = function () {
   setInterval(()=>{
     sendAjaxRequest('GET','/hotelDetails','',displayHotelDetails);
-  },1000);
+  },500);
   return;
 };
 
@@ -129,7 +142,6 @@ const getIndependentTiles = function(){
   return;
 };
 const displayIndependentTiles = function() {
-  console.log(this.responseText);
   let independentTiles = JSON.parse(this.responseText);
   independentTiles.forEach(assignTileIndependentClass);
   return;
@@ -141,6 +153,12 @@ const displayTurnDetails = function() {
   getElement('#current-player').innerHTML=currentPlayer;
   let html=listToHTML(turnDetails.otherPlayers,'other-player','div');
   getElement('#other-players').innerHTML=html;
+  let isMyTurn=turnDetails.isMyTurn;
+  if(eval(isMyTurn)){
+    showEndTurn();
+  }else{
+    hideEndTurn();
+  }
 };
 
 const getTurnDetails = function(){
@@ -156,7 +174,7 @@ const assignTileIndependentClass = function(tile){
 
 const actionsPerformed = function () {
   generateTable();
-  setInterval(getPlayerDetails,1000);
+  setInterval(getPlayerDetails,500);
   getAllHotelsDetails();
   setInterval(getIndependentTiles,1000);
   setInterval(getTurnDetails,500);
