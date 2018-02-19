@@ -119,7 +119,8 @@ describe('game test',function(){
       let hydraHotel = {
         name: 'Hydra',
         color: 'orange',
-        shares:25
+        totalShares:25,
+        occupiedTiles:[]
       };
 
       game.addPlayer(player1);
@@ -140,12 +141,13 @@ describe('game test',function(){
       let hotelsData = [{
         name: 'zeta',
         color: 'yellow',
-        shares:25
+        totalShares:25
       }];
       let zetaHotel = {
         name: 'zeta',
         color: 'yellow',
-        shares:25
+        totalShares:25,
+        occupiedTiles:[]
       };
       game.createHotels(hotelsData);
       assert.deepEqual(game.getHotel('zeta'),zetaHotel);
@@ -200,7 +202,7 @@ describe('game test',function(){
        let hotelsData = [{
          name: 'zeta',
          color: 'yellow',
-         shares:25
+         totalShares:25
        }];
        let expected = [new Hotel('zeta','yellow')];
        game.createHotels(hotelsData);
