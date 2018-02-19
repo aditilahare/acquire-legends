@@ -48,4 +48,16 @@ describe('Player', () => {
       assert.deepEqual(expected,pragya.getDetails(0).tiles);
     });
   });
+  describe('getShareDetails',()=>{
+    it('should return players share details by given id',()=>{
+      let expected = {phoenix:4,fusion:7};
+      let Aditi = new Player(0,'Aditi');
+      Aditi.addShares("phoenix",2);
+      Aditi.addShares("fusion",3);
+      Aditi.addShares("phoenix",2);
+      Aditi.addShares("fusion",4);
+      let actual = Aditi.getShareDetails();
+      assert.deepEqual(expected,actual);
+    });
+  });
 });

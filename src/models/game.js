@@ -106,5 +106,13 @@ class Game {
       return player.name;
     });
   }
+  addSharesToPlayer(id,hotelName,noOfShares){
+    let player = this.findPlayerBy(id);
+    player.addShares(hotelName,noOfShares);
+  }
+  getPlayerSharesDetails(id){
+    let player = this.findPlayerBy(id);
+    return player.getShareDetails();
+  }
 }
 module.exports=Game;

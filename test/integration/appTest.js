@@ -167,6 +167,21 @@ describe('App Test',()=>{
         .expect(/"name":/i)
         .end(done);
     });
+    it('should give share details of player with given id', function(done){
+      app.game=new Game(1);
+      let aditi=new Player(0,'aditi');
+      app.game.addPlayer(aditi);
+      app.game.addSharesToPlayer(0,'phoenix',2);
+      app.game.addSharesToPlayer(0,'hydra',5);
+      app.game.getPlayerSharesDetails(0);
+      request(app)
+        .get('/playerSharesDetails')
+        .set('Cookie','playerId=0')
+        .expect(200)
+        .expect(/"phoenix":/i)
+        .expect(/"hydra":/i)
+        .end(done);
+    });
   });
   describe('/game.html', function(){
     it('should start game if game exists but not started',function(done){

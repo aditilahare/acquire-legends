@@ -194,7 +194,7 @@ describe('game test', () => {
     });
   });
   describe('getPlayerDetails',()=>{
-    it('should disribute money and tiles to all players',()=>{
+    it('should return an object containig player details',()=>{
       let game = new Game(2);
       let expected = ['1A','2A','3A','4A','5A','6A'];
       let player1=new Player(0,'veera');
@@ -203,6 +203,18 @@ describe('game test', () => {
       game.addPlayer(player2);
       player1.addTiles(['1A','2A','3A','4A','5A','6A']);
       assert.deepEqual(game.getPlayerDetails(0).tiles,expected);
+    });
+    it('should return an object containing share details of player',()=>{
+      let game = new Game(2);
+      let aditi = new Player(0,'aditi');
+      let harvar = new Player(1,'harvar');
+      let expected = {phoenix:2,hydra:5};
+      game.addPlayer(aditi);
+      game.addPlayer(harvar);
+      aditi.addShares('phoenix',5);
+      harvar.addShares('hydra',2);
+      assert.deepEqual(game.getPlayerSharesDetails(0),{phoenix:5});
+      assert.deepEqual(game.getPlayerSharesDetails(1),{hydra:2});
     });
   });
   describe('isInPlayMode',()=>{
@@ -248,6 +260,19 @@ describe('game test', () => {
       game.addPlayer(player1);
       game.addPlayer(player2);
       assert.deepEqual(game.getAllPlayerNames(),['veera','pragya']);
+    });
+  });
+  describe('addSharesToPlayer',()=>{
+    it('should add shares to player by given id',()=>{
+      let game = new Game(2);
+      let player1=new Player(0,'aditi');
+      let player2=new Player(1,'harvar');
+      game.addPlayer(player1);
+      game.addPlayer(player2);
+      game.addSharesToPlayer(0,'phoenix',2);
+      game.addSharesToPlayer(1,'hydra',5);
+      assert.deepEqual(game.getPlayerSharesDetails(0),{phoenix:2});
+      assert.deepEqual(game.getPlayerSharesDetails(1),{hydra:5});
     });
   });
 });
