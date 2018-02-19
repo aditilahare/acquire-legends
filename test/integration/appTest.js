@@ -264,4 +264,40 @@ describe('App Test', () => {
         .end(done);
     });
   });
+  describe('/turnDetails', function() {
+    it('should give turn details', function(done) {
+      let game = new Game(3);
+      game.addPlayer(new Player(0,'veera'));
+      game.addPlayer(new Player(1,'gupta'));
+      game.addPlayer(new Player(2,'raj'));
+      game.start();
+      app.game=game;
+
+      request(app)
+        .get('/turnDetails')
+        .expect(200)
+        .expect(/"currentPlayer":"veera"/i)
+        .end(done);
+    });
+  });
+  describe('/getIndependentTiles', function() {
+    it('can give independent tiles in market', function(done) {
+      app.game = new Game(1);
+      let player = {
+        name: 'pragya',
+        id: 0,
+        getTile: function() {
+          return '1A';
+        }
+      };
+      app.game.addPlayer(player);
+      app.game.placeTile(0,'1A');
+      request(app)
+        .get('/getIndependentTiles')
+        .set('Cookie', 'playerId=0')
+        .expect(200)
+        .expect(/1A/)
+        .end(done);
+    });
+  });
 });

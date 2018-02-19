@@ -24,7 +24,8 @@ class Player {
     return {
       tiles:this.getTiles(),
       availableMoney : this.getAvailableCash(),
-      name:this.name
+      name:this.name,
+      id:this.id
     };
   }
   getTile(tile){

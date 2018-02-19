@@ -187,3 +187,8 @@ td{
  .independent{
    background-color: #2d2016;
  }
+
+ .current-player{
+   background-color: brown;
+   color: white
+ }
