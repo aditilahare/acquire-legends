@@ -140,7 +140,6 @@ describe('game test',function(){
       let hotelsData = [{
         name: 'zeta',
         color: 'yellow',
-        shares:25
       }];
       let zetaHotel = {
         name: 'zeta',
@@ -200,9 +199,12 @@ describe('game test',function(){
        let hotelsData = [{
          name: 'zeta',
          color: 'yellow',
-         shares:25
        }];
-       let expected = [new Hotel('zeta','yellow')];
+       let expected = [{
+          name: 'zeta',
+          color: 'yellow',
+          shares:25
+        }];
        game.createHotels(hotelsData);
        assert.deepEqual(game.getAllHotelsDetails(),expected);
      });

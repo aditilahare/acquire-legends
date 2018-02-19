@@ -1,14 +1,12 @@
 class Hotel {
-  constructor(name, color,shares=25) {
+  constructor(name, color) {
     this.name = name;
     this.color = color;
-    this.shares=shares;
   }
   getDetails() {
     let hotelDetails = {
       name: this.name,
       color: this.color,
-      shares:this.shares
     };
     return hotelDetails;
   }
