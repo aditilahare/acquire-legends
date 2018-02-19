@@ -38,7 +38,8 @@ const generateTiles = function (tiles){
 };
 
 const generateTilesAsButton = function(tiles,tile){
-  tiles+=`<button class='tile' value=${tile} ondblclick="placeTile(event)">\
+  tiles+=`<button class='tile' value=${tile}\
+   ondblclick="placeTile(this.value)">\
  <span>${tile}</span></button>`;
   return tiles;
 };
@@ -102,15 +103,7 @@ const displayHotelDetails = function () {
   displayHotelNames(allHotelsDetails);
 };
 
-// const enablePlacingTiles = function () {
-//   let tiles = document.getElementsByClassName('tile');
-//   tile.forEach(function(tile){
-//     tile.onclick = tileOnClickAction;
-//   })
-// }
-
-const placeTile = function(event){
-  let tile=event.target.value;
+const placeTile = function(tile){
   sendAjaxRequest('POST','/placeTile',`tile=${tile}`,getIndependentTiles);
   return;
 };
