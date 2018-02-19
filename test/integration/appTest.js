@@ -194,7 +194,7 @@ describe('App Test', () => {
       request(app)
         .get('/hotelDetails')
         .expect(200)
-        .expect(`[{"name":"zeta","color":"yellow","totalShares":25,"occupiedTiles":[]}]`)
+        .expect(`[{"name":"zeta","color":"yellow","occupiedTiles":[],"shares":25}]`)
         .end(done);
     });
   });

@@ -7,8 +7,7 @@ describe('Hotel test', function(){
       let zeta=new Hotel('zeta','yellow');
       let expected={
         name:'zeta',
-        color:'yellow',
-        totalShares:25
+        color:'yellow'
       };
       assert.deepEqual(zeta.getDetails(),expected);
     });
@@ -16,8 +15,7 @@ describe('Hotel test', function(){
       let zeta=new Hotel('zeta','yellow');
       let expected={
         name:'zeta',
-        color:'yellow',
-        totalShares:100
+        color:'yellow'
       };
       assert.deepEqual(zeta.getDetails(),expected);
     });
