@@ -12,7 +12,7 @@ const HOTEL_DATA=[
   {name: 'Fusion',color: 'green'},
   {name: 'America',color: 'rgb(23, 60, 190)'},
   {name: 'Phoenix',color: 'violet'},
-  {name: 'Quantum',color: 'cyan'}
+  {name: 'Quantum',color: 'rgb(83, 161, 149)'}
 ];
 class Game {
   constructor(maxPlayers,bank=new Bank(INITIAL_MONEY)) {

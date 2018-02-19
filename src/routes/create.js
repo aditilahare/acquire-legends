@@ -15,6 +15,6 @@ game is currently running');
 };
 
 const isNumberBetween = function (number,min,max) {
-  return min >= number && number <= max;
+  return number >= min && number <= max;
 };
 module.exports = createGame;

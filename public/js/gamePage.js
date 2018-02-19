@@ -73,7 +73,7 @@ const displayHotelNames = function(allHotelsDetails){
     style="background-color:${cur.color}">${cur.name}</div><br>`;
     return prev;
   },'');
-  document.getElementById('hotels-place').innerHTML=hotelsHtml;
+  document.getElementById('hotels-place').innerHTML +=hotelsHtml;
 };
 
 const getAllHotelsDetails = function () {
