@@ -204,7 +204,11 @@ describe('game test',function(){
          color: 'yellow',
          totalShares:25
        }];
-       let expected = [new Hotel('zeta','yellow')];
+       let expected = [{
+          name: 'zeta',
+          color: 'yellow',
+          shares:25
+        }];
        game.createHotels(hotelsData);
        assert.deepEqual(game.getAllHotelsDetails(),expected);
      });

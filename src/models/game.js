@@ -3,9 +3,10 @@ const Bank = require('./bank');
 const Hotel = require('./hotel');
 const Market = require('./market');
 const Turn = require('./turn');
-
+const INITIAL_SHARES = 25;
 const INITIAL_MONEY = 100000;
 const STARTING_BALANCE = 6000;
+
 const HOTEL_DATA=[
   {name: 'Sackson',color: 'rgb(205, 61, 65)'},
   {name: 'Zeta',color: 'rgb(236, 222, 34)'},
@@ -91,8 +92,11 @@ class Game {
   }
   createHotels(hotelsData){
     let self = this;
-    hotelsData.forEach(function (hotel) {
-      self.hotels.push(new Hotel(hotel.name,hotel.color));
+    hotelsData.forEach(function (hotelInfo) {
+      let hotel = new Hotel(hotelInfo.name,hotelInfo.color);
+      self.bank.createSharesOfHotel(hotel.name,INITIAL_SHARES);
+      hotel.shares = self.bank.getAvalibleSharesOf(hotel.name);
+      self.hotels.push(hotel);
     });
   }
   getHotel(hotelName){
