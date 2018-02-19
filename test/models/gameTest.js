@@ -263,4 +263,15 @@ describe('game test',function(){
       assert.deepEqual(actual,expected);
     });
   });
+  describe('getCurrentPlayer',()=>{
+    it('should give current player details',()=>{
+      let game = new Game(1);
+      let player1=new Player(0,'pragya');
+      game.addPlayer(player1);
+      game.addPlayer(new Player(1,'veera'));
+      game.start();
+      let actual=game.getCurrentPlayer();
+      assert.equal(actual.id,0)
+    });
+  });
 });

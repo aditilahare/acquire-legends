@@ -177,3 +177,8 @@ td{
   #grid{
     border: 3px solid black;
   }
+
+.current-player{
+  background-color: brown;
+  color: white
+}

@@ -2,6 +2,7 @@ const TileBox = require('./tileBox');
 const Bank = require('./bank');
 const Hotel = require('./hotel');
 const Market = require('./market');
+const Turn = require('./turn');
 
 const INITIAL_MONEY = 100000;
 const STARTING_BALANCE = 6000;
@@ -81,6 +82,7 @@ class Game {
     this.distributeInitialTiles();
     this.distributeInitialMoney(STARTING_BALANCE);
     this.createHotels(HOTEL_DATA);
+    this.turn=new Turn(this.getPlayersOrder());
     this.MODE='play';
   }
   createHotels(hotelsData){
@@ -116,6 +118,20 @@ class Game {
   }
   giveIndependentTiles(){
     return this.market.giveIndependentTiles();
+  }
+  getPlayersOrder(){
+    return this.players.map((player)=>{
+      return player.id;
+    });
+  }
+  getAllPlayerDetails(){
+    return this.players.map((player)=>{
+      return player.getDetails();
+    });
+  }
+  getCurrentPlayer(){
+    let currentPlayerID=this.turn.getCurrentPlayerID();
+    return this.getPlayerDetails(currentPlayerID);
   }
 }
 module.exports=Game;

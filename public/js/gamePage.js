@@ -1,4 +1,15 @@
 
+let getElement = function(selector){
+  return document.querySelector(selector);
+};
+
+let listToHTML = function(list,className,elementName='p') {
+  let html=list.map((item)=>{
+    return `<${elementName} class=${className} > ${item} </${elementName}>`;
+  }).join('');
+  return html;
+};
+
 
 /*Creating Table*/
 
@@ -86,8 +97,21 @@ const displayHotelDetails = function () {
   displayHotelNames(allHotelsDetails);
 };
 
+const displayTurnDetails = function() {
+  let turnDetails = JSON.parse(this.responseText);
+  let currentPlayer=turnDetails.currentPlayer;
+  getElement('#current-player').innerHTML=currentPlayer;
+  let html=listToHTML(turnDetails.otherPlayers,'other-player','div');
+  getElement('#other-players').innerHTML=html;
+};
+
+const getTurnDetails = function(){
+  sendAjaxRequest('GET','/turnDetails','',displayTurnDetails);
+};
+
 window.onload = function(){
   generateTable();
   getPlayerDetails();
   getAllHotelsDetails();
+  setInterval(getTurnDetails,500);
 };

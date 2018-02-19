@@ -264,4 +264,20 @@ describe('App Test', () => {
         .end(done);
     });
   });
+  describe('/turnDetails', function() {
+    it('should give turn details', function(done) {
+      let game = new Game(3);
+      game.addPlayer(new Player(0,'veera'));
+      game.addPlayer(new Player(1,'gupta'));
+      game.addPlayer(new Player(2,'raj'));
+      game.start();
+      app.game=game;
+
+      request(app)
+        .get('/turnDetails')
+        .expect(200)
+        .expect(/"currentPlayer":"veera"/i)
+        .end(done);
+    });
+  });
 });
