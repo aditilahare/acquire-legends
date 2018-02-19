@@ -4,6 +4,7 @@ class Player {
     this.id = playerId;
     this.tiles=[];
     this.availableMoney = 0;
+    this.shares= {};
   }
   addTile(tile){
     this.tiles.push(tile);
@@ -27,6 +28,16 @@ class Player {
       name:this.name,
       id:this.id
     };
+  }
+  addShares(hotelName,noOfShares){
+    if(this.shares[hotelName]){
+      this.shares[hotelName]+=noOfShares;
+    } else{
+      this.shares[hotelName]=noOfShares;
+    }
+  }
+  getShareDetails(){
+    return this.shares;
   }
   getTile(tile){
     let index = this.tiles.indexOf(tile);
