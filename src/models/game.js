@@ -27,6 +27,10 @@ class Game {
   }
   addPlayer(player){
     if(this.isVacancy()){
+      HOTEL_DATA.forEach(function(hotel){
+        let hotelName = hotel.name;
+        player.addShares(hotelName,0);
+      });
       this.players.push(player);
       return true;
     }

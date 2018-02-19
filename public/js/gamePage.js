@@ -60,6 +60,32 @@ const getPlayerDetails = function () {
   return;
 };
 
+const processShareDetails = function(sharesDiv,sharesDetails){
+  let hotelsNames = Object.keys(sharesDetails);
+  let html = `<h2>Shares</h2>`;
+  hotelsNames.forEach(function(hotelName){
+    html += `<div>${hotelName}=${sharesDetails[hotelName]}</div>`;
+  });
+  return html;
+};
+
+const displaySharesDetails = function(sharesDetails){
+  let sharesDiv = document.getElementById('playerShares');
+  sharesDiv.innerHTML = processShareDetails(sharesDiv,sharesDetails);
+  return;
+};
+
+const updatePlayerData = function (){
+  let playerDetails = JSON.parse(this.responseText);
+  displaySharesDetails(playerDetails);
+  return;
+};
+
+const getPlayerData = function (){
+  sendAjaxRequest('GET','/playerSharesDetails','',updatePlayerData);
+  return;
+};
+
 const displayPlayerDetails = function () {
   let playerDetails = JSON.parse(this.responseText);
   displayTiles(playerDetails.tiles);
@@ -90,4 +116,5 @@ window.onload = function(){
   generateTable();
   getPlayerDetails();
   getAllHotelsDetails();
+  setInterval(getPlayerData,1000);
 };

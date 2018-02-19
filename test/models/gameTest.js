@@ -5,7 +5,7 @@ const Player = require('../../src/models/player.js');
 const Hotel = require('../../src/models/hotel.js');
 
 
-describe('game test', () => {
+describe('game test', function(){
   describe('getPlayerCount', () => {
     it('should return the number of players', () => {
       let game = new Game(3);
@@ -16,10 +16,7 @@ describe('game test', () => {
   describe('addPlayer', () => {
     it('should add given player to game when maximum players are not there', () => {
       let game = new Game(3);
-      let player = {
-        name: 'pragya',
-        id: 0
-      };
+      let player = new Player(0,'pragya');
       let actual = game.addPlayer(player);
       assert.isOk(actual);
     });
@@ -57,14 +54,8 @@ describe('game test', () => {
   describe('getPlayerNameOf', () => {
     it('should return player name of given id', () => {
       let game = new Game(3);
-      let player1 = {
-        name: 'pragya',
-        id: 0
-      };
-      let player2 = {
-        name: 'gupta',
-        id: 1
-      };
+      let player1 = new Player(0,'pragya');
+      let player2 = new Player(1,'gupta');
       game.addPlayer(player1);
       game.addPlayer(player2);
       assert.equal('pragya', game.getPlayerNameOf(0));
@@ -87,14 +78,8 @@ describe('game test', () => {
   describe('findPlayerBy', () => {
     it('should return player of given id', () => {
       let game = new Game(3);
-      let player1 = {
-        name: 'pragya',
-        id: 0
-      };
-      let player2 = {
-        name: 'gupta',
-        id: 1
-      };
+      let player1 = new Player(0,'pragya');
+      let player2 = new Player(1,'gupta');
       game.addPlayer(player1);
       game.addPlayer(player2);
       assert.deepEqual(player1, game.findPlayerBy(0));
@@ -105,17 +90,7 @@ describe('game test', () => {
   describe('disrtibuteMoneyToPlayer', () => {
     it('should give money to player of given id', () => {
       let game = new Game(3);
-      let player1 = {
-        name: 'pragya',
-        id: 0,
-        availableMoney: 0,
-        getAvailableCash: function() {
-          return this.availableMoney;
-        },
-        addMoney: function(money) {
-          this.availableMoney += money;
-        }
-      };
+      let player1 = new Player(0,'pragya');
       game.addPlayer(player1);
       assert.equal(game.getAvailableCashOf(0), 0);
       game.disrtibuteMoneyToPlayer(0, 4000);
@@ -125,28 +100,8 @@ describe('game test', () => {
   describe('distributeInitialMoney', () => {
     it('should disribute money to all players', () => {
       let game = new Game(3);
-      let player1 = {
-        name: 'pragya',
-        id: 0,
-        availableMoney: 0,
-        getAvailableCash: function() {
-          return this.availableMoney;
-        },
-        addMoney: function(money) {
-          this.availableMoney += money;
-        }
-      };
-      let player2 = {
-        name: 'sree',
-        id: 1,
-        availableMoney: 0,
-        getAvailableCash: function() {
-          return this.availableMoney;
-        },
-        addMoney: function(money) {
-          this.availableMoney += money;
-        }
-      };
+      let player1 = new Player(0,'pragya');
+      let player2 = new Player(1,'sree');
       game.addPlayer(player1);
       game.addPlayer(player2);
       assert.equal(game.getAvailableCashOf(0), 0);
@@ -211,10 +166,10 @@ describe('game test', () => {
       let expected = {phoenix:2,hydra:5};
       game.addPlayer(aditi);
       game.addPlayer(harvar);
-      aditi.addShares('phoenix',5);
-      harvar.addShares('hydra',2);
-      assert.deepEqual(game.getPlayerSharesDetails(0),{phoenix:5});
-      assert.deepEqual(game.getPlayerSharesDetails(1),{hydra:2});
+      aditi.addShares('Phoenix',5);
+      harvar.addShares('Hydra',2);
+      assert.include(game.getPlayerSharesDetails(0),{Phoenix:5});
+      assert.include(game.getPlayerSharesDetails(1),{Hydra:2});
     });
   });
   describe('isInPlayMode',()=>{
@@ -269,10 +224,10 @@ describe('game test', () => {
       let player2=new Player(1,'harvar');
       game.addPlayer(player1);
       game.addPlayer(player2);
-      game.addSharesToPlayer(0,'phoenix',2);
-      game.addSharesToPlayer(1,'hydra',5);
-      assert.deepEqual(game.getPlayerSharesDetails(0),{phoenix:2});
-      assert.deepEqual(game.getPlayerSharesDetails(1),{hydra:5});
+      game.addSharesToPlayer(0,'Phoenix',2);
+      game.addSharesToPlayer(1,'Hydra',5);
+      assert.include(game.getPlayerSharesDetails(0),{Phoenix:2});
+      assert.include(game.getPlayerSharesDetails(1),{Hydra:5});
     });
   });
 });

@@ -32,8 +32,8 @@ class Player {
     if(this.shares[hotelName]){
       this.shares[hotelName]+=noOfShares;
     } else{
-    this.shares[hotelName]=noOfShares;
-  }
+      this.shares[hotelName]=noOfShares;
+    }
   }
   getShareDetails(){
     return this.shares;

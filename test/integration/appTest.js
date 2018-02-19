@@ -23,7 +23,7 @@ describe('App Test',()=>{
     });
     it('should not allow players to join if  maximum players joined',(done)=>{
       game=new Game(1);
-      game.addPlayer({name:'veera',id:1});
+      game.addPlayer(new Player(1,'veera'));
       app.game=game;
       request(app)
         .post('/join')
@@ -73,10 +73,7 @@ describe('App Test',()=>{
     it('should respond with true if all players\
        have not joined', function(done){
       app.game=new Game(2);
-      let player={
-        name:'pragya',
-        ID:0
-      };
+      let player=new Player(0,'veera');
       app.game.addPlayer(player);
       app.game.addPlayer(player);
       request(app)
@@ -94,10 +91,7 @@ describe('App Test',()=>{
       fs.addFile(fileName,content);
       app.fs=fs;
       app.game=new Game(1);
-      let player={
-        name:'pragya',
-        ID:0
-      };
+      let player=new Player(0,'pragya');
       app.game.addPlayer(player);
       request(app)
         .get('/wait')
@@ -121,7 +115,7 @@ describe('App Test',()=>{
     it('should redirect to /wait when already \
     registered player comes to / ', function(done){
       app.game=new Game(2);
-      app.game.addPlayer({name:'veera',id:0});
+      app.game.addPlayer(new Player(0,'veera'));
       request(app)
         .get('/')
         .set('Cookie','playerId=0')
@@ -218,10 +212,7 @@ describe('App Test',()=>{
   describe('/getAllPlayerNames', function(){
     it('can give all player names who have joined the game', function(done){
       app.game=new Game(1);
-      let player={
-        name:'pragya',
-        ID:0
-      };
+      let player=new Player(0,'pragya');
       app.game.addPlayer(player);
       request(app)
         .get('/getAllPlayerNames')
