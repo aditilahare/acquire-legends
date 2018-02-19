@@ -3,9 +3,9 @@ const assert = require('chai').assert;
 const Game = require('../../src/models/game.js');
 const Player = require('../../src/models/player.js');
 const Hotel = require('../../src/models/hotel.js');
+const Market = require('../../src/models/market.js');
 
-
-describe('game test', function(){
+describe('game test',function(){
   describe('getPlayerCount', () => {
     it('should return the number of players', () => {
       let game = new Game(3);
@@ -21,7 +21,7 @@ describe('game test', function(){
       assert.isOk(actual);
     });
     it('should not  add given player to game when maximum \
-     players reached', () => {
+    players reached', () => {
       let game = new Game(0);
       let player = {
         name: 'pragya',
@@ -228,6 +228,30 @@ describe('game test', function(){
       game.addSharesToPlayer(1,'Hydra',5);
       assert.include(game.getPlayerSharesDetails(0),{Phoenix:2});
       assert.include(game.getPlayerSharesDetails(1),{Hydra:5});
+      describe('placeTile',()=>{
+        it('can place a independent Tile for the player whose id is given',()=>{
+          let game = new Game(1);
+          let player1=new Player(1,'pragya');
+          let market = new Market();
+          player1.addTile('2A');
+          game.addPlayer(player1);
+          game.placeTile(1,'2A');
+          let actual = game.giveIndependentTiles();
+          let expected = ['2A'];
+          assert.deepEqual(actual,expected);
+        });
+      });
+      describe('getCurrentPlayer',()=>{
+        it('should give current player details',()=>{
+          let game = new Game(1);
+          let player1=new Player(0,'pragya');
+          game.addPlayer(player1);
+          game.addPlayer(new Player(1,'veera'));
+          game.start();
+          let actual=game.getCurrentPlayer();
+          assert.equal(actual.id,0)
+        });
+      });
     });
   });
 });

@@ -1,4 +1,15 @@
 
+let getElement = function(selector){
+  return document.querySelector(selector);
+};
+
+let listToHTML = function(list,className,elementName='p') {
+  let html=list.map((item)=>{
+    return `<${elementName} class=${className} > ${item} </${elementName}>`;
+  }).join('');
+  return html;
+};
+
 
 /*Creating Table*/
 
@@ -8,7 +19,7 @@ const tableGenerator = function(rows,columns){
     let cols = '';
     for (let column = 1; column <= columns; column++) {
       cols +=`<td id='${column}${String.fromCharCode(64+row)}'>`+
-      `${column}${String.fromCharCode(64+row)}</td>`;
+     `${column}${String.fromCharCode(64+row)}</td>`;
     }
     grid+=`<tr>${cols}</tr>`;
   }
@@ -27,7 +38,8 @@ const generateTiles = function (tiles){
 };
 
 const generateTilesAsButton = function(tiles,tile){
-  tiles+=`<button class='tile' value=${tile}><span>${tile}</span></button>`;
+  tiles+=`<button class='tile' value=${tile} ondblclick="placeTile(event)">\
+ <span>${tile}</span></button>`;
   return tiles;
 };
 
@@ -56,6 +68,7 @@ const displayPlayerName = function (name) {
 
 /*Get player details*/
 const getPlayerDetails = function () {
+  console.log('hi');
   sendAjaxRequest('GET','/playerDetails','',displayPlayerDetails);
   return;
 };
@@ -96,14 +109,17 @@ const displayPlayerDetails = function () {
 const displayHotelNames = function(allHotelsDetails){
   let hotelsHtml=allHotelsDetails.reduce((prev,cur)=>{
     prev +=`<div class="fakeContent" id="${cur.name}" \
-    style="background-color:${cur.color}">${cur.name}</div><br>`;
+   style="background-color:${cur.color}"><div class="hotels">${cur.name}</div>\
+   <div class="hotels">${cur.shares}</div></div><br>`;
     return prev;
   },'');
-  document.getElementById('hotels-place').innerHTML +=hotelsHtml;
+  document.getElementById('hotels-place').innerHTML = hotelsHtml;
 };
 
 const getAllHotelsDetails = function () {
-  sendAjaxRequest('GET','/hotelDetails','',displayHotelDetails);
+  setInterval(()=>{
+    sendAjaxRequest('GET','/hotelDetails','',displayHotelDetails);
+  },1000);
   return;
 };
 
@@ -112,9 +128,57 @@ const displayHotelDetails = function () {
   displayHotelNames(allHotelsDetails);
 };
 
-window.onload = function(){
+// const enablePlacingTiles = function () {
+//   let tiles = document.getElementsByClassName('tile');
+//   tile.forEach(function(tile){
+//     tile.onclick = tileOnClickAction;
+//   })
+// }
+
+const placeTile = function(event){
+  let tile=event.target.value;
+  sendAjaxRequest('POST','/placeTile',`tile=${tile}`,getIndependentTiles);
+  return;
+};
+
+const getIndependentTiles = function(){
+  sendAjaxRequest('GET','/getIndependentTiles','',displayIndependentTiles);
+  return;
+};
+const displayIndependentTiles = function() {
+  console.log(this.responseText);
+  let independentTiles = JSON.parse(this.responseText);
+  independentTiles.forEach(assignTileIndependentClass);
+  return;
+};
+
+const displayTurnDetails = function() {
+  let turnDetails = JSON.parse(this.responseText);
+  let currentPlayer=turnDetails.currentPlayer;
+  getElement('#current-player').innerHTML=currentPlayer;
+  let html=listToHTML(turnDetails.otherPlayers,'other-player','div');
+  getElement('#other-players').innerHTML=html;
+};
+
+const getTurnDetails = function(){
+  sendAjaxRequest('GET','/turnDetails','',displayTurnDetails);
+};
+
+
+const assignTileIndependentClass = function(tile){
+  let tileOnMarket = document.getElementById(tile);
+  tileOnMarket.classList.add('independent');
+  return;
+};
+
+const actionsPerformed = function () {
   generateTable();
-  getPlayerDetails();
+  setInterval(getPlayerDetails,1000);
   getAllHotelsDetails();
   setInterval(getPlayerData,1000);
+  setInterval(getIndependentTiles,1000);
+  setInterval(getTurnDetails,500);
+
 };
+
+window.onload = actionsPerformed;

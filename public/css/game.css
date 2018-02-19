@@ -1,179 +1,194 @@
-* {
-  box-sizing: border-box;
+*{
+ box-sizing: border-box;
 }
 /*CSS for headng*/
 .heading{
-  font-size: 50px;
+ font-size: 50px;
 }
 /* Css for shares */
 .shares {
-  float: left;
-  width: 57.9%;
-  border: 1px solid black;
-  height: inherit;
+ float: left;
+ width: 57.9%;
+ border: 1px solid black;
+ height: inherit;
 }
 /* Css for cash  */
 .cash {
-  padding-top: 10px;
-  float: right;
-  width: 10%;
-  border: 1px solid black;
-  height: inherit;
+ padding-top: 10px;
+ float: right;
+ width: 10%;
+ border: 1px solid black;
+ height: inherit;
 }
 /* Css for tiles  */
 .tiles {
-  float: right;
-  width: 30%;
-  border: 1px solid black;
-  height: inherit;
+ float: right;
+ width: 30%;
+ border: 1px solid black;
+ height: inherit;
 }
 
 /* Add a gray background color with some padding */
 
 body {
-  font-family: 'Montserrat', sans-serif;;
-  padding: 20px;
-  background: #f1f1f1;
+ font-family: 'Montserrat', sans-serif;;
+ padding: 20px;
+ background: #f1f1f1;
 }
 
 /* Header/Blog Title */
 
 .header {
-  padding: 10px;
-  font-size: 10px;
-  text-align: center;
-  background: #ceb19c;
+ padding: 10px;
+ font-size: 10px;
+ text-align: center;
+ background: #ceb19c;
 }
 
 /* Create two unequal columns that floats next to each other */
 
 /* Left column */
 td{
-  background: #6f4e37;
-  color: #FFC7A6;
-  text-align: center;
-  height: 57px;
-  width: 57px;
-  border: 1px solid black;
+ background: #6f4e37;
+ color: #FFC7A6;
+ text-align: center;
+ height: 57px;
+ width: 57px;
+ border: 1px solid black;
 }
 
 .centercolumn {
-  float: left;
-  width: 55%;
-  height: 55%;
-  padding-left: 20px;
+ float: left;
+ width: 55%;
+ height: 55%;
+ padding-left: 20px;
 }
 
 /* left column */
 
 #hotel-heading{
-  color: black;
+ color: black;
 }
 
 .leftcolumn {
-  color: white;
-  float: left;
-  width: 20%;
-  padding-left: 0px;
+ color: white;
+ float: left;
+ width: 20%;
+ padding-left: 0px;
 }
 
 /* Right column */
 
 .rightcolumn {
-  float: left;
-  width: 25%;
-  padding-left: 20px;
+ float: left;
+ width: 25%;
+ padding-left: 20px;
 }
 
 /* Fake content */
 
+.hotels{
+ height: 100%;
+ width:35%;
+ float: left;
+}
+
 .fakeContent {
-  background-color: #e7d9ce;
-  width: 100%;
-  height: 50px;
-  padding: 10px;
+ background-color: #e7d9ce;
+ width: 100%;
+ height: 50px;
+ padding: 10px;
 }
 
 /* Add a card effect for articles */
 
 .region {
-  background-color: #ceb19c;
-  padding: 20px;
-  margin-top: 20px;
+ background-color: #ceb19c;
+ padding: 20px;
+ margin-top: 20px;
 }
 
 /* Clear floats after the columns */
 
 .row:after {
-  content: "";
-  display: table;
-  clear: both;
+ content: "";
+ display: table;
+ clear: both;
 }
 
 /* Footer */
 
 .footer {
-  height: 100px;
-  background: #ceb19c;
-  margin-top: 20px;
-  border: 1px solid red;
+ height: 100px;
+ background: #ceb19c;
+ margin-top: 20px;
+ border: 1px solid red;
 }
 
 /* Responsive layout - when the screen is less than 800px wide, make the two columns stack on top of each other instead of next to each other */
 
 @media (max-width: 800px) {
-  .leftcolumn,
-  .center,
-  .rightcolumn {
-    width: 100%;
-    padding: 0;
-  }
+ .leftcolumn,
+ .center,
+ .rightcolumn {
+   width: 100%;
+   padding: 0;
+ }
 }
 
 #playerName{
-  float: right;
-  font-size: 22px;
+ float: right;
+ font-size: 22px;
 }
 
 /*CSS for tiles*/
 .tile{
-  color: white;
-  border: 2px solid white;
-  background-color: #2d2016;
-  position: relative;
-  width: 16.65%;
-  height:99%;
+ color: white;
+ border: 2px solid white;
+ background-color: #2d2016;
+ position: relative;
+ width: 16.65%;
+ height:99%;
 }
 .tile:hover {
-    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
-  }
+   box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+ }
 
-  .tile span {
-    cursor: pointer;
-    display: inline-block;
-    position: relative;
-    transition: 0.5s;
-  }
+ .tile span {
+   cursor: pointer;
+   display: inline-block;
+   position: relative;
+   transition: 0.5s;
+ }
 
-  .tile span:after {
-    content: '\00bb';
-    position: absolute;
-    opacity: 0;
-    top: 0;
-    right: -20px;
-    transition: 0.5s;
-  }
+ .tile span:after {
+   content: '\00bb';
+   position: absolute;
+   opacity: 0;
+   top: 0;
+   right: -20px;
+   transition: 0.5s;
+ }
 
-  .tile:hover span {
-    padding-right: 25px;
-    font-size: 15px;
-  }
+ .tile:hover span {
+   padding-right: 25px;
+   font-size: 15px;
+ }
 
-  .tile:hover span:after {
-    opacity: 1;
-    right: 0;
-  }
+ .tile:hover span:after {
+   opacity: 1;
+   right: 0;
+ }
 
-  #grid{
-    border: 3px solid black;
-  }
+ #grid{
+   border: 3px solid black;
+ }
+
+ .independent{
+   background-color: #2d2016;
+ }
+
+ .current-player{
+   background-color: brown;
+   color: white
+ }

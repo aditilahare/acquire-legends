@@ -25,7 +25,8 @@ class Player {
     return {
       tiles:this.getTiles(),
       availableMoney : this.getAvailableCash(),
-      name:this.name
+      name:this.name,
+      id:this.id
     };
   }
   addShares(hotelName,noOfShares){
@@ -37,6 +38,10 @@ class Player {
   }
   getShareDetails(){
     return this.shares;
+  }
+  getTile(tile){
+    let index = this.tiles.indexOf(tile);
+    return this.tiles.splice(index,1)[0];
   }
 }
 

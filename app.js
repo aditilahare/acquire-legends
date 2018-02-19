@@ -12,7 +12,9 @@ const playerSharesDetails = require('./src/routes/playerSharesDetails');
 const hotelDetails = require('./src/routes/hotelDetails');
 const getAllPlayerNames = require('./src/routes/getAllPlayerNames');
 const isGameExisted = require('./src/routes/isGameExisted');
-
+const placeTile = require('./src/routes/placeTile');
+const giveIndependentTiles = require('./src/routes/giveIndependentTiles');
+const getTurnDetails = require('./src/routes/getTurnDetails');
 const verifyGameReq = function(game,id){
   return game && game.isValidPlayer(id) && !game.isInPlayMode();
 };
@@ -62,8 +64,11 @@ app.get('/haveAllPlayersJoined',haveAllPlayersJoined);
 app.get('/getAllPlayerNames',getAllPlayerNames);
 app.post('/join',joinGame);
 app.post('/create',createGame);
+app.post('/placeTile',placeTile);
+app.get('/getIndependentTiles',giveIndependentTiles);
 app.get('/playerDetails',playerDetails);
 app.get('/playerSharesDetails',playerSharesDetails);
 app.get('/hotelDetails',hotelDetails);
+app.get('/turnDetails',getTurnDetails);
 app.use(express.static('public'));
 module.exports=app;
