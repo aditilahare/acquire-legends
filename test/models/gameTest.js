@@ -4,6 +4,8 @@ const Game = require('../../src/models/game.js');
 const Player = require('../../src/models/player.js');
 const Hotel = require('../../src/models/hotel.js');
 const Market = require('../../src/models/market.js');
+const Turn = require('../../src/models/turn.js');
+
 
 describe('game test',function(){
   describe('getPlayerCount', () => {
@@ -242,6 +244,7 @@ describe('game test',function(){
           let market = new Market();
           player1.addTile('2A');
           game.addPlayer(player1);
+          game.start();
           game.placeTile(1,'2A');
           let actual = game.giveIndependentTiles();
           let expected = ['2A'];
@@ -274,4 +277,16 @@ describe('game test',function(){
       assert.equal(player1.tiles.length,7)
     });
   });
+  describe('isCurrentPlayer',()=>{
+    it('should return true if player is current player',()=>{
+      let game = new Game(2);
+      let player1=new Player(0,'pragya');
+      let player2=new Player(1,'aditi');
+      let turn = new Turn([0,1]);
+      game.addPlayer(player1);
+      game.start();
+      let playerId=turn.getCurrentPlayerID();
+      assert.isOk(game.isCurrentPlayer(playerId));
+    });
+  })
 });

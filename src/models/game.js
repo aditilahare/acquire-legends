@@ -6,14 +6,34 @@ const INITIAL_SHARES = 25;
 const INITIAL_MONEY = 100000;
 const STARTING_BALANCE = 6000;
 
-const HOTEL_DATA=[
-  {name: 'Sackson',color: 'rgb(205, 61, 65)'},
-  {name: 'Zeta',color: 'rgb(236, 222, 34)'},
-  {name: 'Hydra',color: 'orange'},
-  {name: 'Fusion',color: 'green'},
-  {name: 'America',color: 'rgb(23, 60, 190)'},
-  {name: 'Phoenix',color: 'violet'},
-  {name: 'Quantum',color: 'rgb(83, 161, 149)'}
+const HOTEL_DATA = [{
+  name: 'Sackson',
+  color: 'rgb(205, 61, 65)'
+},
+{
+  name: 'Zeta',
+  color: 'rgb(236, 222, 34)'
+},
+{
+  name: 'Hydra',
+  color: 'orange'
+},
+{
+  name: 'Fusion',
+  color: 'green'
+},
+{
+  name: 'America',
+  color: 'rgb(23, 60, 190)'
+},
+{
+  name: 'Phoenix',
+  color: 'violet'
+},
+{
+  name: 'Quantum',
+  color: 'rgb(83, 161, 149)'
+}
 ];
 class Game {
   constructor(maxPlayers,bank=new Bank(INITIAL_MONEY)) {
@@ -24,69 +44,71 @@ class Game {
     this.bank=bank;
     this.MODE='wait';
     this.market = new Market();
+    this.status = '';
   }
-  isVacancy(){
-    return this.getPlayerCount()<this.maxPlayers;
+  isVacancy() {
+    return this.getPlayerCount() < this.maxPlayers;
   }
-  addPlayer(player){
-    if(this.isVacancy()){
-      HOTEL_DATA.forEach(function(hotel){
+  addPlayer(player) {
+    if (this.isVacancy()) {
+      HOTEL_DATA.forEach(function(hotel) {
         let hotelName = hotel.name;
-        player.addShares(hotelName,0);
+        player.addShares(hotelName, 0);
       });
       this.players.push(player);
       return true;
     }
     return false;
   }
-  getPlayerCount(){
+  getPlayerCount() {
     return this.players.length;
   }
-  haveAllPlayersJoined(){
-    return this.maxPlayers==this.getPlayerCount();
+  haveAllPlayersJoined() {
+    return this.maxPlayers == this.getPlayerCount();
   }
-  findPlayerBy(id){
-    return this.players.find(player=>{
-      return player.id==id;
+  findPlayerBy(id) {
+    return this.players.find(player => {
+      return player.id == id;
     });
   }
-  getPlayerNameOf(id){
+  getPlayerNameOf(id) {
     if (this.findPlayerBy(id)) {
       return this.findPlayerBy(id).name;
     }
     return '';
   }
-  disrtibuteMoneyToPlayer(id,money){
-    let player=this.findPlayerBy(id);
+  disrtibuteMoneyToPlayer(id, money) {
+    let player = this.findPlayerBy(id);
     player.addMoney(money);
   }
-  getAvailableCashOf(id){
-    let player=this.findPlayerBy(id);
+  getAvailableCashOf(id) {
+    let player = this.findPlayerBy(id);
     return player.getAvailableCash();
   }
-  distributeInitialMoney(initialMoney){
-    this.players.forEach(player=>{
-      this.disrtibuteMoneyToPlayer(player.id,initialMoney);
+  distributeInitialMoney(initialMoney) {
+    this.players.forEach(player => {
+      this.disrtibuteMoneyToPlayer(player.id, initialMoney);
       this.bank.reduceMoney(initialMoney);
     });
   }
-  isValidPlayer(id){
-    return this.players.some(function(player){
-      return id==player.id;
+  isValidPlayer(id) {
+    return this.players.some(function(player) {
+      return id == player.id;
     });
   }
-  distributeInitialTiles(){
-    let tileBox=this.tileBox;
-    this.players.forEach(function(player){
+  distributeInitialTiles() {
+    let tileBox = this.tileBox;
+    this.players.forEach(function(player) {
       player.addTiles(tileBox.getNTiles(6));
     });
   }
-  start(){
+  start() {
     this.distributeInitialTiles();
     this.distributeInitialMoney(STARTING_BALANCE);
     this.createHotels(HOTEL_DATA);
-    this.turn=new Turn(this.getPlayersOrder());
-    this.MODE='play';
+    this.turn = new Turn(this.getPlayersOrder());
+    this.MODE = 'play';
+    this.status = 'place tile';
   }
   createHotels(hotelsData){
     let self=this;
@@ -98,12 +120,12 @@ class Game {
   getHotel(hotelName){
     return this.market.getHotel(hotelName);
   }
-  getPlayerDetails(id){
-    let player=this.findPlayerBy(id);
+  getPlayerDetails(id) {
+    let player = this.findPlayerBy(id);
     return player.getDetails();
   }
-  isInPlayMode(){
-    return this.MODE=='play';
+  isInPlayMode() {
+    return this.MODE == 'play';
   }
   getAllHotelsDetails(){
     let hotelsData=this.market.getAllHotelsDetails();
@@ -113,51 +135,59 @@ class Game {
     });
     return hotelsData;
   }
-  getAllPlayerNames(){
-    return this.players.map((player)=>{
+  getAllPlayerNames() {
+    return this.players.map((player) => {
       return player.name;
     });
   }
-  addSharesToPlayer(id,hotelName,noOfShares){
+  addSharesToPlayer(id, hotelName, noOfShares) {
     let player = this.findPlayerBy(id);
-    player.addShares(hotelName,noOfShares);
+    player.addShares(hotelName, noOfShares);
   }
-  getPlayerSharesDetails(id){
+  getPlayerSharesDetails(id) {
     let player = this.findPlayerBy(id);
     return player.getShareDetails();
   }
-  placeTile(id,tile){
+  placeTile(id, tile) {
+    let currentPlayerId = this.turn.getCurrentPlayerID();
     let player = this.findPlayerBy(id);
-    let playerTile = player.getTile(tile);
-    let response=this.market.placeTile(playerTile);
-    if(response.status){
-      player.removeTile(tile);
+    if(this.status=='place tile'&& currentPlayerId == id){
+      let playerTile = player.getTile(tile);
+      let response=this.market.placeTile(playerTile);
+      if(response.status){
+        player.removeTile(tile);
+        this.status = 'buy shares';
+      }
+      return response;
     }
-    return response;
   }
-  giveIndependentTiles(){
+  giveIndependentTiles() {
     return this.market.giveIndependentTiles();
   }
-  getPlayersOrder(){
-    return this.players.map((player)=>{
+  getPlayersOrder() {
+    return this.players.map((player) => {
       return player.id;
     });
   }
-  getAllPlayerDetails(){
-    return this.players.map((player)=>{
+  getAllPlayerDetails() {
+    return this.players.map((player) => {
       return player.getDetails();
     });
   }
-  getCurrentPlayer(){
-    let currentPlayerID=this.turn.getCurrentPlayerID();
+  getCurrentPlayer() {
+    let currentPlayerID = this.turn.getCurrentPlayerID();
     return this.getPlayerDetails(currentPlayerID);
   }
-  changeCurrentPlayer(){
-    let tiles=this.tileBox.getNTiles(1);
-    let currentPlayerID=this.turn.getCurrentPlayerID();
-    let currentPlayer=this.findPlayerBy(currentPlayerID);
+  isCurrentPlayer(playerId){
+    return playerId == this.turn.getCurrentPlayerID();
+  }
+  changeCurrentPlayer() {
+    let tiles = this.tileBox.getNTiles(1);
+    let currentPlayerID = this.turn.getCurrentPlayerID();
+    let currentPlayer = this.findPlayerBy(currentPlayerID);
     currentPlayer.addTile(tiles[0]);
+    this.status = 'place tile';
     this.turn.updateTurn();
   }
 }
-module.exports=Game;
+module.exports = Game;

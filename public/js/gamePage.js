@@ -128,7 +128,21 @@ const getAllHotelsDetails = function () {
 const displayHotelDetails = function () {
   let allHotelsDetails = JSON.parse(this.responseText);
   displayHotelNames(allHotelsDetails);
+  updateHotelsOnBoard(allHotelsDetails);
 };
+
+const assignTilesWithRespectiveHotel = function(hotel){
+  hotel.occupiedTiles.forEach(tile=>{
+    let tileOnMarket = document.getElementById(tile);
+    tileOnMarket.classList.add(hotel.name);
+  });
+  return;
+};
+
+const updateHotelsOnBoard= function (allHotelsDetails){
+  allHotelsDetails.forEach(assignTilesWithRespectiveHotel);
+};
+
 
 const placeTile = function(tile){
   sendAjaxRequest('POST','/placeTile',`tile=${tile}`,getIndependentTiles);

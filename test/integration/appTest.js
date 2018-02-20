@@ -23,10 +23,10 @@ describe('App Test', () => {
         .expect(shouldHaveIdCookie)
         .end(done);
     });
-    it('should not allow players to join if  maximum players joined',(done)=>{
-      game=new Game(1);
-      game.addPlayer(new Player(1,'veera'));
-      app.game=game;
+    it('should not allow players to join if  maximum players joined', (done) => {
+      game = new Game(1);
+      game.addPlayer(new Player(1, 'veera'));
+      app.game = game;
       request(app)
         .post('/join')
         .send('playerName=Aditi')
@@ -73,9 +73,9 @@ describe('App Test', () => {
         .end(done);
     });
     it('should respond with true if all players\
-       have not joined', function(done){
-      app.game=new Game(2);
-      let player=new Player(0,'veera');
+       have not joined', function(done) {
+      app.game = new Game(2);
+      let player = new Player(0, 'veera');
       app.game.addPlayer(player);
       app.game.addPlayer(player);
       request(app)
@@ -90,10 +90,10 @@ describe('App Test', () => {
       let fs = new MockFs();
       let fileName = './public/waitingPage.html';
       let content = 'Waiting For Other Players To Join';
-      fs.addFile(fileName,content);
-      app.fs=fs;
-      app.game=new Game(1);
-      let player=new Player(0,'pragya');
+      fs.addFile(fileName, content);
+      app.fs = fs;
+      app.game = new Game(1);
+      let player = new Player(0, 'pragya');
       app.game.addPlayer(player);
       request(app)
         .get('/wait')
@@ -114,9 +114,9 @@ describe('App Test', () => {
     });
   });
   describe('/', function() {
-    it('should redirect to /wait when already registered player comes to  ', function(done){
-      app.game=new Game(2);
-      app.game.addPlayer(new Player(0,'veera'));
+    it('should redirect to /wait when already registered player comes to  ', function(done) {
+      app.game = new Game(2);
+      app.game.addPlayer(new Player(0, 'veera'));
       request(app)
         .get('/')
         .set('Cookie', 'playerId=0')
@@ -198,10 +198,10 @@ describe('App Test', () => {
         .end(done);
     });
   });
-  describe('/getAllPlayerNames', function(){
-    it('can give all player names who have joined the game', function(done){
-      app.game=new Game(1);
-      let player=new Player(0,'pragya');
+  describe('/getAllPlayerNames', function() {
+    it('can give all player names who have joined the game', function(done) {
+      app.game = new Game(1);
+      let player = new Player(0, 'pragya');
       app.game.addPlayer(player);
       request(app)
         .get('/getAllPlayerNames')
@@ -232,7 +232,7 @@ describe('App Test', () => {
   describe('/placeTile', function() {
     it('can place a tile on market', function(done) {
       app.game = new Game(1);
-      let player = new Player(0,'pragya');
+      let player = new Player(0, 'pragya');
       app.game.addPlayer(player);
       app.game.start();
       request(app)
@@ -246,11 +246,11 @@ describe('App Test', () => {
   describe('/turnDetails', function() {
     it('should give turn details', function(done) {
       let game = new Game(3);
-      game.addPlayer(new Player(0,'veera'));
-      game.addPlayer(new Player(1,'gupta'));
-      game.addPlayer(new Player(2,'raj'));
+      game.addPlayer(new Player(0, 'veera'));
+      game.addPlayer(new Player(1, 'gupta'));
+      game.addPlayer(new Player(2, 'raj'));
       game.start();
-      app.game=game;
+      app.game = game;
 
       request(app)
         .get('/turnDetails')
@@ -262,11 +262,11 @@ describe('App Test', () => {
     });
     it('should give turn details', function(done) {
       let game = new Game(3);
-      game.addPlayer(new Player(0,'veera'));
-      game.addPlayer(new Player(1,'gupta'));
-      game.addPlayer(new Player(2,'raj'));
+      game.addPlayer(new Player(0, 'veera'));
+      game.addPlayer(new Player(1, 'gupta'));
+      game.addPlayer(new Player(2, 'raj'));
       game.start();
-      app.game=game;
+      app.game = game;
 
       request(app)
         .get('/turnDetails')
@@ -279,10 +279,11 @@ describe('App Test', () => {
   describe('/getIndependentTiles', function() {
     it('can give independent tiles in market', function(done) {
       app.game = new Game(1);
-      let player = new Player(0,'pragya');
+      let player = new Player(0, 'pragya');
       player.tiles.push('1A')
       app.game.addPlayer(player);
-      app.game.placeTile(0,'1A');
+      app.game.start();
+      app.game.placeTile(0, '1A');
       request(app)
         .get('/getIndependentTiles')
         .set('Cookie', 'playerId=0')
@@ -294,16 +295,30 @@ describe('App Test', () => {
   describe('/changeTurn', function() {
     it('change turn to next player', function(done) {
       let game = new Game(3);
-      game.addPlayer(new Player(0,'veera'));
-      game.addPlayer(new Player(1,'gupta'));
-      game.addPlayer(new Player(2,'raj'));
+      game.addPlayer(new Player(0, 'veera'));
+      game.addPlayer(new Player(1, 'gupta'));
+      game.addPlayer(new Player(2, 'raj'));
       game.start();
-      app.game=game;
+      app.game = game;
 
       request(app)
         .get('/changeTurn')
         .expect(200)
         .end(done);
+    });
   });
-});
+  describe('/placeTile', function() {
+    it('should restrict invalid player to place tile', function(done) {
+      let game = new Game(3);
+      game.addPlayer(new Player(0, 'veera'));
+      game.addPlayer(new Player(1, 'gupta'));
+      game.start();
+      app.game = game;
+      request(app)
+        .post('/placeTile')
+        .set('Cookie', 'playerId=3')
+        .expect(401)
+        .end(done);
+    });
+  });
 });

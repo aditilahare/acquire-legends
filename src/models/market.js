@@ -61,10 +61,10 @@ class Market{
       response.tiles.push(tile);
       //response.availbleHotels=this.getInactiveHotels();
       response.status="starting hotel";
-      let zeta = this.getHotel('Zeta');
-      zeta. status=true;
+      let hotel = this.getInactiveHotels()[0];
+      hotel.status=true;
       response.tiles.forEach((tile)=>{
-        zeta.occupyTile(tile);
+        hotel.occupyTile(tile);
       });
     }
     this.occupiedTiles.push(tile);
