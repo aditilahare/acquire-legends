@@ -176,28 +176,6 @@ describe('App Test', () => {
         .end(done);
     });
   });
-  describe('/hotelDetails', function() {
-    it('should give empty data of all hotels', function(done) {
-      app.game = new Game(1);
-      request(app)
-        .get('/hotelDetails')
-        .expect(200)
-        .expect('[]')
-        .end(done);
-    });
-    it('should give details of all hotels', function(done) {
-      app.game = new Game(1);
-      app.game.createHotels([{
-        name: 'zeta',
-        color: 'yellow'
-      }]);
-      request(app)
-        .get('/hotelDetails')
-        .expect(200)
-        .expect(`[{"name":"zeta","color":"yellow","occupiedTiles":[],"shares":25}]`)
-        .end(done);
-    });
-  });
   describe('/getAllPlayerNames', function() {
     it('can give all player names who have joined the game', function(done) {
       app.game = new Game(1);
@@ -243,55 +221,6 @@ describe('App Test', () => {
         .end(done);
     });
   });
-  describe('/turnDetails', function() {
-    it('should give turn details', function(done) {
-      let game = new Game(3);
-      game.addPlayer(new Player(0, 'veera'));
-      game.addPlayer(new Player(1, 'gupta'));
-      game.addPlayer(new Player(2, 'raj'));
-      game.start();
-      app.game = game;
-
-      request(app)
-        .get('/turnDetails')
-        .set('Cookie', 'playerId=0')
-        .expect(200)
-        .expect(/"currentPlayer":"veera"/i)
-        .expect(/"isMyTurn":true/i)
-        .end(done);
-    });
-    it('should give turn details', function(done) {
-      let game = new Game(3);
-      game.addPlayer(new Player(0, 'veera'));
-      game.addPlayer(new Player(1, 'gupta'));
-      game.addPlayer(new Player(2, 'raj'));
-      game.start();
-      app.game = game;
-
-      request(app)
-        .get('/turnDetails')
-        .expect(200)
-        .expect(/"currentPlayer":"veera"/i)
-        .expect(/"isMyTurn":false/i)
-        .end(done);
-    });
-  });
-  describe('/getIndependentTiles', function() {
-    it('can give independent tiles in market', function(done) {
-      app.game = new Game(1);
-      let player = new Player(0, 'pragya');
-      player.tiles.push('1A')
-      app.game.addPlayer(player);
-      app.game.start();
-      app.game.placeTile(0, '1A');
-      request(app)
-        .get('/getIndependentTiles')
-        .set('Cookie', 'playerId=0')
-        .expect(200)
-        .expect(/1A/)
-        .end(done);
-    });
-  });
   describe('/changeTurn', function() {
     it('change turn to next player', function(done) {
       let game = new Game(3);
@@ -318,6 +247,23 @@ describe('App Test', () => {
         .post('/placeTile')
         .set('Cookie', 'playerId=3')
         .expect(401)
+        .end(done);
+    });
+  });
+  describe('/gameStatus', function() {
+    it('should respond with current game status', function(done) {
+      let game = new Game(3);
+      game.addPlayer(new Player(0, 'veera'));
+      game.addPlayer(new Player(1, 'gupta'));
+      game.start();
+      app.game = game;
+      request(app)
+        .get('/gameStatus')
+        .set('Cookie', 'playerId=0')
+        .expect(/otherPlayers/i)
+        .expect(200)
+        .expect(/gupta/i)
+        .expect(/Zeta/i)
         .end(done);
     });
   });

@@ -11,7 +11,7 @@ let listToHTML = function(list,className,elementName='p') {
 };
 
 const changeTurn = function () {
-  sendAjaxRequest('GET','/changeTurn','');
+  sendAjaxRequest('GET','/changeTurn','',getPlayerDetails);
 };
 
 const showEndTurn = function () {
@@ -120,13 +120,8 @@ const displayHotelNames = function(allHotelsDetails){
   document.getElementById('hotels-place').innerHTML = hotelsHtml;
 };
 
-const getAllHotelsDetails = function () {
-  sendAjaxRequest('GET','/hotelDetails','',displayHotelDetails);
-  return;
-};
 
-const displayHotelDetails = function () {
-  let allHotelsDetails = JSON.parse(this.responseText);
+const displayHotelDetails = function (allHotelsDetails) {
   displayHotelNames(allHotelsDetails);
   updateHotelsOnBoard(allHotelsDetails);
 };
@@ -145,23 +140,17 @@ const updateHotelsOnBoard= function (allHotelsDetails){
 
 
 const placeTile = function(tile){
-  sendAjaxRequest('POST','/placeTile',`tile=${tile}`,getIndependentTiles);
+  sendAjaxRequest('POST','/placeTile',`tile=${tile}`);
   return;
 };
 
-const getIndependentTiles = function(){
-  console.log(this.responseText);
-  sendAjaxRequest('GET','/getIndependentTiles','',displayIndependentTiles);
-  return;
-};
-const displayIndependentTiles = function() {
-  let independentTiles = JSON.parse(this.responseText);
+
+const displayIndependentTiles = function(independentTiles) {
   independentTiles.forEach(assignTileIndependentClass);
   return;
 };
 
-const displayTurnDetails = function() {
-  let turnDetails = JSON.parse(this.responseText);
+const displayTurnDetails = function(turnDetails) {
   let currentPlayer=turnDetails.currentPlayer;
   getElement('#current-player').innerHTML=currentPlayer;
   let html=listToHTML(turnDetails.otherPlayers,'other-player','div');
@@ -174,10 +163,6 @@ const displayTurnDetails = function() {
   }
 };
 
-const getTurnDetails = function(){
-  sendAjaxRequest('GET','/turnDetails','',displayTurnDetails);
-};
-
 
 const assignTileIndependentClass = function(tile){
   let tileOnMarket = document.getElementById(tile);
@@ -185,13 +170,24 @@ const assignTileIndependentClass = function(tile){
   return;
 };
 
+const renderGameStatus = function(){
+  let gameStatus = JSON.parse(this.responseText);
+  displayHotelDetails(gameStatus.hotelsData);
+  displayIndependentTiles(gameStatus.independentTiles);
+  displayTurnDetails(gameStatus.turnDetails);
+};
+
+let getGameStatus = function(){
+  sendAjaxRequest('GET','/gameStatus','',renderGameStatus);
+};
+
+
 const actionsPerformed = function () {
   generateTable();
-  setInterval(getPlayerDetails,500);
-  setInterval(getAllHotelsDetails,500);
-  setInterval(getIndependentTiles,1000);
-  setInterval(getTurnDetails,500);
-
+  getGameStatus();
+  getPlayerDetails();
+  setInterval(getGameStatus,5000);
+  setInterval(getPlayerDetails,5000);
 };
 
 window.onload = actionsPerformed;

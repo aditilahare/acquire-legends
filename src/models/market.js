@@ -57,9 +57,7 @@ class Market{
       response.status="Added to hotel";
     }else if(this.isStartingHotel(tile)){
       response.tiles=this.getNeighbourOccupiedTiles(tile);
-      // this.removeFromIndependentTiles(response.tiles);
       response.tiles.push(tile);
-      //response.availbleHotels=this.getInactiveHotels();
       response.status="starting hotel";
       let hotel = this.getInactiveHotels()[0];
       hotel.status=true;

@@ -189,5 +189,28 @@ class Game {
     this.status = 'place tile';
     this.turn.updateTurn();
   }
+  getTurnDetails(id){
+    let turnDetails={};
+    let currentPlayer=this.getCurrentPlayer();
+    let otherPlayers=this.getAllPlayerDetails().filter((player)=>{
+      return currentPlayer.id!=player.id;
+    });
+    turnDetails.currentPlayer = currentPlayer.name;
+    turnDetails.otherPlayers = otherPlayers.map((player)=>{
+      return player.name;
+    });
+    turnDetails.isMyTurn=false;
+    if(currentPlayer.id==id) {
+      turnDetails.isMyTurn=true;
+    }
+    return turnDetails;
+  }
+  getStatus(playerId){
+    return {
+      independentTiles:this.giveIndependentTiles(),
+      hotelsData:this.getAllHotelsDetails(),
+      turnDetails:this.getTurnDetails(playerId)
+    };
+  }
 }
 module.exports = Game;

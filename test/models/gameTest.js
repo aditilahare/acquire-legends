@@ -162,6 +162,7 @@ describe('game test',function(){
       game.addPlayer(player2);
       player1.addTiles(['1A','2A','3A','4A','5A','6A']);
       assert.deepEqual(game.getPlayerDetails(0).tiles,expected);
+      assert.deepEqual(game.getPlayerDetails(0),player1);
     });
     it('should return an object containing share details of player',()=>{
       let game = new Game(2);
@@ -237,31 +238,31 @@ describe('game test',function(){
       game.addSharesToPlayer(1,'Hydra',5);
       assert.include(game.getPlayerSharesDetails(0),{Phoenix:2});
       assert.include(game.getPlayerSharesDetails(1),{Hydra:5});
-      describe('placeTile',()=>{
-        it('can place a independent Tile for the player whose id is given',()=>{
-          let game = new Game(1);
-          let player1=new Player(1,'pragya');
-          let market = new Market();
-          player1.addTile('2A');
-          game.addPlayer(player1);
-          game.start();
-          game.placeTile(1,'2A');
-          let actual = game.giveIndependentTiles();
-          let expected = ['2A'];
-          assert.deepEqual(actual,expected);
-        });
-      });
-      describe('getCurrentPlayer',()=>{
-        it('should give current player details',()=>{
-          let game = new Game(1);
-          let player1=new Player(0,'pragya');
-          game.addPlayer(player1);
-          game.addPlayer(new Player(1,'veera'));
-          game.start();
-          let actual=game.getCurrentPlayer();
-          assert.equal(actual.id,0)
-        });
-      });
+    });
+  });
+  describe('placeTile',()=>{
+    it('can place a independent Tile for the player whose id is given',()=>{
+      let game = new Game(1);
+      let player1=new Player(1,'pragya');
+      let market = new Market();
+      player1.addTile('2A');
+      game.addPlayer(player1);
+      game.start();
+      game.placeTile(1,'2A');
+      let actual = game.giveIndependentTiles();
+      let expected = ['2A'];
+      assert.deepEqual(actual,expected);
+    });
+  });
+  describe('getCurrentPlayer',()=>{
+    it('should give current player details',()=>{
+      let game = new Game(1);
+      let player1=new Player(0,'pragya');
+      game.addPlayer(player1);
+      game.addPlayer(new Player(1,'veera'));
+      game.start();
+      let actual=game.getCurrentPlayer();
+      assert.equal(actual.id,0)
     });
   });
   describe('changeCurrentPlayer',()=>{
@@ -288,5 +289,60 @@ describe('game test',function(){
       let playerId=turn.getCurrentPlayerID();
       assert.isOk(game.isCurrentPlayer(playerId));
     });
-  })
+  });
+  describe('getAllPlayerDetails',()=>{
+    it('should return an object containig all player details',()=>{
+      let expected = [{
+        tiles:[],
+        availableMoney : 0,
+        name:'veera',
+        id:0,
+        shares: {
+          "America": 0,
+          "Fusion": 0,
+          "Hydra": 0,
+          "Phoenix": 0,
+          "Quantum": 0,
+          "Sackson": 0,
+          "Zeta": 0
+        }
+      },{
+        tiles:[],
+        availableMoney : 0,
+        name:'pragya',
+        id:1,
+        shares: {
+          "America": 0,
+          "Fusion": 0,
+          "Hydra": 0,
+          "Phoenix": 0,
+          "Quantum": 0,
+          "Sackson": 0,
+          "Zeta": 0
+        }
+      }]
+      let game = new Game(2);
+      let player1=new Player(0,'veera');
+      let player2=new Player(1,'pragya');
+      game.addPlayer(player1);
+      game.addPlayer(player2);
+      assert.deepEqual(game.getAllPlayerDetails(),expected);
+    });
+  });
+  describe('getStatus',()=>{
+    it('should give current game status',()=>{
+      let expected = {
+      hotelsData:[],
+      turnDetails:{currentPlayer:'pragya',otherPlayers:['aditi'],isMyTurn:true}
+    };
+      let game = new Game(2);
+      let player1=new Player(0,'pragya');
+      let player2=new Player(1,'aditi');
+      game.addPlayer(player1);
+      game.addPlayer(player2);
+      game.start();
+      assert.deepEqual(game.getStatus(0).independentTiles,[]);
+      assert.deepEqual(game.getStatus(0).turnDetails,expected.turnDetails);
+    });
+  });
 });
