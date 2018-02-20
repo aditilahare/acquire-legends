@@ -194,7 +194,7 @@ describe('App Test', () => {
       request(app)
         .get('/hotelDetails')
         .expect(200)
-        .expect(`[{"name":"zeta","color":"yellow","shares":25}]`)
+        .expect(`[{"name":"zeta","color":"yellow"}]`)
         .end(done);
     });
   });
@@ -234,6 +234,7 @@ describe('App Test', () => {
       app.game = new Game(1);
       let player = new Player(0,'pragya');
       app.game.addPlayer(player);
+      app.game.start();
       request(app)
         .post('/placeTile')
         .set('Cookie', 'playerId=0')

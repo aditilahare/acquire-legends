@@ -1,6 +1,5 @@
 const TileBox = require('./tileBox');
 const Bank = require('./bank');
-const Hotel = require('./hotel');
 const Market = require('./market');
 const Turn = require('./turn');
 
@@ -20,7 +19,6 @@ class Game {
     this.maxPlayers=maxPlayers;
     this.minPlayers=3;
     this.players=[];
-    this.hotels=[];
     this.tileBox = new TileBox(12,9);
     this.bank=bank;
     this.MODE='wait';
@@ -90,15 +88,10 @@ class Game {
     this.MODE='play';
   }
   createHotels(hotelsData){
-    let self = this;
-    hotelsData.forEach(function (hotel) {
-      self.hotels.push(new Hotel(hotel.name,hotel.color));
-    });
+    this.market.createHotels(hotelsData);
   }
   getHotel(hotelName){
-    return this.hotels.find(hotel=>{
-      return hotel.getName()==hotelName;
-    });
+    return this.market.getHotel(hotelName);
   }
   getPlayerDetails(id){
     let player=this.findPlayerBy(id);
@@ -108,7 +101,7 @@ class Game {
     return this.MODE=='play';
   }
   getAllHotelsDetails(){
-    return this.hotels;
+    return this.market.getAllHotelsDetails();
   }
   getAllPlayerNames(){
     return this.players.map((player)=>{
@@ -126,7 +119,10 @@ class Game {
   placeTile(id,tile){
     let player = this.findPlayerBy(id);
     let playerTile = player.getTile(tile);
-    this.market.placeAsIndependentTile(playerTile);
+    let isTilePlaced=this.market.placeTile(playerTile);
+    if(isTilePlaced) {
+      player.removeTile(tile);
+    }
   }
   giveIndependentTiles(){
     return this.market.giveIndependentTiles();
