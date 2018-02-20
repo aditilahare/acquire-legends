@@ -246,6 +246,7 @@ describe('game test',function(){
           let market = new Market();
           player1.addTile('2A');
           game.addPlayer(player1);
+          game.start();
           game.placeTile(1,'2A');
           let actual = game.giveIndependentTiles();
           let expected = ['2A'];
