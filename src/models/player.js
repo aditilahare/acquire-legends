@@ -42,6 +42,10 @@ class Player {
   }
   getTile(tile){
     let index = this.tiles.indexOf(tile);
+    return this.tiles[index];
+  }
+  removeTile(tile){
+    let index = this.tiles.indexOf(tile);
     return this.tiles.splice(index,1)[0];
   }
 }

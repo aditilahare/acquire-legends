@@ -1,12 +1,40 @@
-const neighbourTilesOf = require('../utils/tileUtilities.js').neighbourTilesOf;
+const Hotel = require('./hotel');
+const neighbourTilesOf = require('../utils/tileUtilities').neighbourTilesOf;
 
 class Market{
   constructor(){
-    this.activeHotels=[];
+    this.occupiedTiles=[];
     this.independentTiles=[];
+    this.activeHotels=[];
   }
   placeAsIndependentTile(tile){
     this.independentTiles.push(tile);
+  }
+  isOccupied(tile){
+    return this.occupiedTiles.includes(tile);
+  }
+  placeTile(tile){
+    let self=this;
+    let neighbourTiles=neighbourTilesOf(tile);
+    let occupied=neighbourTiles.filter(cur=>{
+      return self.isOccupied(cur);
+    });
+    if (occupied.length==0) {
+      this.placeAsIndependentTile(tile);
+      this.occupiedTiles.push(tile);
+      return true;
+    }
+  }
+  createHotel(hotel){
+    this.activeHotels.push(new Hotel(hotel.name,hotel.color));
+  }
+  getHotel(hotelName){
+    return this.activeHotels.find(hotel=>{
+      return hotel.getName()==hotelName;
+    });
+  }
+  getAllHotelsDetails(){
+    return this.activeHotels;
   }
   giveIndependentTiles(){
     return this.independentTiles;

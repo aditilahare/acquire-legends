@@ -119,7 +119,6 @@ describe('game test',function(){
       let hydraHotel = {
         name: 'Hydra',
         color: 'orange',
-        shares:25,
         occupiedTiles:[]
       };
 
@@ -140,13 +139,11 @@ describe('game test',function(){
       let game = new Game(2);
       let hotelsData = [{
         name: 'zeta',
-        color: 'yellow',
-        shares:25
+        color: 'yellow'
       }];
       let zetaHotel = {
         name: 'zeta',
         color: 'yellow',
-        shares:25,
         occupiedTiles:[]
       };
       game.createHotels(hotelsData);
@@ -201,8 +198,7 @@ describe('game test',function(){
        let game = new Game(2);
        let hotelsData = [{
          name: 'zeta',
-         color: 'yellow',
-         shares:25
+         color: 'yellow'
        }];
        let expected = [{
           name: 'zeta',

@@ -1,6 +1,5 @@
 const TileBox = require('./tileBox');
 const Bank = require('./bank');
-const Hotel = require('./hotel');
 const Market = require('./market');
 const Turn = require('./turn');
 const INITIAL_SHARES = 25;
@@ -37,14 +36,13 @@ const HOTEL_DATA = [{
 }
 ];
 class Game {
-  constructor(maxPlayers, bank = new Bank(INITIAL_MONEY)) {
-    this.maxPlayers = maxPlayers;
-    this.minPlayers = 3;
-    this.players = [];
-    this.hotels = [];
-    this.tileBox = new TileBox(12, 9);
-    this.bank = bank;
-    this.MODE = 'wait';
+  constructor(maxPlayers,bank=new Bank(INITIAL_MONEY)) {
+    this.maxPlayers=maxPlayers;
+    this.minPlayers=3;
+    this.players=[];
+    this.tileBox = new TileBox(12,9);
+    this.bank=bank;
+    this.MODE='wait';
     this.market = new Market();
     this.status = '';
   }
@@ -112,19 +110,15 @@ class Game {
     this.MODE = 'play';
     this.status = 'place tile';
   }
-  createHotels(hotelsData) {
-    let self = this;
-    hotelsData.forEach(function(hotelInfo) {
-      let hotel = new Hotel(hotelInfo.name, hotelInfo.color);
-      self.bank.createSharesOfHotel(hotel.name, INITIAL_SHARES);
-      hotel.shares = self.bank.getAvalibleSharesOf(hotel.name);
-      self.hotels.push(hotel);
+  createHotels(hotelsData){
+    let self=this;
+    hotelsData.forEach((hotel)=>{
+      this.market.createHotel(hotel);
+      this.bank.createSharesOfHotel(hotel.name,INITIAL_SHARES);
     });
   }
-  getHotel(hotelName) {
-    return this.hotels.find(hotel => {
-      return hotel.getName() == hotelName;
-    });
+  getHotel(hotelName){
+    return this.market.getHotel(hotelName);
   }
   getPlayerDetails(id) {
     let player = this.findPlayerBy(id);
@@ -133,8 +127,13 @@ class Game {
   isInPlayMode() {
     return this.MODE == 'play';
   }
-  getAllHotelsDetails() {
-    return this.hotels;
+  getAllHotelsDetails(){
+    let hotelsData=this.market.getAllHotelsDetails();
+    let availableSharesOfHotels=this.bank.getAvailableSharesOfHotels();
+    hotelsData.forEach((hotel)=>{
+      hotel.shares=availableSharesOfHotels[hotel.name];
+    });
+    return hotelsData;
   }
   getAllPlayerNames() {
     return this.players.map((player) => {
@@ -153,8 +152,11 @@ class Game {
     let player = this.findPlayerBy(id);
     if(this.status=='place tile'){
       let playerTile = player.getTile(tile);
-      this.market.placeAsIndependentTile(playerTile);
-      this.status = 'buy shares';
+      let isTilePlaced=this.market.placeTile(playerTile);
+      if(isTilePlaced) {
+        player.removeTile(tile);
+        this.status = 'buy shares';
+      }
     }
     return;
   }
