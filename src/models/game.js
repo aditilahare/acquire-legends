@@ -129,10 +129,11 @@ class Game {
   placeTile(id,tile){
     let player = this.findPlayerBy(id);
     let playerTile = player.getTile(tile);
-    let isTilePlaced=this.market.placeTile(playerTile);
-    if(isTilePlaced) {
+    let response=this.market.placeTile(playerTile);
+    if(response.status){
       player.removeTile(tile);
     }
+    return response;
   }
   giveIndependentTiles(){
     return this.market.giveIndependentTiles();

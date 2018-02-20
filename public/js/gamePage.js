@@ -121,9 +121,7 @@ const displayHotelNames = function(allHotelsDetails){
 };
 
 const getAllHotelsDetails = function () {
-  setInterval(()=>{
-    sendAjaxRequest('GET','/hotelDetails','',displayHotelDetails);
-  },500);
+  sendAjaxRequest('GET','/hotelDetails','',displayHotelDetails);
   return;
 };
 
@@ -138,6 +136,7 @@ const placeTile = function(tile){
 };
 
 const getIndependentTiles = function(){
+  console.log(this.responseText);
   sendAjaxRequest('GET','/getIndependentTiles','',displayIndependentTiles);
   return;
 };
@@ -175,7 +174,7 @@ const assignTileIndependentClass = function(tile){
 const actionsPerformed = function () {
   generateTable();
   setInterval(getPlayerDetails,500);
-  getAllHotelsDetails();
+  setInterval(getAllHotelsDetails,500);
   setInterval(getIndependentTiles,1000);
   setInterval(getTurnDetails,500);
 

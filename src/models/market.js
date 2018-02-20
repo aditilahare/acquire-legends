@@ -5,60 +5,104 @@ class Market{
   constructor(){
     this.occupiedTiles=[];
     this.independentTiles=[];
-    this.activeHotels=[];
+    this.hotels=[];
   }
   placeAsIndependentTile(tile){
     this.independentTiles.push(tile);
   }
+  getActiveHotels(){
+    return this.hotels.filter((hotel)=>{
+      return hotel.status == true;
+    });
+  }
+  getInactiveHotels(){
+    return this.hotels.filter((hotel)=>{
+      return hotel.status != true;
+    });
+  }
   isOccupied(tile){
     return this.occupiedTiles.includes(tile);
   }
-  placeTile(tile){
-    let self=this;
+  getNeighbourOccupiedTiles(tile){
+    let self = this;
     let neighbourTiles=neighbourTilesOf(tile);
-    let occupied=neighbourTiles.filter(cur=>{
+    return neighbourTiles.filter(cur=>{
       return self.isOccupied(cur);
     });
-    if (occupied.length==0) {
+  }
+  isIndependentTile(tile){
+    let self=this;
+    let neighbourOccupiedTiles=this.getNeighbourOccupiedTiles(tile);
+    return neighbourOccupiedTiles.length==0;
+  }
+  isStartingHotel(tile){
+    let neighbourOccupiedTiles = this.getNeighbourOccupiedTiles(tile);
+    let neighbourHotelsOfTile = this.getNeighbourHotelsOfTile(tile);
+    return neighbourOccupiedTiles.length>0
+        && neighbourHotelsOfTile.length==0;
+  }
+  isAdjecentToSingleHotel(tile){
+    let neighbourHotelsOfTile = this.getNeighbourHotelsOfTile(tile);
+    return neighbourHotelsOfTile.length==1;
+  }
+  placeTile(tile){
+    let response={
+      status:false
+    };
+    if (this.isIndependentTile(tile)) {
       this.placeAsIndependentTile(tile);
-      this.occupiedTiles.push(tile);
-      return true;
+      response.status="Independent";
+    }else if(this.isAdjecentToSingleHotel(tile)) {
+      this.addTileToExistingHotel(tile);
+      response.status="Added to hotel";
+    }else if(this.isStartingHotel(tile)){
+      response.tiles=this.getNeighbourOccupiedTiles(tile);
+      // this.removeFromIndependentTiles(response.tiles);
+      response.tiles.push(tile);
+      //response.availbleHotels=this.getInactiveHotels();
+      response.status="starting hotel";
+      let zeta = this.getHotel('Zeta');
+      zeta. status=true;
+      response.tiles.forEach((tile)=>{
+        zeta.occupyTile(tile);
+      });
     }
+    this.occupiedTiles.push(tile);
+    return response;
   }
   createHotel(hotel){
-    this.activeHotels.push(new Hotel(hotel.name,hotel.color));
+    this.hotels.push(new Hotel(hotel.name,hotel.color));
   }
   getHotel(hotelName){
-    return this.activeHotels.find(hotel=>{
+    return this.hotels.find(hotel=>{
       return hotel.getName()==hotelName;
     });
   }
   getAllHotelsDetails(){
-    return this.activeHotels;
+    return this.hotels;
   }
   giveIndependentTiles(){
-    return this.independentTiles;
+    return this.occupiedTiles;
   }
-
   doesHotelContainsTile(hotel,tile){
     return neighbourTilesOf(tile).reduce((bool,testTile)=>{
       return bool || hotel.doesOccupiedTilesInclude(testTile);
     },false);
   }
-
   getNeighbourHotelsOfTile(tile){
     let hotelsList = [];
-    hotelsList = this.activeHotels.filter(hotel=>{
+    hotelsList = this.getActiveHotels().filter(hotel=>{
       return this.doesHotelContainsTile(hotel,tile);
     });
     return hotelsList;
   }
-
   addTileToExistingHotel(tile){
+    let neighbourOccupiedTiles=this.getNeighbourOccupiedTiles(tile);
     let neighbourHotelsOfTile = this.getNeighbourHotelsOfTile(tile);
-    if(neighbourHotelsOfTile.length==1) {
-      neighbourHotelsOfTile[0].occupyTile(tile);
-    }
+    neighbourHotelsOfTile[0].occupyTile(tile);
+    neighbourOccupiedTiles.forEach((neighbourTile)=>{
+      neighbourHotelsOfTile[0].occupyTile(neighbourTile);
+    });
   }
 }
 
