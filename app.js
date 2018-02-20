@@ -28,6 +28,16 @@ const redirectToHomeIfGameNotCreated=function(req,res,next){
   next();
 };
 
+const restrictInvalidPlayerToPlay = function(req,res,next){
+  let game = req.app.game;
+  let id =req.cookies.playerId;
+  let urls = ['/placeTile','/buyShares'];
+  if(urls.includes(req.url) && !game.isCurrentPlayer(id)){
+    res.send(401);
+  }
+  next();
+};
+
 
 const redirectToWaitIfPlayerIsValid=function(req,res,next){
   let game = req.app.game;
@@ -58,6 +68,7 @@ app.use(logRequest);
 app.use(redirectToHomeIfGameNotCreated);
 app.use(redirectToWaitIfPlayerIsValid);
 app.use(startGame);
+app.use(restrictInvalidPlayerToPlay);
 app.get('/isGameExisted',isGameExisted);
 app.get('/wait',getWaitingPage);
 app.get('/haveAllPlayersJoined',haveAllPlayersJoined);

@@ -19,7 +19,10 @@ class Bank {
     this.sharesOfHotels.push(sharesOf);
   }
   getAvailableSharesOfHotels(){
-    return this.sharesOfHotels;
+    return this.sharesOfHotels.reduce((prev,cur)=>{
+      prev[cur.hotelName]=cur.shares;
+      return prev;
+    },{});
   }
   getAvalibleSharesOf(hotelName){
     let hotel = this.findHotelBy(hotelName);
@@ -34,6 +37,10 @@ class Bank {
     let desiredHotel = this.findHotelBy(startedHotel);
     desiredHotel.shares -= 1;
     desiredHotel.shareHolders.push(playerName);
+  }
+  getShareholdersOfHotel(hotelName){
+    let hotel = this.findHotelBy(hotelName);
+    return hotel.shareHolders;
   }
 }
 module.exports = Bank;

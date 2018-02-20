@@ -49,13 +49,24 @@ describe('Player', () => {
     });
   });
   describe('getTiles', () => {
-    it('should get given tile and remove it from tiles', () => {
+    it('should get given tile from player tiles', () => {
       let pragya = new Player(0, 'pragya');
       pragya.addTiles(['1A', '2A', '3A', '4A', '5A', '6A']);
       let expected = ['1A', '2A', '3A', '4A', '5A', '6A'];
       assert.deepEqual(expected, pragya.getTiles());
       pragya.getTile('2A');
-      expected = ['1A', '3A', '4A', '5A', '6A'];
+      expected = ['1A','2A' ,'3A', '4A', '5A', '6A'];
+      assert.deepEqual(expected, pragya.getTiles());
+    });
+  });
+  describe('removeTile', () => {
+    it('should remove Tile from player tiles', () => {
+      let pragya = new Player(0, 'pragya');
+      pragya.addTiles(['1A', '2A', '3A', '4A', '5A', '6A']);
+      let expected = ['1A', '2A', '3A', '4A', '5A', '6A'];
+      assert.deepEqual(expected, pragya.getTiles());
+      pragya.removeTile('2A');
+      expected = ['1A' ,'3A', '4A', '5A', '6A'];
       assert.deepEqual(expected, pragya.getTiles());
     });
   });

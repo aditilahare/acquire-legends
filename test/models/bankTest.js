@@ -23,11 +23,11 @@ describe('Bank test', () => {
     it('should create shares of given hotel',()=>{
       let kotakMahindra=new Bank(100000);
       let expected = kotakMahindra.getAvailableSharesOfHotels();
-      let actual = [];
+      let actual = {};
       assert.deepEqual(actual,expected);
       kotakMahindra.createSharesOfHotel('zeta',23);
       expected = kotakMahindra.getAvailableSharesOfHotels();
-      actual = [{hotelName:'zeta',shares:23,shareHolders:[]}];
+      actual = {"zeta":23};
       assert.deepEqual(actual,expected);
     });
   });
@@ -45,12 +45,14 @@ describe('Bank test', () => {
       let kotakMahindra=new Bank(100000);
       kotakMahindra.createSharesOfHotel('sackson',23);
       let actual = kotakMahindra.getAvailableSharesOfHotels();
-      let expected = [{hotelName:"sackson",shares:23,shareHolders:[]}];
+      let expected = {"sackson":23};
       assert.deepEqual(actual,expected);
       kotakMahindra.giveOneFreeShare("sackson",'pragya');
-      actual = kotakMahindra.getAvailableSharesOfHotels();
-      expected = [{hotelName:"sackson",shares:22,shareHolders:['pragya']}];
+      actual = kotakMahindra.getShareholdersOfHotel("sackson");
+      expected = ['pragya'];
       assert.deepEqual(actual,expected);
+      actual = kotakMahindra.getAvalibleSharesOf("sackson");
+      assert.equal(actual,22);
     });
   });
 });
