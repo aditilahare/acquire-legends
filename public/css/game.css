@@ -166,6 +166,27 @@ td{
  .independent{
    background-color: #2d2016;
  }
+ .Sackson{
+   background-color:rgb(205, 61, 65);
+ }
+ .Zeta{
+   background-color: rgb(236, 222, 34);
+ }
+ .Hydra{
+   background-color: orange;
+ }
+ .Fusion{
+   background-color: green;
+ }
+ .America{
+   background-color: rgb(23, 60, 190);
+ }
+ .Phoenix{
+   background-color:violet;
+ }
+ .Quantum{
+   background-color:rgb(83, 161, 149);
+ }
 
  .current-player{
    background-color: brown;
