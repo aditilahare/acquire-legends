@@ -282,6 +282,7 @@ describe('App Test', () => {
       let player = new Player(0,'pragya');
       player.tiles.push('1A')
       app.game.addPlayer(player);
+      app.game.start();
       app.game.placeTile(0,'1A');
       request(app)
         .get('/getIndependentTiles')
