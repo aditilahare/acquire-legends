@@ -19,4 +19,40 @@ describe('Bank test', () => {
       assert.equal(actual,99999);
     });
   });
+  describe('createSharesOfHotel', function(){
+    it('should create shares of given hotel',()=>{
+      let kotakMahindra=new Bank(100000);
+      let expected = kotakMahindra.getAvailableSharesOfHotels();
+      let actual = {};
+      assert.deepEqual(actual,expected);
+      kotakMahindra.createSharesOfHotel('zeta',23);
+      expected = kotakMahindra.getAvailableSharesOfHotels();
+      actual = {"zeta":23};
+      assert.deepEqual(actual,expected);
+    });
+  });
+  describe('getHotelByName', function(){
+    it('should get hotel by name',()=>{
+      let kotakMahindra=new Bank(100000);
+      kotakMahindra.createSharesOfHotel('sackson',23);
+      let actual = kotakMahindra.findHotelBy("sackson");
+      let expected = {hotelName:"sackson",shares:23,shareHolders:[]};
+      assert.deepEqual(actual,expected);
+    });
+  });
+  describe('giveOneFreeShare', function(){
+    it('should give a free share to the player who starts the hotel',()=>{
+      let kotakMahindra=new Bank(100000);
+      kotakMahindra.createSharesOfHotel('sackson',23);
+      let actual = kotakMahindra.getAvailableSharesOfHotels();
+      let expected = {"sackson":23};
+      assert.deepEqual(actual,expected);
+      kotakMahindra.giveOneFreeShare("sackson",'pragya');
+      actual = kotakMahindra.getShareholdersOfHotel("sackson");
+      expected = ['pragya'];
+      assert.deepEqual(actual,expected);
+      actual = kotakMahindra.getAvalibleSharesOf("sackson");
+      assert.equal(actual,22);
+    });
+  });
 });

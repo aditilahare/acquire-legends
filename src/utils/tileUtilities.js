@@ -50,7 +50,17 @@ const seperateCharFromNum = function(tile){
 };
 
 const neighbourTilesOf = function(tile){
-  return [tileAbove(tile),tileBelow(tile),tileOnRight(tile),tileOnLeft(tile)];
+  let tiles = [];
+  tiles.push(tileAbove(tile));
+  tiles.push(tileBelow(tile));
+  tiles.push(tileOnRight(tile));
+  tiles.push(tileOnLeft(tile));
+  return tiles;
+};
+const areTilesAdjacent = function(placedTile,occupiedTile){
+  return neighbourTilesOf(placedTile).includes(occupiedTile);
 };
 
-module.exports=neighbourTilesOf;
+
+exports.areTilesAdjacent=areTilesAdjacent;
+exports.neighbourTilesOf=neighbourTilesOf;

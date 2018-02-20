@@ -2,9 +2,10 @@ const TileBox = require('./tileBox');
 const Bank = require('./bank');
 const Market = require('./market');
 const Turn = require('./turn');
-
+const INITIAL_SHARES = 25;
 const INITIAL_MONEY = 100000;
 const STARTING_BALANCE = 6000;
+
 const HOTEL_DATA=[
   {name: 'Sackson',color: 'rgb(205, 61, 65)'},
   {name: 'Zeta',color: 'rgb(236, 222, 34)'},
@@ -88,7 +89,11 @@ class Game {
     this.MODE='play';
   }
   createHotels(hotelsData){
-    this.market.createHotels(hotelsData);
+    let self=this;
+    hotelsData.forEach((hotel)=>{
+      this.market.createHotel(hotel);
+      this.bank.createSharesOfHotel(hotel.name,INITIAL_SHARES);
+    });
   }
   getHotel(hotelName){
     return this.market.getHotel(hotelName);
@@ -101,7 +106,12 @@ class Game {
     return this.MODE=='play';
   }
   getAllHotelsDetails(){
-    return this.market.getAllHotelsDetails();
+    let hotelsData=this.market.getAllHotelsDetails();
+    let availableSharesOfHotels=this.bank.getAvailableSharesOfHotels();
+    hotelsData.forEach((hotel)=>{
+      hotel.shares=availableSharesOfHotels[hotel.name];
+    });
+    return hotelsData;
   }
   getAllPlayerNames(){
     return this.players.map((player)=>{
