@@ -5,7 +5,7 @@ const Player = require('../../src/models/player.js');
 const Hotel = require('../../src/models/hotel.js');
 const Market = require('../../src/models/market.js');
 const Turn = require('../../src/models/turn.js');
-
+const Bank = require('../../src/models/bank.js');
 
 describe('game test',function(){
   describe('getPlayerCount', () => {
@@ -343,6 +343,33 @@ describe('game test',function(){
       game.start();
       assert.deepEqual(game.getStatus(0).independentTiles,[]);
       assert.deepEqual(game.getStatus(0).turnDetails,expected.turnDetails);
+    });
+  });
+  describe('deductMoneyFromPlayer',()=>{
+    it('should deduct money from player account',()=>{
+      let game = new Game(2);
+      let player1=new Player(0,'pragya');
+      player1.addMoney(5000);
+      game.addPlayer(player1);
+      game.deductMoneyFromPlayer(0,1600);
+      let actual = game.getAvailableCashOfPlayer(0);
+      let expected = 3400;
+      assert.deepEqual(actual,expected);
+    });
+  });
+  describe('purchaseShares',()=>{
+    it('should purchase shares to given players',()=>{
+      let game = new Game(2);
+      let player1 = new Player(0,'pragya');
+      player1.addMoney(1500);
+      game.addPlayer(player1);
+      let market = new Market();
+      let bank = new Bank(10000);
+      game.createHotels([{name:'zeta',color:'yellow'}]);
+      game.purchaseShares('zeta',2,0);
+      let expected = 1100;
+      let actual = game.getAvailableCashOfPlayer(0);
+      assert.deepEqual(actual,expected);
     });
   });
 });

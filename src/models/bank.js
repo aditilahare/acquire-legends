@@ -1,7 +1,7 @@
 class Bank {
   constructor(initialMoney) {
     this.availableCash = initialMoney;
-    this.sharesOfHotels = [];
+    this.sharesDetailsOfHotels = [];
   }
   getAvalibleCash(){
     return this.availableCash;
@@ -13,34 +13,52 @@ class Bank {
     let sharesOf = {};
     sharesOf = {
       hotelName:nameOfHotel,
-      shares:noOfShares,
+      availableShares:noOfShares,
       shareHolders:[]
     };
-    this.sharesOfHotels.push(sharesOf);
+    this.sharesDetailsOfHotels.push(sharesOf);
   }
   getAvailableSharesOfHotels(){
-    return this.sharesOfHotels.reduce((prev,cur)=>{
-      prev[cur.hotelName]=cur.shares;
+    return this.sharesDetailsOfHotels.reduce((prev,cur)=>{
+      prev[cur.hotelName]=cur.availableShares;
       return prev;
     },{});
   }
   getAvalibleSharesOf(hotelName){
     let hotel = this.findHotelBy(hotelName);
-    return hotel.shares;
+    return hotel.availableShares;
   }
   findHotelBy(hotelName){
-    return this.sharesOfHotels.find(hotel=>{
+    return this.sharesDetailsOfHotels.find(hotel=>{
       return hotel.hotelName==hotelName;
     });
   }
-  giveOneFreeShare(startedHotel,playerName){
+  giveOneFreeShare(startedHotel,playerId){
     let desiredHotel = this.findHotelBy(startedHotel);
-    desiredHotel.shares -= 1;
-    desiredHotel.shareHolders.push(playerName);
+    desiredHotel.availableShares -= 1;
+    desiredHotel.shareHolders.push(playerId);
   }
   getShareholdersOfHotel(hotelName){
     let hotel = this.findHotelBy(hotelName);
     return hotel.shareHolders;
+  }
+  doesHotelhaveEnoughShares(hotelName,noOfShares){
+    let hotel = this.findHotelBy(hotelName);
+    let availableSharesOfHotel = hotel.availableShares;
+    return noOfShares<=availableSharesOfHotel;
+  }
+  sellSharesToPlayer(hotelName,noOfShares,playerId,cartValue){
+    let desiredHotel = this.findHotelBy(hotelName);
+    if(this.doesHotelhaveEnoughShares(hotelName,noOfShares)){
+      desiredHotel.availableShares -= noOfShares;
+      while(noOfShares>0){
+        desiredHotel.shareHolders.push(playerId);
+        noOfShares--;
+      }
+      this.availableCash += cartValue;
+      return true;
+    }
+    return false;
   }
 }
 module.exports = Bank;

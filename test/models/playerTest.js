@@ -82,4 +82,20 @@ describe('Player', () => {
       assert.deepEqual(expected,actual);
     });
   });
+  describe('doesPlayerHasEnoughMoney',()=>{
+    it('should return true if player has money enough.',()=>{
+      let harvar = new Player(0,'Harvar');
+      harvar.addMoney(2500);
+      assert.isOk(harvar.doesPlayerHasEnoughMoney(1500));
+    });
+  });
+  describe('deductMoney',()=>{
+    it('should deduct given money from player account',()=>{
+      let harvar = new Player(0,'Harvar');
+      harvar.addMoney(2500);
+      assert.equal(harvar.getAvailableCash(),2500);
+      harvar.deductMoney(1500);
+      assert.equal(harvar.getAvailableCash(),1000);
+    });
+  });
 });

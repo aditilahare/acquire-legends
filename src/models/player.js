@@ -21,6 +21,9 @@ class Player {
   addMoney(money) {
     this.availableMoney += money;
   }
+  deductMoney(money){
+    this.availableMoney -= money;
+  }
   getDetails(){
     return {
       tiles:this.getTiles(),
@@ -47,6 +50,9 @@ class Player {
   removeTile(tile){
     let index = this.tiles.indexOf(tile);
     return this.tiles.splice(index,1)[0];
+  }
+  doesPlayerHasEnoughMoney(amount){
+    return this.availableMoney>=amount;
   }
 }
 

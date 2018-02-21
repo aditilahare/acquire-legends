@@ -102,6 +102,9 @@ class Market{
       neighbourHotelsOfTile[0].occupyTile(neighbourTile);
     });
   }
+  getSharePriceOfHotel(hotelName){
+    return 200;
+  }
 }
 
 module.exports = Market;

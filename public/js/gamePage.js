@@ -116,7 +116,8 @@ const displayHotelNames = function(allHotelsDetails){
   let hotelsHtml=allHotelsDetails.reduce((prev,cur)=>{
     prev +=`<div class="fakeContent" id="${cur.name}" \
    style="background-color:${cur.color}"><div class="hotels">${cur.name}</div>\
-   <div class="hotels">${cur.shares}</div></div><br>`;
+   <div class="hotels">${cur.shares}</div><span class="hotels">\
+   ${cur.cps}</span></div><br>`;
     return prev;
   },'<h3 id="hotel-heading">Hotels</h3>   ');
   document.getElementById('hotels-place').innerHTML = hotelsHtml;
@@ -174,6 +175,7 @@ const assignTileIndependentClass = function(tile){
 
 const renderGameStatus = function(){
   let gameStatus = JSON.parse(this.responseText);
+  console.log(gameStatus.hotelsData);
   displayHotelDetails(gameStatus.hotelsData);
   displayIndependentTiles(gameStatus.independentTiles);
   displayTurnDetails(gameStatus.turnDetails);

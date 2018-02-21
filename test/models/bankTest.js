@@ -25,7 +25,7 @@ describe('Bank test', () => {
       let expected = kotakMahindra.getAvailableSharesOfHotels();
       let actual = {};
       assert.deepEqual(actual,expected);
-      kotakMahindra.createSharesOfHotel('zeta',23);
+      kotakMahindra.createSharesOfHotel('zeta',23,200);
       expected = kotakMahindra.getAvailableSharesOfHotels();
       actual = {"zeta":23};
       assert.deepEqual(actual,expected);
@@ -36,7 +36,7 @@ describe('Bank test', () => {
       let kotakMahindra=new Bank(100000);
       kotakMahindra.createSharesOfHotel('sackson',23);
       let actual = kotakMahindra.findHotelBy("sackson");
-      let expected = {hotelName:"sackson",shares:23,shareHolders:[]};
+      let expected = {hotelName:"sackson",availableShares:23,shareHolders:[]};
       assert.deepEqual(actual,expected);
     });
   });
@@ -47,12 +47,41 @@ describe('Bank test', () => {
       let actual = kotakMahindra.getAvailableSharesOfHotels();
       let expected = {"sackson":23};
       assert.deepEqual(actual,expected);
-      kotakMahindra.giveOneFreeShare("sackson",'pragya');
+      kotakMahindra.giveOneFreeShare("sackson",0);
       actual = kotakMahindra.getShareholdersOfHotel("sackson");
-      expected = ['pragya'];
+      expected = [0];
       assert.deepEqual(actual,expected);
       actual = kotakMahindra.getAvalibleSharesOf("sackson");
       assert.equal(actual,22);
+    });
+  });
+  describe('doesHotelhaveEnoughShares', function(){
+    it('should give true if the hotel has shares to give to the player',()=>{
+      let kotakMahindra=new Bank(100000);
+      kotakMahindra.createSharesOfHotel('Zeta',6);
+      let hotelName = 'Zeta';
+      let noOfShares = 5;
+      assert.isOk(kotakMahindra.doesHotelhaveEnoughShares(hotelName,noOfShares));
+    });
+  });
+  describe('sellSharesToPlayer', function(){
+    it('should return true if enough shares are there to sell a player',()=>{
+      let kotakMahindra=new Bank(100000);
+      kotakMahindra.createSharesOfHotel('Zeta',6);
+      let hotelName = 'Zeta';
+      let noOfShares = 3;
+      let playerId = 1;
+      let actual=kotakMahindra.sellSharesToPlayer(hotelName,noOfShares,playerId);
+      assert.isOk(actual);
+    });
+    it('should return false if enough shares are there to sell a player',()=>{
+      let kotakMahindra=new Bank(100000);
+      kotakMahindra.createSharesOfHotel('Zeta',1);
+      let hotelName = 'Zeta';
+      let noOfShares = 3;
+      let playerId = 1;
+      let actual=kotakMahindra.sellSharesToPlayer(hotelName,noOfShares,playerId);
+      assert.isNotOk(actual);
     });
   });
 });
