@@ -1,10 +1,11 @@
 const areTilesAdjacent = require('../utils/tileUtilities.js').areTilesAdjacent;
 
 class Hotel {
-  constructor(name, color) {
+  constructor(name, color, level) {
     this.name = name;
     this.color = color;
     this.occupiedTiles = [];
+    this.level = level;
   }
   getDetails() {
     let hotelDetails = {

@@ -52,4 +52,20 @@ describe('Market', () => {
       tiles:['1B','1C']});
     });
   })
+  describe('calculate share price',()=>{
+    it('it should return share price according to level and size',()=>{
+      let market = new Market();
+      let zeta = new Hotel('Zeta','yellow');
+      zeta.occupiedTiles=['1A','2A','1B','2B'];
+      market.hotels.push(zeta);
+      let expected = [zeta];
+      assert.equal(market.calculateSharePrice(2,2),200);
+      assert.equal(market.calculateSharePrice(3,2),300);
+      assert.equal(market.calculateSharePrice(6,3),700);
+      assert.equal(market.calculateSharePrice(14,4),900);
+      assert.equal(market.calculateSharePrice(21,2),800);
+      assert.equal(market.calculateSharePrice(33,2),900);
+      assert.equal(market.calculateSharePrice(41,2),1000);
+    });
+  });
 });

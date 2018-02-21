@@ -8,31 +8,38 @@ const STARTING_BALANCE = 6000;
 
 const HOTEL_DATA = [{
   name: 'Sackson',
-  color: 'rgb(205, 61, 65)'
+  color: 'rgb(205, 61, 65)',
+  level: 2
 },
 {
   name: 'Zeta',
-  color: 'rgb(236, 222, 34)'
+  color: 'rgb(236, 222, 34)',
+  level: 2
 },
 {
   name: 'Hydra',
-  color: 'orange'
+  color: 'orange',
+  level: 3
 },
 {
   name: 'Fusion',
-  color: 'green'
+  color: 'green',
+  level: 3
 },
 {
   name: 'America',
-  color: 'rgb(23, 60, 190)'
+  color: 'rgb(23, 60, 190)',
+  level: 3
 },
 {
   name: 'Phoenix',
-  color: 'violet'
+  color: 'violet',
+  level: 4
 },
 {
   name: 'Quantum',
-  color: 'rgb(83, 161, 149)'
+  color: 'rgb(83, 161, 149)',
+  level: 4
 }
 ];
 class Game {
