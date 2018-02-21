@@ -12,7 +12,7 @@ const getAllPlayerNames = require('./src/routes/getAllPlayerNames');
 const isGameExisted = require('./src/routes/isGameExisted');
 const placeTile = require('./src/routes/placeTile');
 const changeTurn = require('./src/routes/changeTurn');
-const gameStatus = require('./src/routes/GameStatus');
+const gameStatus = require('./src/routes/gameStatus');
 const verifyGameReq = function(game,id){
   return game && game.isValidPlayer(id) && !game.isInPlayMode();
 };
