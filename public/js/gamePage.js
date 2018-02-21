@@ -143,6 +143,7 @@ const updateHotelsOnBoard= function (allHotelsDetails){
 
 const placeTileHandler = function () {
   console.log(this.responseText);
+  showEndTurn();
 };
 
 const placeTile = function(tile){
@@ -163,8 +164,13 @@ const displayTurnDetails = function(turnDetails) {
   document.getElementById('turns').innerHTML =`${currentPlayer}${otherPlayers}`;
   let isMyTurn=turnDetails.isMyTurn;
   if(eval(isMyTurn)){
-    showEndTurn();
+    if(!IGNORE_MY_TURN){
+      IGNORE_MY_TURN=true;
+      alert(`${turnDetails.currentPlayer} it's your turn`);
+    }
   }else{
+    document.tile=`${turnDetails.currentPlayer} it's your turn`;
+    IGNORE_MY_TURN=false;
     hideEndTurn();
   }
 };
@@ -195,6 +201,7 @@ const actionsPerformed = function () {
   getPlayerDetails();
   setInterval(getGameStatus,1000);
   setInterval(getPlayerDetails,1000);
+  IGNORE_MY_TURN=false;
 };
 
 window.onload = actionsPerformed;
