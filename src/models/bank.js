@@ -33,8 +33,8 @@ class Bank {
       return hotel.hotelName==hotelName;
     });
   }
-  giveOneFreeShare(startedHotel,playerName){
-    let desiredHotel = this.findHotelBy(startedHotel);
+  giveOneFreeShare(startedHotelName,playerName){
+    let desiredHotel = this.findHotelBy(startedHotelName);
     desiredHotel.shares -= 1;
     desiredHotel.shareHolders.push(playerName);
   }

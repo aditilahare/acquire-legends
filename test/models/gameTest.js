@@ -345,4 +345,20 @@ describe('game test',function(){
       assert.deepEqual(game.getStatus(0).turnDetails,expected.turnDetails);
     });
   });
+  describe('actions',()=>{
+    it('should add tile to an existing hotel',()=>{
+      let expected = {};
+      let game = new Game(2);
+      let player1=new Player(0,'pragya');
+      let player2=new Player(1,'aditi');
+      game.addPlayer(player1);
+      game.addPlayer(player2);
+      game.start();
+      assert.deepEqual(game.placeTile(0,'6A').status,'Independent');
+      game.changeCurrentPlayer();
+      assert.deepEqual(game.placeTile(1,'7A').status,'starting hotel');
+      game.changeCurrentPlayer();
+      assert.deepEqual(game.placeTile(0,'5A').status,'Added to hotel');
+    });
+  });
 });

@@ -11,6 +11,12 @@ class Turn {
     let noOfPlayers = this.playerIDSequence.length;
     this.currentPlayerIndex = this.currentPlayerIndex % noOfPlayers;
   }
+  setState(state){
+    this.state=state;
+  }
+  getState(){
+    return this.state;
+  }
 }
 
 module.exports=Turn;

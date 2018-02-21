@@ -140,9 +140,12 @@ const updateHotelsOnBoard= function (allHotelsDetails){
   allHotelsDetails.forEach(assignTilesWithRespectiveHotel);
 };
 
+const placeTileHandler = function () {
+  console.log(this.responseText);
+};
 
 const placeTile = function(tile){
-  sendAjaxRequest('POST','/placeTile',`tile=${tile}`);
+  sendAjaxRequest('POST','/placeTile',`tile=${tile}`,placeTileHandler);
   return;
 };
 
@@ -188,8 +191,8 @@ const actionsPerformed = function () {
   generateTable();
   getGameStatus();
   getPlayerDetails();
-  setInterval(getGameStatus,5000);
-  setInterval(getPlayerDetails,5000);
+  setInterval(getGameStatus,1000);
+  setInterval(getPlayerDetails,1000);
 };
 
 window.onload = actionsPerformed;

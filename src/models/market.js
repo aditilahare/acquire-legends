@@ -64,6 +64,7 @@ class Market{
       response.tiles.forEach((tile)=>{
         hotel.occupyTile(tile);
       });
+      response.hotelName=hotel.name;
     }
     this.occupiedTiles.push(tile);
     return response;
