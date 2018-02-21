@@ -38,7 +38,7 @@ describe('Market', () => {
       market = new Market();
       zeta = new Hotel('Zeta','yellow');
       zeta.occupiedTiles=['1A','2A','1B','2B'];
-      market.occupiedTiles=['1A','2A','1B','2B'];
+      market.occupiedTiles=['1A','2A','1B','2B','1D'];
       zeta.status=true;
       market.hotels.push(zeta);
       assert.deepEqual(market.placeTile('1C'),{status:"Added to hotel"});
