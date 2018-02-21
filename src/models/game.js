@@ -28,7 +28,7 @@ const HOTEL_DATA = [{
 },
 {
   name: 'America',
-  color: 'rgb(23, 60, 190)',
+  color: 'rgba(23, 60, 190, 0.79)',
   level: 3
 },
 {

@@ -84,7 +84,7 @@ input[type=text], input[type=password] {
 button{
   font-size: 15px;
   text-align: center;
-  background-color: #4CAF50;
+  background-color: #5D1F00;
   color: white;
   padding: 14px 20px;
   margin: 8px 0;
@@ -94,7 +94,7 @@ button{
 }
 
 button:hover {
-  opacity: 0.8;
+  opacity: 0.92;
 }
 
 /* Extra styles for the cancel button */
@@ -212,4 +212,11 @@ span.psw {
   .cancelbtn {
     width: 100%;
   }
+}
+
+select{
+  background-color: none;
+  border-bottom: 2px solid grey;
+  width: 70px;
+
 }
