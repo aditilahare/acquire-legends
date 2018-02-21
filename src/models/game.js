@@ -52,6 +52,23 @@ class Game {
     this.MODE='wait';
     this.market = new Market();
     this.status = '';
+    this.actions = {
+      'Independent':function(response){
+        response.expectedAction='buyShares';
+        return response;
+      },
+      'Added to hotel':function(response){
+        response.expectedAction='buyShares';
+        return response;
+      },
+      'starting hotel':function(response){
+        response.expectedAction='buyShares';
+        let player=response.player;
+        this.bank.giveOneFreeShare(response.hotelName,player.name);
+        this.addSharesToPlayer(player.id,response.hotelName,1);
+        return response;
+      }
+    };
   }
   isVacancy() {
     return this.getPlayerCount() < this.maxPlayers;
@@ -161,12 +178,17 @@ class Game {
     if(this.status=='place tile'&& currentPlayerId == id){
       let playerTile = player.getTile(tile);
       let response=this.market.placeTile(playerTile);
+      console.log(response);
       if(response.status){
         player.removeTile(tile);
+        response.player=player;
+        let state=this.actions[response.status].call(this,response);
+        this.turn.setState(state);
         this.status = 'buy shares';
       }
       return response;
     }
+    // return this.turn.getState();
   }
   giveIndependentTiles() {
     return this.market.giveIndependentTiles();
