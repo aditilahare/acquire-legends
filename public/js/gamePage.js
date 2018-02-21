@@ -89,9 +89,11 @@ const getPlayerDetails = function () {
 
 const processShareDetails = function(sharesDiv,sharesDetails){
   let hotelsNames = Object.keys(sharesDetails);
-  let html = `<h2>Shares</h2>`;
+  let html = ``;
   hotelsNames.forEach(function(hotelName){
-    html += `<div>${hotelName}=${sharesDetails[hotelName]}</div>`;
+    html += `<div class='shareCard ${hotelName}'>`+
+  `<center><label>${hotelName}</label></br>`+
+  `<label>${sharesDetails[hotelName]}</center><label></div>`;
   });
   return html;
 };
@@ -116,7 +118,7 @@ const displayHotelNames = function(allHotelsDetails){
    style="background-color:${cur.color}"><div class="hotels">${cur.name}</div>\
    <div class="hotels">${cur.shares}</div></div><br>`;
     return prev;
-  },'');
+  },'<h3 id="hotel-heading">Hotels</h3>   ');
   document.getElementById('hotels-place').innerHTML = hotelsHtml;
 };
 
@@ -152,9 +154,9 @@ const displayIndependentTiles = function(independentTiles) {
 
 const displayTurnDetails = function(turnDetails) {
   let currentPlayer=turnDetails.currentPlayer;
-  getElement('#current-player').innerHTML=currentPlayer;
-  let html=listToHTML(turnDetails.otherPlayers,'other-player','div');
-  getElement('#other-players').innerHTML=html;
+  currentPlayer = `<div id='currentPlayer'>${currentPlayer}</div>`;
+  let otherPlayers=listToHTML(turnDetails.otherPlayers,'other-player','div');
+  document.getElementById('turns').innerHTML =`${currentPlayer}${otherPlayers}`;
   let isMyTurn=turnDetails.isMyTurn;
   if(eval(isMyTurn)){
     showEndTurn();

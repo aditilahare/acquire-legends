@@ -14,24 +14,28 @@
 <body>
   <div class="header">
   <span class="heading">Acquire</span>
-    <span id="playerName">
+  <span id="playerName">
+  </div>
+  <div class="actionPane">
+    <div class='actions'>
+      <div class="change-turn hidden" id="change-turn">
+        <button type="button" name="button">End Turn</button>
+      </div>``
+    </div>
+    <div class='currentActivity'>
+
+    </div>
+    <div id='turns'>
+    </div>
     </span>
-    <div class="change-turn hidden" id="change-turn">
-      <button type="button" name="button">End Turn</button>
-    </div>
-    <div class="turn-details">
-      <p id="current-player" class="current-player"></p>
-      <p id="other-players" class="other-players"></p>
-    </div>
   </div>
   <div class='leftcolumn'>
     <div class="region" id="hotels-place">
-      <h3 id="hotel-heading">Hotels</h3>
     </div>
   </div>
   <div class="row">
     <div class="centercolumn">
-      <div class="region">
+      <div >
         <div id='board'  style="height:540px;width:720px;">
 
         </div>
@@ -40,13 +44,12 @@
     <div class="rightcolumn">
       <div class="region">
         <h2>Activity Log</h2>
-        <div class="fakeContent" style="height:465px;">content</div>
+        <div class="fakeContent" style="height:475px;">content</div>
       </div>
     </div>
   </div>
   <div class="footer">
     <div class="shares" id="playerShares">
-      <h3>Shares</h3>
     </div>
     <div id='wallet' class="cash">
     </div>
