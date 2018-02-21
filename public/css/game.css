@@ -172,6 +172,7 @@ td{
 
  #grid{
    border: 3px solid black;
+   align-self: center;
  }
 
  .independent{
@@ -258,7 +259,6 @@ td{
   justify-content: space-around;
 	flex-direction: row;
 	flex-wrap: nowrap;
-	/*justify-content: flex-end;*/
 	align-items: flex-end;
 	align-content: flex-end;
 }
@@ -284,5 +284,7 @@ td{
 }
 
 #board{
+  display: flex;
   padding-top: 25px;
+  justify-content: center;
 }
