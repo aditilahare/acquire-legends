@@ -46,9 +46,7 @@ class Market{
     return neighbourHotelsOfTile.length==1;
   }
   placeTile(tile){
-    let response={
-      status:false
-    };
+    let response=this.getState();
     if (this.isIndependentTile(tile)) {
       this.placeAsIndependentTile(tile);
       response.status="Independent";
@@ -58,15 +56,28 @@ class Market{
     }else if(this.isStartingHotel(tile)){
       response.tiles=this.getNeighbourOccupiedTiles(tile);
       response.tiles.push(tile);
-      response.status="starting hotel";
-      let hotel = this.getInactiveHotels()[0];
-      hotel.status=true;
-      response.tiles.forEach((tile)=>{
-        hotel.occupyTile(tile);
-      });
-      response.hotelName=hotel.name;
+      response.status="chooseHotel";
     }
     this.occupiedTiles.push(tile);
+    return response;
+  }
+  getState(){
+    let response={
+      status:false
+    };
+    response.activeHotels=this.getActiveHotels();
+    response.inactiveHotels=this.getInactiveHotels();
+    return response;
+  }
+  startHotel(hotelName,tiles){
+    let response=this.getState();
+    let hotel = this.getHotel(hotelName);
+    hotel.status=true;
+    tiles.forEach((tile)=>{
+      hotel.occupyTile(tile);
+    });
+    response.status="starting hotel";
+    response.hotelName=hotel.name;
     return response;
   }
   createHotel(hotel){

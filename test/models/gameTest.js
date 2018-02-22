@@ -360,9 +360,10 @@ describe('game test',function(){
       game.addPlayer(player1);
       game.addPlayer(player2);
       game.start();
-      assert.deepEqual(game.placeTile(0,'6A').status,'Independent');
+      assert.deepEqual(game.placeTile(0,'6A').status,'changeTurn');
       game.changeCurrentPlayer();
-      assert.deepEqual(game.placeTile(1,'7A').status,'starting hotel');
+      assert.deepEqual(game.placeTile(1,'7A').status,'chooseHotel');
+      game.startHotel('Zeta',0);
       game.changeCurrentPlayer();
       assert.deepEqual(game.placeTile(0,'5A').status,'Added to hotel');
     });

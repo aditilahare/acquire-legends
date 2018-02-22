@@ -34,47 +34,73 @@ describe('Market', () => {
       zeta.status = false;
       market.hotels.push(zeta);
       assert.deepEqual(market.getInactiveHotels(), [zeta]);
-
-      market = new Market();
-      zeta = new Hotel('Zeta','yellow');
-      zeta.occupiedTiles=['1A','2A','1B','2B'];
+    });
+    it('should add tile to existing hotel', () => {
+      let market = new Market();
+      let zeta = new Hotel('Zeta','yellow',2);
+      market.hotels.push(zeta);
+      market.startHotel('Zeta',['1A','2A','1B','2B']);
       market.occupiedTiles=['1A','2A','1B','2B','1D'];
-      zeta.status=true;
-      market.hotels.push(zeta);
       assert.deepEqual(market.placeTile('1C'), {
-        status: "Added to hotel"
+        status: "Added to hotel",
+        inactiveHotels:[],
+        activeHotels: [
+          {
+            color: "yellow",
+            "level": 2,
+            "name": "Zeta",
+            "occupiedTiles": [
+              "1A",
+              "2A",
+              "1B",
+              "2B",
+              "1C",
+              "1D"
+            ],
+            "status": true
+          }
+        ]
       });
-
-      market = new Market();
-      zeta = new Hotel('Zeta', 'yellow');
-      zeta.occupiedTiles = ['1A', '1B', "3A"];
-      market.occupiedTiles = ['1A', '1B'];
+    });
+    it('should start new hotel', () => {
+      let market = new Market();
+      let zeta = new Hotel('Zeta', 'yellow',2);
+      market.occupiedTiles = ['1A', '1B','3A'];
       market.hotels.push(zeta);
       assert.deepEqual(market.placeTile('1C'), {
-        hotelName: 'Zeta',
-        status: "starting hotel",
+        activeHotels:[],
+        inactiveHotels: [
+          {
+            color: "yellow",
+          "level": 2,
+          "name": "Zeta",
+          occupiedTiles:[]
+        }
+        ],
+        status: "chooseHotel",
         tiles: ['1B', '1C']
       });
     });
-    describe('place a independent tile', () => {
-      it('can place a tile as a independent tile', () => {
-        let market = new Market();
-        zeta = new Hotel('Zeta', 'yellow');
-        zeta.occupiedTiles = ['1A', '1B', "3A"];
-        zeta.level = 2;
-        zeta.status = true;
-        market.occupiedTiles = ['1A', '1B', "3A"];
-        market.hotels.push(zeta);
-        let expected = [{
-          name: 'Zeta',
-          color: 'yellow',
-          occupiedTiles: ['1A', '1B', '3A'],
-          level: 2,
-          status: true,
-          sharePrice: 300
-        }]
-        assert.deepEqual(market.getAllHotelsDetails(), expected);
-      });
+  });
+
+  describe('place a independent tile', () => {
+    it('can place a tile as a independent tile', () => {
+      let market = new Market();
+      zeta = new Hotel('Zeta', 'yellow');
+      zeta.occupiedTiles = ['1A', '1B', "3A"];
+      zeta.level = 2;
+      zeta.status = true;
+      market.occupiedTiles = ['1A', '1B', "3A"];
+      market.hotels.push(zeta);
+      let expected = [{
+        name: 'Zeta',
+        color: 'yellow',
+        occupiedTiles: ['1A', '1B', '3A'],
+        level: 2,
+        status: true,
+        sharePrice: 300
+      }]
+      assert.deepEqual(market.getAllHotelsDetails(), expected);
     });
   });
 
@@ -100,9 +126,11 @@ describe('Market', () => {
         level: 2
       };
       market.createHotel(hotel);
+      console.log(market);
       assert.equal(market.getSharePriceOfActiveHotel("Zeta"), 0);
       market.placeTile('1A');
       market.placeTile('2A');
+      market.startHotel('Zeta',['1A','2A'])
       assert.equal(market.getSharePriceOfActiveHotel("Zeta"), 200);
     });
   });

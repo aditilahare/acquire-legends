@@ -51,21 +51,29 @@ class Game {
     this.bank=bank;
     this.MODE='wait';
     this.market = new Market();
-    this.status = '';
     this.actions = {
       'Independent':function(response){
-        response.expectedAction='buyShares';
+        response.expectedActions=['buyShares','changeTurn'];
+        if(response.activeHotels.length==0) {
+          response.status="changeTurn";
+        }
         return response;
       },
       'Added to hotel':function(response){
-        response.expectedAction='buyShares';
+        response.expectedActions=['buyShares','changeTurn'];
+        return response;
+      },
+      'chooseHotel':function(response){
+        response.expectedActions=['buyShares','changeTurn'];
+        if(response.inactiveHotels.length>0){
+          response.expectedActions=['chooseHotel'];
+          response.status="chooseHotel";
+        }
         return response;
       },
       'starting hotel':function(response){
-        response.expectedAction='buyShares';
-        let player=response.player;
-        this.bank.giveOneFreeShare(response.hotelName,player.name);
-        this.addSharesToPlayer(player.id,response.hotelName,1);
+        response.expectedActions=['buyShares','changeTurn'];
+        response.status="buyShares";
         return response;
       }
     };
@@ -132,7 +140,9 @@ class Game {
     this.createHotels(HOTEL_DATA);
     this.turn = new Turn(this.getPlayersOrder());
     this.MODE = 'play';
-    this.status = 'place tile';
+    this.turn.setState({
+      expectedActions:['placeTile']
+    });
   }
   createHotels(hotelsData){
     let self=this;
@@ -175,19 +185,18 @@ class Game {
   placeTile(id, tile) {
     let currentPlayerId = this.turn.getCurrentPlayerID();
     let player = this.findPlayerBy(id);
-    if(this.status=='place tile'&& currentPlayerId == id){
-      let playerTile = player.getTile(tile);
-      let response=this.market.placeTile(playerTile);
-      if(response.status){
-        player.removeTile(tile);
-        response.player=player;
-        let state=this.actions[response.status].call(this,response);
-        this.turn.setState(state);
-        this.status = 'buy shares';
-      }
-      return response;
+    let playerTile = player.getTile(tile);
+    let response=this.market.placeTile(playerTile);
+    if(response.status){
+      player.removeTile(tile);
+      response.player=player;
+      this.setState(response);
     }
-    // return this.turn.getState();
+    return response;
+  }
+  setState(response){
+    let state=this.actions[response.status].call(this,response);
+    this.turn.setState(state);
   }
   giveIndependentTiles() {
     return this.market.giveIndependentTiles();
@@ -214,8 +223,12 @@ class Game {
     let currentPlayerID = this.turn.getCurrentPlayerID();
     let currentPlayer = this.findPlayerBy(currentPlayerID);
     currentPlayer.addTile(tiles[0]);
-    this.status = 'place tile';
+    this.turn.setState({
+      expectedActions:['placeTile']
+    });
     this.turn.updateTurn();
+    console.log(this.turn.state);
+    debugger;
   }
   getTurnDetails(id){
     let turnDetails={};
@@ -239,6 +252,20 @@ class Game {
       hotelsData:this.getAllHotelsDetails(),
       turnDetails:this.getTurnDetails(playerId)
     };
+  }
+  getTurnState(){
+    return this.turn.getState();
+  }
+  isExpectedAction(action){
+    return this.getTurnState().expectedActions.includes(action);
+  }
+  startHotel(hotelName,playerId){
+    let tiles=this.getTurnState().tiles;
+    let response=this.market.startHotel(hotelName,tiles);
+    this.bank.giveOneFreeShare(hotelName,playerId);
+    this.addSharesToPlayer(playerId,hotelName,1);
+    this.setState(response);
+    return response;
   }
 }
 module.exports = Game;
