@@ -35,4 +35,12 @@ describe('Hotel test', function(){
       assert.deepEqual(zeta.occupiedTiles,expected);
     });
   });
+  describe('getSize()', function(){
+    it('should give its number of tiles', function(){
+      let zeta = new Hotel('zeta','yellow');
+      zeta.occupyTile('1A');
+      zeta.occupyTile('2A');
+      assert.equal(zeta.getSize(),2);
+    });
+  });
 });

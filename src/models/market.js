@@ -41,9 +41,9 @@ class Market{
     return neighbourOccupiedTiles.length>0
     && neighbourHotelsOfTile.length==0;
   }
-  isAdjecentToSingleHotel(tile){
+  isAdjecentToAnyHotel(tile){
     let neighbourHotelsOfTile = this.getNeighbourHotelsOfTile(tile);
-    return neighbourHotelsOfTile.length==1;
+    return neighbourHotelsOfTile.length>0;
   }
   removeFromIndependentTiles(tiles){
     tiles.forEach(tile=>{
@@ -58,22 +58,50 @@ class Market{
     if (this.isIndependentTile(tile)) {
       this.placeAsIndependentTile(tile);
       response.status="Independent";
-    }else if(this.isAdjecentToSingleHotel(tile)) {
-      this.addTileToExistingHotel(tile);
-      response.status="Added to hotel";
-    }else if(this.isStartingHotel(tile)){
-      response.tiles=this.getNeighbourOccupiedTiles(tile);
-      response.tiles.push(tile);
-      response.status="starting hotel";
-      let hotel = this.getInactiveHotels()[0];
-      hotel.status=true;
-      response.tiles.forEach((tile)=>{
-        hotel.occupyTile(tile);
-      });
-      response.hotelName=hotel.name;
+    }
+    if(this.isAdjecentToAnyHotel(tile)) {
+      let neighbourHotelsOfTile=this.getNeighbourHotelsOfTile(tile);
+      if (neighbourHotelsOfTile.length==1) {
+        this.addTileToExistingHotel(tile);
+        response.status="Added to hotel";
+      }
+      if (neighbourHotelsOfTile.length==2) {
+        this.megerOfTwoHotel(response,neighbourHotelsOfTile,tile);
+      }
+    }
+    if(this.isStartingHotel(tile)){
+      this.startHotel(response,tile);
     }
     this.occupiedTiles.push(tile);
     return response;
+  }
+  startHotel(response,tile){
+    response.tiles=this.getNeighbourOccupiedTiles(tile);
+    response.tiles.push(tile);
+    response.status="starting hotel";
+    let hotel = this.getInactiveHotels()[0];
+    hotel.status=true;
+    response.tiles.forEach((tile)=>{
+      hotel.occupyTile(tile);
+    });
+    response.hotelName=hotel.name;
+  }
+  megerOfTwoHotel(response,neighbourHotelsOfTile,tile){
+    response.status="merge";
+    response.mergerBetween=neighbourHotelsOfTile;
+    response.mergingTile=tile;
+    let surviourHotel=this.getLargerHotel(neighbourHotelsOfTile);
+    response.surviourHotel=surviourHotel;
+  }
+  getLargerHotel(hotelsList){
+    let hotel=hotelsList[0];
+    let sizeOfFirstHotel=hotelsList[0].getSize();
+    let sizeOfSecondHotel=hotelsList[1].getSize();
+
+    if (sizeOfSecondHotel>sizeOfFirstHotel) {
+      hotel=hotelsList[1];
+    }
+    return hotel;
   }
   createHotel(hotel){
     this.hotels.push(new Hotel(hotel.name,hotel.color,hotel.level));

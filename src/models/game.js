@@ -56,10 +56,12 @@ class Game {
     this.actions = {
       'Independent':function(response){
         response.expectedAction='buyShares';
+        this.status = 'buy shares';
         return response;
       },
       'Added to hotel':function(response){
         response.expectedAction='buyShares';
+        this.status = 'buy shares';
         return response;
       },
       'starting hotel':function(response){
@@ -67,6 +69,12 @@ class Game {
         let player=response.player;
         this.bank.giveOneFreeShare(response.hotelName,player.id);
         this.addSharesToPlayer(player.id,response.hotelName,1);
+        this.status = 'buy shares';
+        return response;
+      },
+      'merge':function (response) {
+        response.expectedAction='sellKeepOrTradeShares';
+        this.status='sellKeepOrTradeShares';
         return response;
       }
     };
@@ -188,7 +196,6 @@ class Game {
         response.player=player;
         let state=this.actions[response.status].call(this,response);
         this.turn.setState(state);
-        this.status = 'buy shares';
       }
       return response;
     }

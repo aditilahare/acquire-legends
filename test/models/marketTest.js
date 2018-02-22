@@ -116,7 +116,6 @@ describe('Market', () => {
       assert.equal(market.getSharePriceOfActiveHotel("Zeta"), 200);
     });
   });
-
   describe('calculate share price', () => {
     it('it should return share price according to level and size', () => {
       let market = new Market();
@@ -127,6 +126,44 @@ describe('Market', () => {
       assert.equal(market.calculateSharePrice(21, 2), 800);
       assert.equal(market.calculateSharePrice(33, 2), 900);
       assert.equal(market.calculateSharePrice(41, 2), 1000);
+    });
+  });
+  describe('isAdjecentToAnyHotel()', () => {
+    it('should give true when given tile is adjacent to at least one hotel', () => {
+      let market = new Market();
+      let zeta = new Hotel('Zeta', 'yellow');
+      zeta.occupiedTiles = ['1A', '2A', '1B', '2B'];
+      zeta.status=true;
+      market.hotels.push(zeta);
+      let expected = [zeta];
+      assert.isTrue(market.isAdjecentToAnyHotel('2C'));
+      assert.isTrue(market.isAdjecentToAnyHotel('3B'));
+    });
+  });
+  describe('getLargerHotel()', () => {
+    it('should give larger hotel among given', () => {
+      let market = new Market();
+      let zeta = new Hotel('Zeta', 'yellow');
+      zeta.occupiedTiles = ['1A', '2A', '1B', '2B'];
+      zeta.status=true;
+      market.hotels.push(zeta);
+      let sackson = new Hotel('Sackson', 'red');
+      sackson.occupiedTiles = ['1C', '2C', '1D'];
+      sackson.status=true;
+      market.hotels.push(sackson);
+      assert.equal(market.getLargerHotel(market.hotels),zeta);
+    });
+    it('should give larger hotel among given', () => {
+      let market = new Market();
+      let sackson = new Hotel('Sackson', 'red');
+      sackson.occupiedTiles = ['1C', '2C', '1D'];
+      sackson.status=true;
+      market.hotels.push(sackson);
+      let zeta = new Hotel('Zeta', 'yellow');
+      zeta.occupiedTiles = ['1A', '2A', '1B', '2B'];
+      zeta.status=true;
+      market.hotels.push(zeta);
+      assert.equal(market.getLargerHotel(market.hotels),zeta);
     });
   });
 });

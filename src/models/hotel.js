@@ -24,6 +24,9 @@ class Hotel {
     let placedTile = tile;
     return this.occupiedTiles.includes(tile);
   }
+  getSize(){
+    return this.occupiedTiles.length;
+  }
 }
 
 module.exports = Hotel;
