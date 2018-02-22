@@ -1,4 +1,4 @@
-/*eslint max-len: ["error", { "ignoreStrings": true }]*/
+//eslint max-len: ["error", { "ignoreStrings": true }]
 const assert = require('chai').assert;
 const Game = require('../../src/models/game.js');
 const Player = require('../../src/models/player.js');
@@ -121,7 +121,8 @@ describe('game test',function(){
       let hydraHotel = {
         name: 'Hydra',
         color: 'orange',
-        occupiedTiles:[]
+        occupiedTiles:[],
+        level:3
       };
 
       game.addPlayer(player1);
@@ -141,11 +142,13 @@ describe('game test',function(){
       let game = new Game(2);
       let hotelsData = [{
         name: 'zeta',
-        color: 'yellow'
+        color: 'yellow',
+        level:2
       }];
       let zetaHotel = {
         name: 'zeta',
         color: 'yellow',
+        level:2,
         occupiedTiles:[]
       };
       game.createHotels(hotelsData);
@@ -197,22 +200,25 @@ describe('game test',function(){
     });
   });
   describe('getAllHotelsDetails', function(){
-     it('can tell all the hotel details in game', function(){
-       let game = new Game(2);
-       let hotelsData = [{
-         name: 'zeta',
-         color: 'yellow'
-       }];
-       let expected = [{
-          name: 'zeta',
-          color: 'yellow',
-          occupiedTiles:[],
-          shares:25
-        }];
-       game.createHotels(hotelsData);
-       assert.deepEqual(game.getAllHotelsDetails(),expected);
-     });
-   });
+    it('can tell all the hotel details in game', function(){
+      let game = new Game(2);
+      let hotelsData = [{
+        name: 'zeta',
+        color: 'yellow',
+        level:2
+      }];
+      let expected = [{
+        name: 'zeta',
+        color: 'yellow',
+        level:2,
+        occupiedTiles:[],
+        sharePrice:"-",
+        shares:25
+      }];
+      game.createHotels(hotelsData);
+      assert.deepEqual(game.getAllHotelsDetails(),expected);
+    });
+  });
   describe('getAllPlayerNames',()=>{
     it('can give empty list if no player is present',()=>{
       let game = new Game(2);
@@ -332,9 +338,9 @@ describe('game test',function(){
   describe('getStatus',()=>{
     it('should give current game status',()=>{
       let expected = {
-      hotelsData:[],
-      turnDetails:{currentPlayer:'pragya',otherPlayers:['aditi'],isMyTurn:true}
-    };
+        hotelsData:[],
+        turnDetails:{currentPlayer:'pragya',otherPlayers:['aditi'],isMyTurn:true}
+      };
       let game = new Game(2);
       let player1=new Player(0,'pragya');
       let player2=new Player(1,'aditi');
@@ -359,17 +365,71 @@ describe('game test',function(){
   });
   describe('purchaseShares',()=>{
     it('should purchase shares to given players',()=>{
-      let game = new Game(2);
+      //setup
+      let game = new Game(3);
       let player1 = new Player(0,'pragya');
-      player1.addMoney(1500);
+      let player2 = new Player(1,'wulfa');
+      let player3 = new Player(2,'harvar');
+      let sackson = new Hotel([{name:'sackson',color:'red'}]);
       game.addPlayer(player1);
-      let market = new Market();
-      let bank = new Bank(10000);
-      game.createHotels([{name:'zeta',color:'yellow'}]);
-      game.purchaseShares('zeta',2,0);
-      let expected = 1100;
-      let actual = game.getAvailableCashOfPlayer(0);
+      game.addPlayer(player2);
+      game.addPlayer(player3);
+      game.start();
+      game.placeTile(0,'1A');
+      game.status='place tile';
+      game.changeCurrentPlayer();
+      game.placeTile(1,'7A');
+      game.changeCurrentPlayer();
+      game.status='place tile';
+      game.placeTile(2,'1B');
+      game.status='place tile';
+      game.changeCurrentPlayer();
+      game.placeTile(0,'2A');
+      game.status='buy shares';
+
+      //code execution
+      game.purchaseShares('Sackson',2,0);
+      game.purchaseShares('Sackson',25,0);
+
+      //assertion
+      let player = game.findPlayerBy(0);
+      let expected = 5400;
+      let actual = player.getAvailableCash();
       assert.deepEqual(actual,expected);
-    });
+
+      expected = {  Sackson: 2,
+        Zeta: 0,
+        Hydra: 0,
+        Fusion: 0,
+        America: 0,
+        Phoenix: 0,
+        Quantum: 0
+      };
+      actual = player.getShareDetails();
+      assert.deepEqual(actual,expected);
+
+      expected ={ hotelName:'Sackson',
+      availableShares: 22,
+      shareHolders: [ 2, 0, 0 ]
+    };
+    actual = game.bank.sharesDetailsOfHotels;
+    assert.deepInclude(actual,expected);
   });
+});
+describe('actions',()=>{
+  it('should add tile to an existing hotel',()=>{
+    let expected = {};
+    let game = new Game(2);
+    let player1=new Player(0,'pragya');
+    let player2=new Player(1,'aditi');
+    game.addPlayer(player1);
+    game.addPlayer(player2);
+    game.start();
+    assert.deepEqual(game.placeTile(0,'6A').status,'Independent');
+    game.changeCurrentPlayer();
+    assert.deepEqual(game.placeTile(1,'7A').status,'starting hotel');
+    game.changeCurrentPlayer();
+    assert.deepEqual(game.placeTile(0,'5A').status,'Added to hotel');
+  });
+});
 });

@@ -38,18 +38,56 @@ describe('Market', () => {
       market = new Market();
       zeta = new Hotel('Zeta','yellow');
       zeta.occupiedTiles=['1A','2A','1B','2B'];
-      market.occupiedTiles=['1A','2A','1B','2B'];
+      market.occupiedTiles=['1A','2A','1B','2B','1D'];
       zeta.status=true;
       market.hotels.push(zeta);
       assert.deepEqual(market.placeTile('1C'),{status:"Added to hotel"});
 
       market = new Market();
       zeta = new Hotel('Zeta','yellow');
-      zeta.occupiedTiles=['1A','2A','1B','2B'];
-      market.occupiedTiles=['1A','2A','1B','2B'];
+      zeta.occupiedTiles=['1A','1B'];
+      market.occupiedTiles=['1A','1B'];
       market.hotels.push(zeta);
-      assert.deepEqual(market.placeTile('1C'),{status:"starting hotel",
+      assert.deepEqual(market.placeTile('1C'),{hotelName:'Zeta',status:"starting hotel",
       tiles:['1B','1C']});
     });
-  })
+    describe('place a independent tile',()=>{
+      it('can place a tile as a independent tile',()=>{
+        let market = new Market();
+        market.placeTile('2B');
+        let actual = market.giveIndependentTiles();
+        assert.deepEqual(actual,['2B']);
+        market.placeTile('5A');
+        actual = market.giveIndependentTiles();
+        assert.deepEqual(actual,['2B','5A']);
+      });
+    });
+  });
+  describe('get all hotel details',()=>{
+    it('should give list of hotel class objects which contain their share price respect to their chain-size',()=>{
+      let jagadamba = new Market();
+      let hotel = {name:'zeta',color:'yellow',level:2};
+      jagadamba.createHotel(hotel);
+      jagadamba.placeTile('1A');
+      jagadamba.placeTile('1B');
+      let expected ={name:'zeta',color:'yellow',occupiedTiles:['1A','1B'],level: 2,status: true,sharePrice:200};
+      assert.deepInclude(jagadamba.getAllHotelsDetails(),expected);
+    });
+  });
+  describe('calculate share price',()=>{
+    it('it should return share price according to level and size',()=>{
+      let market = new Market();
+      let zeta = new Hotel('Zeta','yellow');
+      zeta.occupiedTiles=['1A','2A','1B','2B'];
+      market.hotels.push(zeta);
+      let expected = [zeta];
+      assert.equal(market.calculateSharePrice(2,2),200);
+      assert.equal(market.calculateSharePrice(3,2),300);
+      assert.equal(market.calculateSharePrice(6,3),700);
+      assert.equal(market.calculateSharePrice(14,4),900);
+      assert.equal(market.calculateSharePrice(21,2),800);
+      assert.equal(market.calculateSharePrice(33,2),900);
+      assert.equal(market.calculateSharePrice(41,2),1000);
+    });
+  });
 });

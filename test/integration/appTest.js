@@ -229,10 +229,22 @@ describe('App Test', () => {
       game.addPlayer(new Player(2, 'raj'));
       game.start();
       app.game = game;
-
       request(app)
         .get('/changeTurn')
+        .set('Cookie','playerId=0')
         .expect(200)
+        .end(done);
+    });
+    it('should respond withn 401 for unauthorized player for changing turn', function(done) {
+      let game = new Game(3);
+      game.addPlayer(new Player(0, 'veera'));
+      game.addPlayer(new Player(1, 'gupta'));
+      game.addPlayer(new Player(2, 'raj'));
+      game.start();
+      app.game = game;
+      request(app)
+        .get('/changeTurn')
+        .expect(401)
         .end(done);
     });
   });
