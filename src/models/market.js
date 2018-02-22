@@ -132,7 +132,7 @@ class Market{
   }
   calculateSharePrice(hotelSize,hotelLevel){
     let sharePrice = (hotelLevel*100);
-    if(hotelSize>1&&hotelSize<6){
+    if(hotelSize<6){
       let increament = (hotelSize-2)*100;
       sharePrice += increament;
     }
