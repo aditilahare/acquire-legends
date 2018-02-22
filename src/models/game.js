@@ -178,7 +178,6 @@ class Game {
     if(this.status=='place tile'&& currentPlayerId == id){
       let playerTile = player.getTile(tile);
       let response=this.market.placeTile(playerTile);
-      console.log(response);
       if(response.status){
         player.removeTile(tile);
         response.player=player;
