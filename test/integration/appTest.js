@@ -279,4 +279,19 @@ describe('App Test', () => {
         .end(done);
     });
   });
+  // describe('/purchaseShares', function() {
+  //   it('should respond w', function(done) {
+  //     let game = new Game(3);
+  //     game.addPlayer(new Player(0, 'veera'));
+  //     game.addPlayer(new Player(1, 'gupta'));
+  //     game.start();
+  //     app.game = game;
+  //     request(app)
+  //       .post('/gameStatus')
+  //       .send('cart:{"zeta":3}')
+  //       // .expect(200)
+  //       .expect('end turn')
+  //       .end(done);
+  //   });
+  // });
 });

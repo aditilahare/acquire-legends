@@ -1,5 +1,5 @@
 /*eslint no-implicit-globals: "off"*/
-
+let cart =[];
 let getElement = function(selector){
   return document.querySelector(selector);
 };
@@ -12,8 +12,23 @@ let listToHTML = function(list,className,elementName='p') {
 };
 
 const changeTurn = function () {
+  let cartDetails = JSON.stringify(prepareCart());
+  sendAjaxRequest('POST','/purchaseShares',`cart=${cartDetails}`);
+  cart=[];
+  getElement('#cart').innerText='';
   sendAjaxRequest('GET','/changeTurn','',getPlayerDetails);
 };
+
+const prepareCart = function(){
+  return cart.reduce((previous,current)=>{
+    if(!previous[current]) {
+      previous[current]=0;
+    }
+    previous[current]++;
+    return previous;
+  },{});
+};
+
 
 const showEndTurn = function () {
   let element=getElement('#change-turn');
@@ -112,15 +127,51 @@ const displayPlayerDetails = function () {
   displayPlayerName(playerDetails.name);
   displaySharesDetails(playerDetails.shares);
 };
-
+const addToCart = function(hotelName){
+  cart.push(hotelName);
+  let cartDiv = getElement('#cart');
+  let preview = document.createElement('div');
+  preview.classList.add(`${hotelName}`,`cartCards`);
+  cartDiv.appendChild(preview);
+};
+const addShare = function(){
+  console.log(event.target.parentElement.parentElement);
+  let hotelName= event.target.parentElement.parentElement.id;
+  // let hotelColor = event.target.parentElement.parentElement.;
+  console.log(hotelName);
+  addToCart(hotelName);
+  // console.log(hotelColor);
+};
+const removeShare = function(){
+  cart[hotelName]-=1;
+  console.log(event.target.parentElement.parentElement);
+  let hotelName= event.target.parentElement.parentElement.id;
+  console.log(hotelName);
+  removeFromCart(hotelName);
+  // console.log(hotelColor);
+};
 const displayHotelNames = function(allHotelsDetails){
   let hotelsHtml=allHotelsDetails.reduce((prev,cur)=>{
+    let shareButtons = '';
+    if(cur.status){
+      shareButtons=`<button id="${cur.name}AddShare" onclick="addShare()"> + \
+      </button></br><button id="${cur.name}RemoveShare" \
+      onclick="removeShare()"> - </button></button>`;
+    }
     prev +=`<div class="fakeContent" id="${cur.name}" \
    style="background-color:${cur.color}"><div class="hotels">${cur.name}</div>\
-   <div class="hotels">${cur.shares}<br>${cur.sharePrice}</div></div><br>`;
+   <div class="hotels">${cur.shares}<br>${cur.sharePrice}</div><div>\
+   ${shareButtons}</div></div>`;
     return prev;
   },'<h3 id="hotel-heading">Hotels</h3>   ');
   document.getElementById('hotels-place').innerHTML = hotelsHtml;
+};
+
+const createBtn = function(innerText,onclickFn=''){
+  let btn = document.createElement('button');
+  btn.innerText = innerText;
+  btn.onclick = onclickFn;
+  return btn;
 };
 
 
@@ -184,7 +235,7 @@ const assignTileIndependentClass = function(tile){
 
 const renderGameStatus = function(){
   let gameStatus = JSON.parse(this.responseText);
-  console.log(gameStatus);
+  // console.log(gameStatus);
   displayHotelDetails(gameStatus.hotelsData);
   displayIndependentTiles(gameStatus.independentTiles);
   displayTurnDetails(gameStatus.turnDetails);
