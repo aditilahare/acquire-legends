@@ -2,7 +2,7 @@ const Player = require('../models/player.js');
 
 const joinGame = function(req,res,next){
   let game = req.app.game;
-  if(game.isVacancy()){
+  if(game.isVacant()){
     addPlayer(req,res,next);
   }else{
     res.send("Maximum number of players joined");

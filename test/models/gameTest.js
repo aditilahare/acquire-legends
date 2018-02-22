@@ -33,14 +33,14 @@ describe('game test',function(){
       assert.isNotOk(actual);
     });
   });
-  describe('isVacancy', () => {
+  describe('isVacant', () => {
     it('should return false if maximum players are  reached', () => {
       let game = new Game(0);
-      assert.isNotOk(game.isVacancy());
+      assert.isNotOk(game.isVacant());
     });
     it('should return true if maximum players are not reached', () => {
       let game = new Game(1);
-      assert.isOk(game.isVacancy());
+      assert.isOk(game.isVacant());
     });
   });
   describe('haveAllPlayersJoined', () => {
@@ -53,16 +53,16 @@ describe('game test',function(){
       assert.isNotOk(game.haveAllPlayersJoined());
     });
   });
-  describe('getPlayerNameOf', () => {
+  describe('getPlayerNameById', () => {
     it('should return player name of given id', () => {
       let game = new Game(3);
       let player1 = new Player(0,'pragya');
       let player2 = new Player(1,'gupta');
       game.addPlayer(player1);
       game.addPlayer(player2);
-      assert.equal('pragya', game.getPlayerNameOf(0));
-      assert.equal('gupta', game.getPlayerNameOf(1));
-      assert.equal('', game.getPlayerNameOf(2));
+      assert.equal('pragya', game.getPlayerNameById(0));
+      assert.equal('gupta', game.getPlayerNameById(1));
+      assert.equal('', game.getPlayerNameById(2));
     });
   });
   describe('distributeInitialTiles', () => {
@@ -77,16 +77,16 @@ describe('game test',function(){
       assert.deepEqual(aditi.getTiles(), ['7A', '8A', '9A', '10A', '11A', '12A']);
     });
   });
-  describe('findPlayerBy', () => {
+  describe('findPlayerById', () => {
     it('should return player of given id', () => {
       let game = new Game(3);
       let player1 = new Player(0,'pragya');
       let player2 = new Player(1,'gupta');
       game.addPlayer(player1);
       game.addPlayer(player2);
-      assert.deepEqual(player1, game.findPlayerBy(0));
-      assert.deepEqual(player2, game.findPlayerBy(1));
-      assert.deepEqual(undefined, game.findPlayerBy(2));
+      assert.deepEqual(player1, game.findPlayerById(0));
+      assert.deepEqual(player2, game.findPlayerById(1));
+      assert.deepEqual(undefined, game.findPlayerById(2));
     });
   });
   describe('disrtibuteMoneyToPlayer', () => {
@@ -94,9 +94,9 @@ describe('game test',function(){
       let game = new Game(3);
       let player1 = new Player(0,'pragya');
       game.addPlayer(player1);
-      assert.equal(game.getAvailableCashOf(0), 0);
+      assert.equal(game.getAvailableCashOfPlayer(0), 0);
       game.disrtibuteMoneyToPlayer(0, 4000);
-      assert.equal(game.getAvailableCashOf(0), 4000);
+      assert.equal(game.getAvailableCashOfPlayer(0), 4000);
     });
   });
   describe('distributeInitialMoney', () => {
@@ -106,11 +106,11 @@ describe('game test',function(){
       let player2 = new Player(1,'sree');
       game.addPlayer(player1);
       game.addPlayer(player2);
-      assert.equal(game.getAvailableCashOf(0), 0);
-      assert.equal(game.getAvailableCashOf(1), 0);
+      assert.equal(game.getAvailableCashOfPlayer(0), 0);
+      assert.equal(game.getAvailableCashOfPlayer(1), 0);
       game.distributeInitialMoney(6000);
-      assert.equal(game.getAvailableCashOf(0), 6000);
-      assert.equal(game.getAvailableCashOf(1), 6000);
+      assert.equal(game.getAvailableCashOfPlayer(0), 6000);
+      assert.equal(game.getAvailableCashOfPlayer(1), 6000);
     });
   });
   describe('start', () => {
@@ -127,12 +127,12 @@ describe('game test',function(){
 
       game.addPlayer(player1);
       game.addPlayer(player2);
-      assert.equal(game.getAvailableCashOf(0), 0);
-      assert.equal(game.getAvailableCashOf(1), 0);
+      assert.equal(game.getAvailableCashOfPlayer(0), 0);
+      assert.equal(game.getAvailableCashOfPlayer(1), 0);
       game.start();
       assert.deepEqual(game.getHotel('Hydra'),hydraHotel);
-      assert.equal(game.getAvailableCashOf(0), 6000);
-      assert.equal(game.getAvailableCashOf(1), 6000);
+      assert.equal(game.getAvailableCashOfPlayer(0), 6000);
+      assert.equal(game.getAvailableCashOfPlayer(1), 6000);
       assert.deepEqual(player1.getTiles(), ['1A', '2A', '3A', '4A', '5A', '6A']);
       assert.deepEqual(player2.getTiles(), ['7A', '8A', '9A', '10A', '11A', '12A']);
     });

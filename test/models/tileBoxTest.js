@@ -2,11 +2,11 @@ const assert = require('chai').assert;
 const TileBox = require('../../src/models/tileBox.js');
 
 describe('TileBox', () => {
-  describe('getNTiles',()=>{
+  describe('getTiles',()=>{
     it('should return specified n number of tiles ',()=>{
       let tileBox=new TileBox(12,9);
       let firstTile=tileBox.tiles[0];
-      let actual=tileBox.getNTiles(6);
+      let actual=tileBox.getTiles(6);
       assert.equal(actual.length,6);
       assert.deepEqual(actual[0],firstTile);
     });

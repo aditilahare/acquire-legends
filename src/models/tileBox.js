@@ -14,7 +14,7 @@ class TileBox {
     }
     return tiles;
   }
-  getNTiles(noOfTiles) {
+  getTiles(noOfTiles) {
     let nTiles=this.tiles.splice(0,noOfTiles);
     return nTiles;
   }
