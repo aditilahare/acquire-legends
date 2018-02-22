@@ -1,3 +1,4 @@
+/*eslint no-implicit-globals: "off"*/
 
 let getElement = function(selector){
   return document.querySelector(selector);
@@ -116,8 +117,7 @@ const displayHotelNames = function(allHotelsDetails){
   let hotelsHtml=allHotelsDetails.reduce((prev,cur)=>{
     prev +=`<div class="fakeContent" id="${cur.name}" \
    style="background-color:${cur.color}"><div class="hotels">${cur.name}</div>\
-   <div class="hotels">${cur.shares}</div>\
-   <div class="hotels">${cur.sharePrice}</div></div><br>`;
+   <div class="hotels">${cur.shares}<br>${cur.sharePrice}</div></div><br>`;
     return prev;
   },'<h3 id="hotel-heading">Hotels</h3>   ');
   document.getElementById('hotels-place').innerHTML = hotelsHtml;
@@ -143,6 +143,7 @@ const updateHotelsOnBoard= function (allHotelsDetails){
 
 const placeTileHandler = function () {
   console.log(this.responseText);
+  showEndTurn();
 };
 
 const placeTile = function(tile){
@@ -163,8 +164,13 @@ const displayTurnDetails = function(turnDetails) {
   document.getElementById('turns').innerHTML =`${currentPlayer}${otherPlayers}`;
   let isMyTurn=turnDetails.isMyTurn;
   if(eval(isMyTurn)){
-    showEndTurn();
+    if(!IGNORE_MY_TURN){
+      IGNORE_MY_TURN=true;
+      alert(`${turnDetails.currentPlayer} it's your turn`);
+    }
   }else{
+    document.tile=`${turnDetails.currentPlayer} it's your turn`;
+    IGNORE_MY_TURN=false;
     hideEndTurn();
   }
 };
@@ -195,6 +201,7 @@ const actionsPerformed = function () {
   getPlayerDetails();
   setInterval(getGameStatus,1000);
   setInterval(getPlayerDetails,1000);
+  IGNORE_MY_TURN=false;
 };
 
 window.onload = actionsPerformed;

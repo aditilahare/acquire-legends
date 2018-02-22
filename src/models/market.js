@@ -113,8 +113,11 @@ class Market{
   addTileToExistingHotel(tile){
     let neighbourOccupiedTiles=this.getNeighbourOccupiedTiles(tile);
     let neighbourHotelsOfTile = this.getNeighbourHotelsOfTile(tile);
+    let sanitizedNeighbourTiles=neighbourOccupiedTiles.filter((tile)=>{
+      return !this.doesHotelContainsTile(neighbourHotelsOfTile[0],tile);
+    });
     neighbourHotelsOfTile[0].occupyTile(tile);
-    neighbourOccupiedTiles.forEach((neighbourTile)=>{
+    sanitizedNeighbourTiles.forEach((neighbourTile)=>{
       neighbourHotelsOfTile[0].occupyTile(neighbourTile);
     });
   }
