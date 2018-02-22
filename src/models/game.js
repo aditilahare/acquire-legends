@@ -2,10 +2,10 @@ const TileBox = require('./tileBox');
 const Bank = require('./bank');
 const Market = require('./market');
 const Turn = require('./turn');
+
 const INITIAL_SHARES = 25;
 const INITIAL_MONEY = 100000;
 const STARTING_BALANCE = 6000;
-
 const HOTEL_DATA = [{
   name: 'Sackson',
   color: 'rgb(205, 61, 65)',
@@ -42,6 +42,7 @@ const HOTEL_DATA = [{
   level: 4
 }
 ];
+
 class Game {
   constructor(maxPlayers,bank=new Bank(INITIAL_MONEY)) {
     this.maxPlayers=maxPlayers;
@@ -109,6 +110,10 @@ class Game {
     }
     return '';
   }
+  deductMoneyFromPlayer(playerId,money){
+    let player = this.findPlayerBy(playerId);
+    player.deductMoney(money);
+  }
   disrtibuteMoneyToPlayer(id, money) {
     let player = this.findPlayerBy(id);
     player.addMoney(money);
@@ -144,9 +149,9 @@ class Game {
       expectedActions:['placeTile']
     });
   }
-  createHotels(hotelsData){
+  createHotels(hotels){
     let self=this;
-    hotelsData.forEach((hotel)=>{
+    hotels.forEach((hotel)=>{
       this.market.createHotel(hotel);
       this.bank.createSharesOfHotel(hotel.name,INITIAL_SHARES);
     });
@@ -266,6 +271,21 @@ class Game {
     this.addSharesToPlayer(playerId,hotelName,1);
     this.setState(response);
     return response;
+  }
+  purchaseShares(hotelName,noOfShares,playerId){
+    let player = this.findPlayerBy(playerId);
+    let sharePrice = this.market.getSharePriceOfHotel(hotelName);
+    let cartValue = sharePrice * noOfShares;
+    if(this.bank.doesHotelhaveEnoughShares(hotelName,noOfShares)){
+      player.deductMoney(cartValue);
+      this.addSharesToPlayer(playerId, hotelName, noOfShares);
+      this.bank.sellSharesToPlayer(hotelName,noOfShares,playerId,cartValue);
+    }
+    return;
+  }
+  getAvailableCashOfPlayer(playerId){
+    let player = this.findPlayerBy(playerId);
+    return player.getAvailableCash();
   }
 }
 module.exports = Game;

@@ -103,9 +103,21 @@ describe('Market', () => {
       assert.deepEqual(market.getAllHotelsDetails(), expected);
     });
   });
-
-  describe('getAllHotelsDetails', () => {
-    it('can place a tile as a independent tile', () => {
+  describe('get all hotel details',()=>{
+    it('should give list of hotel class objects which contain their share price respect to their chain-size',()=>{
+      let jagadamba = new Market();
+      let hotel={name:'Zeta',color:'yellow',level:2}
+      jagadamba.createHotel(hotel);
+      jagadamba.occupiedTiles=['1A','1B'];
+      jagadamba.startHotel('Zeta',['1A','1B']);
+      jagadamba.placeTile('1C');
+      let expected ={name:'Zeta',color:'yellow',occupiedTiles:['1A','1B','1C'],level: 2,status:true,sharePrice:300};
+      console.log(jagadamba.getAllHotelsDetails())
+      assert.deepInclude(jagadamba.getAllHotelsDetails()[0],expected);
+    });
+  });
+  describe('calculate share price',()=>{
+    it('it should return share price according to level and size',()=>{
       let market = new Market();
       market.placeTile('2B');
       let actual = market.giveIndependentTiles();
