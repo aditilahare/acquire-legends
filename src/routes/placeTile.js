@@ -3,7 +3,7 @@ const placeTile = function (req,res,next) {
   let id=req.cookies.playerId;
   let tile= req.body.tile;
   game.placeTile(id,tile);
-  res.send(game.turn.getState());
+  res.send(game.getTurnState());
 };
 
 module.exports=placeTile;

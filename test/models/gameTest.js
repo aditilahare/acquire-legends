@@ -370,50 +370,44 @@ describe('game test',function(){
       let player1 = new Player(0,'pragya');
       let player2 = new Player(1,'wulfa');
       let player3 = new Player(2,'harvar');
-      let sackson = new Hotel([{name:'sackson',color:'red'}]);
       game.addPlayer(player1);
       game.addPlayer(player2);
       game.addPlayer(player3);
       game.start();
-      game.placeTile(0,'1A');
-      game.status='place tile';
+      assert.deepEqual(game.placeTile(0,'6A').status,'changeTurn');
       game.changeCurrentPlayer();
-      game.placeTile(1,'7A');
+      assert.deepEqual(game.placeTile(1,'7A').status,'chooseHotel');
+      game.startHotel('Zeta',1);
       game.changeCurrentPlayer();
-      game.status='place tile';
-      game.placeTile(2,'1B');
-      game.status='place tile';
       game.changeCurrentPlayer();
       game.placeTile(0,'2A');
-      game.status='buy shares';
 
       //code execution
-      game.purchaseShares('Sackson',2,0);
-      game.purchaseShares('Sackson',25,0);
+      game.purchaseShares('Zeta',2,0);
 
       //assertion
-      let player = game.findPlayerBy(0);
-      let expected = 5400;
-      let actual = player.getAvailableCash();
+      let expected = 5600;
+      let actual = player1.getAvailableCash();
       assert.deepEqual(actual,expected);
 
-      expected = {  Sackson: 2,
-        Zeta: 0,
+      expected = {  Sackson: 0,
+        Zeta: 2,
         Hydra: 0,
         Fusion: 0,
         America: 0,
         Phoenix: 0,
         Quantum: 0
       };
-      actual = player.getShareDetails();
+      actual = player1.getShareDetails();
       assert.deepEqual(actual,expected);
 
-      expected ={ hotelName:'Sackson',
+      expected ={ hotelName:'Zeta',
       availableShares: 22,
-      shareHolders: [ 2, 0, 0 ]
+      shareHolders: [ 1, 0, 0 ]
     };
     actual = game.bank.sharesDetailsOfHotels;
-    assert.deepInclude(actual,expected);
+
+    assert.deepInclude(actual[1],expected);
   });
 });
 describe('actions',()=>{
@@ -425,9 +419,10 @@ describe('actions',()=>{
     game.addPlayer(player1);
     game.addPlayer(player2);
     game.start();
-    assert.deepEqual(game.placeTile(0,'6A').status,'Independent');
+    assert.deepEqual(game.placeTile(0,'6A').status,'changeTurn');
     game.changeCurrentPlayer();
-    assert.deepEqual(game.placeTile(1,'7A').status,'starting hotel');
+    assert.deepEqual(game.placeTile(1,'7A').status,'chooseHotel');
+    game.startHotel('Zeta',1);
     game.changeCurrentPlayer();
     assert.deepEqual(game.placeTile(0,'5A').status,'Added to hotel');
   });

@@ -9,11 +9,12 @@ const joinGame = require('./src/routes/join.js').joinGame;
 const createGame = require('./src/routes/create');
 const playerDetails = require('./src/routes/playerDetails');
 const purchaseShares = require('./src/routes/purchaseShares');
+const placeTile = require('./src/routes/placeTile');
+const currentPlayerRoute = require('./src/routes/currentPlayerRoute');
 const getAllPlayerNames = require('./src/routes/getAllPlayerNames');
 const isGameExisted = require('./src/routes/isGameExisted');
-const placeTile = require('./src/routes/placeTile');
-const changeTurn = require('./src/routes/changeTurn');
 const gameStatus = require('./src/routes/gameStatus');
+
 const verifyGameReq = function(game,id){
   return game && game.isValidPlayer(id) && !game.isInPlayMode();
 };
@@ -26,17 +27,6 @@ const redirectToHomeIfGameNotCreated=function(req,res,next){
   }
   next();
 };
-
-const restrictInvalidPlayerToPlay = function(req,res,next){
-  let game = req.app.game;
-  let id =req.cookies.playerId;
-  let urls = ['/placeTile','/buyShares'];
-  if(urls.includes(req.url) && !game.isCurrentPlayer(id)){
-    res.send(401);
-  }
-  next();
-};
-
 
 const redirectToWaitIfPlayerIsValid=function(req,res,next){
   let game = req.app.game;
@@ -67,7 +57,7 @@ app.use(logRequest);
 app.use(redirectToHomeIfGameNotCreated);
 app.use(redirectToWaitIfPlayerIsValid);
 app.use(startGame);
-app.use(restrictInvalidPlayerToPlay);
+app.use('/actions',currentPlayerRoute);
 app.get('/isGameExisted',isGameExisted);
 app.get('/wait',getWaitingPage);
 app.get('/haveAllPlayersJoined',haveAllPlayersJoined);
@@ -77,7 +67,6 @@ app.post('/create',createGame);
 app.post('/placeTile',placeTile);
 app.post('/purchaseShares',purchaseShares);
 app.get('/playerDetails',playerDetails);
-app.get('/changeTurn',changeTurn);
 app.get('/gameStatus',gameStatus);
 app.use(express.static('public'));
 module.exports=app;

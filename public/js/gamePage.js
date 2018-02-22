@@ -1,5 +1,39 @@
 /*eslint no-implicit-globals: "off"*/
 let cart =[];
+
+const chooseHotel = function(){
+  let hotelName=getElement('#choose-hotel select[name="hotelName"]').value;
+  sendAjaxRequest('POST','/actions/chooseHotel',`hotelName=${hotelName}`,()=>{
+    console.log(this.responseText);
+  });
+  getElement('#choose-hotel').classList.add('hidden');
+  showEndTurn();
+};
+
+const createInactiveHotelsForm = function(hotels){
+  let html=`<select name="hotelName">`;
+  html +=hotels.map((hotel)=>{
+    return `<option value="${hotel.name}">${hotel.name}</option>`;
+  }).join('');
+  html += `</select><button name="Start hotel" onclick="chooseHotel()">
+  Start hotel</button>`;
+  return html;
+};
+
+const actions={};
+actions['changeTurn']=function(){
+  changeTurn();
+  hideEndTurn();
+};
+actions['chooseHotel']=function(res){
+  let form=createInactiveHotelsForm(res.inactiveHotels);
+  getElement('#choose-hotel').innerHTML=form;
+  getElement('#choose-hotel').classList.remove('hidden');
+};
+actions['buyShares']=function(res){
+  showEndTurn();
+};
+
 let getElement = function(selector){
   return document.querySelector(selector);
 };
@@ -193,12 +227,18 @@ const updateHotelsOnBoard= function (allHotelsDetails){
 };
 
 const placeTileHandler = function () {
-  console.log(this.responseText);
-  showEndTurn();
+  let response;
+  console.log(this.status);
+  if(this.status!=403){
+    response=JSON.parse(this.responseText);
+    if(actions[response.status]) {
+      actions[response.status](response);
+    }
+  }
 };
 
 const placeTile = function(tile){
-  sendAjaxRequest('POST','/placeTile',`tile=${tile}`,placeTileHandler);
+  sendAjaxRequest('POST','/actions/placeTile',`tile=${tile}`,placeTileHandler);
   return;
 };
 
@@ -245,6 +285,10 @@ let getGameStatus = function(){
   sendAjaxRequest('GET','/gameStatus','',renderGameStatus);
 };
 
+let getTurnState = function(){
+  sendAjaxRequest('GET','/actions/turnState','',placeTileHandler);
+};
+
 
 const actionsPerformed = function () {
   generateTable();
@@ -252,6 +296,7 @@ const actionsPerformed = function () {
   getPlayerDetails();
   setInterval(getGameStatus,1000);
   setInterval(getPlayerDetails,1000);
+  getTurnState();
   IGNORE_MY_TURN=false;
 };
 

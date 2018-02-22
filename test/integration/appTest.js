@@ -214,7 +214,7 @@ describe('App Test', () => {
       app.game.addPlayer(player);
       app.game.start();
       request(app)
-        .post('/placeTile')
+        .post('/actions/placeTile')
         .set('Cookie', 'playerId=0')
         .send("tile=1A")
         .expect(200)
@@ -228,9 +228,10 @@ describe('App Test', () => {
       game.addPlayer(new Player(1, 'gupta'));
       game.addPlayer(new Player(2, 'raj'));
       game.start();
+      game.turn.setState({expectedActions:['changeTurn']})
       app.game = game;
       request(app)
-        .get('/changeTurn')
+        .get('/actions/changeTurn')
         .set('Cookie','playerId=0')
         .expect(200)
         .end(done);
@@ -243,8 +244,8 @@ describe('App Test', () => {
       game.start();
       app.game = game;
       request(app)
-        .get('/changeTurn')
-        .expect(401)
+        .get('/actions/changeTurn')
+        .expect(403)
         .end(done);
     });
   });
@@ -256,9 +257,9 @@ describe('App Test', () => {
       game.start();
       app.game = game;
       request(app)
-        .post('/placeTile')
+        .post('/actions/placeTile')
         .set('Cookie', 'playerId=3')
-        .expect(401)
+        .expect(403)
         .end(done);
     });
   });
@@ -279,19 +280,39 @@ describe('App Test', () => {
         .end(done);
     });
   });
-  // describe('/purchaseShares', function() {
-  //   it('should respond w', function(done) {
-  //     let game = new Game(3);
-  //     game.addPlayer(new Player(0, 'veera'));
-  //     game.addPlayer(new Player(1, 'gupta'));
-  //     game.start();
-  //     app.game = game;
-  //     request(app)
-  //       .post('/gameStatus')
-  //       .send('cart:{"zeta":3}')
-  //       // .expect(200)
-  //       .expect('end turn')
-  //       .end(done);
-  //   });
-  // });
+  describe('/turnState', function() {
+    it('should respond with current turn state', function(done) {
+      let game = new Game(2);
+      game.addPlayer(new Player(0, 'veera'));
+      game.addPlayer(new Player(1, 'gupta'));
+      game.start();
+      app.game = game;
+      request(app)
+        .get('/actions/turnState')
+        .set('Cookie','playerId=0')
+        .expect(/placeTile/i)
+        .expect(200)
+        .end(done);
+    });
+  });
+  describe('/chooseHotel', function() {
+    it('should respond with inactive hotels', function(done) {
+      let game = new Game(3);
+      game.addPlayer(new Player(0, 'veera'));
+      game.addPlayer(new Player(1, 'gupta'));
+      game.addPlayer(new Player(2, 'sachin'));
+      game.start();
+      game.placeTile(0,'6A');
+      game.changeCurrentPlayer();
+      game.placeTile(1,'7A');
+      app.game = game;
+      request(app)
+        .post('/actions/chooseHotel')
+        .set('Cookie','playerId=1')
+        .send('hotelName=Zeta')
+        .expect(/buyShares/i)
+        .expect(200)
+        .end(done);
+    });
+  });
 });
