@@ -74,6 +74,9 @@ class Game {
       },
       'merge':function (response) {
         response.expectedAction='sellKeepOrTradeShares';
+        let mergingHotels=response.mergingHotels;
+        let surviourHotel=response.surviourHotel;
+        this.giveBounus(mergingHotels[0].name);
         this.status='sellKeepOrTradeShares';
         return response;
       }
@@ -114,7 +117,7 @@ class Game {
     let player = this.findPlayerBy(playerId);
     player.deductMoney(money);
   }
-  disrtibuteMoneyToPlayer(id, money) {
+  distributeMoneyToPlayer(id, money) {
     let player = this.findPlayerBy(id);
     player.addMoney(money);
   }
@@ -124,7 +127,7 @@ class Game {
   }
   distributeInitialMoney(initialMoney) {
     this.players.forEach(player => {
-      this.disrtibuteMoneyToPlayer(player.id, initialMoney);
+      this.distributeMoneyToPlayer(player.id, initialMoney);
       this.bank.reduceMoney(initialMoney);
     });
   }
@@ -153,6 +156,19 @@ class Game {
       this.market.createHotel(hotel);
       this.bank.createSharesOfHotel(hotel.name,INITIAL_SHARES);
     });
+  }
+  giveBounus(hotelName){
+    // this part is forcing us to think about our data_structure again
+    let shareHolders=this.bank.getShareHoldersInDescending(hotelName);
+    let majorityShareHolder=Object.keys(shareHolders[0])[0];
+    let bonusAmounts=this.market.getBonusAmountsOf(hotelName);
+    if (shareHolders.length>1) {
+      let minorityShareHolder=Object.keys(shareHolders[1])[0];
+      this.distributeMoneyToPlayer(minorityShareHolder,bonusAmounts.minority);
+    }else {
+      this.distributeMoneyToPlayer(majorityShareHolder,bonusAmounts.minority);
+    }
+    this.distributeMoneyToPlayer(majorityShareHolder,bonusAmounts.majority);
   }
   getHotel(hotelName){
     return this.market.getHotel(hotelName);

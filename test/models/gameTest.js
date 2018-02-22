@@ -7,7 +7,7 @@ const Market = require('../../src/models/market.js');
 const Turn = require('../../src/models/turn.js');
 const Bank = require('../../src/models/bank.js');
 
-describe('game test',function(){
+describe('game test', function() {
   describe('getPlayerCount', () => {
     it('should return the number of players', () => {
       let game = new Game(3);
@@ -18,7 +18,7 @@ describe('game test',function(){
   describe('addPlayer', () => {
     it('should add given player to game when maximum players are not there', () => {
       let game = new Game(3);
-      let player = new Player(0,'pragya');
+      let player = new Player(0, 'pragya');
       let actual = game.addPlayer(player);
       assert.isOk(actual);
     });
@@ -56,8 +56,8 @@ describe('game test',function(){
   describe('getPlayerNameOf', () => {
     it('should return player name of given id', () => {
       let game = new Game(3);
-      let player1 = new Player(0,'pragya');
-      let player2 = new Player(1,'gupta');
+      let player1 = new Player(0, 'pragya');
+      let player2 = new Player(1, 'gupta');
       game.addPlayer(player1);
       game.addPlayer(player2);
       assert.equal('pragya', game.getPlayerNameOf(0));
@@ -80,8 +80,8 @@ describe('game test',function(){
   describe('findPlayerBy', () => {
     it('should return player of given id', () => {
       let game = new Game(3);
-      let player1 = new Player(0,'pragya');
-      let player2 = new Player(1,'gupta');
+      let player1 = new Player(0, 'pragya');
+      let player2 = new Player(1, 'gupta');
       game.addPlayer(player1);
       game.addPlayer(player2);
       assert.deepEqual(player1, game.findPlayerBy(0));
@@ -89,21 +89,21 @@ describe('game test',function(){
       assert.deepEqual(undefined, game.findPlayerBy(2));
     });
   });
-  describe('disrtibuteMoneyToPlayer', () => {
+  describe('distributeMoneyToPlayer', () => {
     it('should give money to player of given id', () => {
       let game = new Game(3);
-      let player1 = new Player(0,'pragya');
+      let player1 = new Player(0, 'pragya');
       game.addPlayer(player1);
       assert.equal(game.getAvailableCashOf(0), 0);
-      game.disrtibuteMoneyToPlayer(0, 4000);
+      game.distributeMoneyToPlayer(0, 4000);
       assert.equal(game.getAvailableCashOf(0), 4000);
     });
   });
   describe('distributeInitialMoney', () => {
     it('should disribute money to all players', () => {
       let game = new Game(3);
-      let player1 = new Player(0,'pragya');
-      let player2 = new Player(1,'sree');
+      let player1 = new Player(0, 'pragya');
+      let player2 = new Player(1, 'sree');
       game.addPlayer(player1);
       game.addPlayer(player2);
       assert.equal(game.getAvailableCashOf(0), 0);
@@ -122,7 +122,7 @@ describe('game test',function(){
         name: 'Hydra',
         color: 'orange',
         occupiedTiles:[],
-        level:3
+        level: 3
       };
 
       game.addPlayer(player1);
@@ -130,7 +130,7 @@ describe('game test',function(){
       assert.equal(game.getAvailableCashOf(0), 0);
       assert.equal(game.getAvailableCashOf(1), 0);
       game.start();
-      assert.deepEqual(game.getHotel('Hydra'),hydraHotel);
+      assert.deepEqual(game.getHotel('Hydra'), hydraHotel);
       assert.equal(game.getAvailableCashOf(0), 6000);
       assert.equal(game.getAvailableCashOf(1), 6000);
       assert.deepEqual(player1.getTiles(), ['1A', '2A', '3A', '4A', '5A', '6A']);
@@ -143,166 +143,177 @@ describe('game test',function(){
       let hotelsData = [{
         name: 'zeta',
         color: 'yellow',
-        level:2
+        level: 2
       }];
       let zetaHotel = {
         name: 'zeta',
         color: 'yellow',
-        level:2,
-        occupiedTiles:[]
+        level: 2,
+        occupiedTiles: []
       };
       game.createHotels(hotelsData);
-      assert.deepEqual(game.getHotel('zeta'),zetaHotel);
+      assert.deepEqual(game.getHotel('zeta'), zetaHotel);
     });
   });
-  describe('getPlayerDetails',()=>{
-    it('should return an object containig player details',()=>{
+  describe('getPlayerDetails', () => {
+    it('should return an object containig player details', () => {
       let game = new Game(2);
-      let expected = ['1A','2A','3A','4A','5A','6A'];
-      let player1=new Player(0,'veera');
-      let player2=new Player(1,'pragya');
+      let expected = ['1A', '2A', '3A', '4A', '5A', '6A'];
+      let player1 = new Player(0, 'veera');
+      let player2 = new Player(1, 'pragya');
       game.addPlayer(player1);
       game.addPlayer(player2);
-      player1.addTiles(['1A','2A','3A','4A','5A','6A']);
-      assert.deepEqual(game.getPlayerDetails(0).tiles,expected);
-      assert.deepEqual(game.getPlayerDetails(0),player1);
+      player1.addTiles(['1A', '2A', '3A', '4A', '5A', '6A']);
+      assert.deepEqual(game.getPlayerDetails(0).tiles, expected);
+      assert.deepEqual(game.getPlayerDetails(0), player1);
     });
-    it('should return an object containing share details of player',()=>{
+    it('should return an object containing share details of player', () => {
       let game = new Game(2);
-      let aditi = new Player(0,'aditi');
-      let harvar = new Player(1,'harvar');
-      let expected = {phoenix:2,hydra:5};
+      let aditi = new Player(0, 'aditi');
+      let harvar = new Player(1, 'harvar');
+      let expected = {
+        phoenix: 2,
+        hydra: 5
+      };
       game.addPlayer(aditi);
       game.addPlayer(harvar);
-      aditi.addShares('Phoenix',5);
-      harvar.addShares('Hydra',2);
-      assert.include(game.getPlayerSharesDetails(0),{Phoenix:5});
-      assert.include(game.getPlayerSharesDetails(1),{Hydra:2});
+      aditi.addShares('Phoenix', 5);
+      harvar.addShares('Hydra', 2);
+      assert.include(game.getPlayerSharesDetails(0), {
+        Phoenix: 5
+      });
+      assert.include(game.getPlayerSharesDetails(1), {
+        Hydra: 2
+      });
     });
   });
-  describe('isInPlayMode',()=>{
-    it('should return false when game is not in play mode ',()=>{
+  describe('isInPlayMode', () => {
+    it('should return false when game is not in play mode ', () => {
       let game = new Game(2);
-      let player1=new Player(0,'veera');
-      let player2=new Player(1,'pragya');
+      let player1 = new Player(0, 'veera');
+      let player2 = new Player(1, 'pragya');
       game.addPlayer(player1);
       game.addPlayer(player2);
       assert.isNotOk(game.isInPlayMode());
     });
-    it('should return true if game is in play mode ',()=>{
+    it('should return true if game is in play mode ', () => {
       let game = new Game(2);
-      let player1=new Player(0,'veera');
-      let player2=new Player(1,'pragya');
+      let player1 = new Player(0, 'veera');
+      let player2 = new Player(1, 'pragya');
       game.addPlayer(player1);
       game.addPlayer(player2);
       game.start();
       assert.isOk(game.isInPlayMode());
     });
   });
-  describe('getAllHotelsDetails', function(){
-    it('can tell all the hotel details in game', function(){
+  describe('getAllHotelsDetails', function() {
+    it('can tell all the hotel details in game', function() {
       let game = new Game(2);
       let hotelsData = [{
         name: 'zeta',
         color: 'yellow',
-        level:2
+        level: 2
       }];
       let expected = [{
         name: 'zeta',
         color: 'yellow',
-        level:2,
-        occupiedTiles:[],
-        sharePrice:"-",
-        shares:25
+        level: 2,
+        occupiedTiles: [],
+        sharePrice: "-",
+        shares: 25
       }];
       game.createHotels(hotelsData);
-      assert.deepEqual(game.getAllHotelsDetails(),expected);
+      assert.deepEqual(game.getAllHotelsDetails(), expected);
     });
   });
-  describe('getAllPlayerNames',()=>{
-    it('can give empty list if no player is present',()=>{
+  describe('getAllPlayerNames', () => {
+    it('can give empty list if no player is present', () => {
       let game = new Game(2);
-      assert.deepEqual(game.getAllPlayerNames(),[]);
+      assert.deepEqual(game.getAllPlayerNames(), []);
     });
-    it('can give all player names',()=>{
+    it('can give all player names', () => {
       let game = new Game(2);
-      let player1=new Player(0,'veera');
-      let player2=new Player(1,'pragya');
+      let player1 = new Player(0, 'veera');
+      let player2 = new Player(1, 'pragya');
       game.addPlayer(player1);
       game.addPlayer(player2);
-      assert.deepEqual(game.getAllPlayerNames(),['veera','pragya']);
+      assert.deepEqual(game.getAllPlayerNames(), ['veera', 'pragya']);
     });
   });
-  describe('addSharesToPlayer',()=>{
-    it('should add shares to player by given id',()=>{
+  describe('addSharesToPlayer', () => {
+    it('should add shares to player by given id', () => {
       let game = new Game(2);
-      let player1=new Player(0,'aditi');
-      let player2=new Player(1,'harvar');
+      let player1 = new Player(0, 'aditi');
+      let player2 = new Player(1, 'harvar');
       game.addPlayer(player1);
       game.addPlayer(player2);
-      game.addSharesToPlayer(0,'Phoenix',2);
-      game.addSharesToPlayer(1,'Hydra',5);
-      assert.include(game.getPlayerSharesDetails(0),{Phoenix:2});
-      assert.include(game.getPlayerSharesDetails(1),{Hydra:5});
+      game.addSharesToPlayer(0, 'Phoenix', 2);
+      game.addSharesToPlayer(1, 'Hydra', 5);
+      assert.include(game.getPlayerSharesDetails(0), {
+        Phoenix: 2
+      });
+      assert.include(game.getPlayerSharesDetails(1), {
+        Hydra: 5
+      });
     });
   });
-  describe('placeTile',()=>{
-    it('can place a independent Tile for the player whose id is given',()=>{
+  describe('placeTile', () => {
+    it('can place a independent Tile for the player whose id is given', () => {
       let game = new Game(1);
-      let player1=new Player(1,'pragya');
+      let player1 = new Player(1, 'pragya');
       let market = new Market();
       player1.addTile('2A');
       game.addPlayer(player1);
       game.start();
-      game.placeTile(1,'2A');
+      game.placeTile(1, '2A');
       let actual = game.giveIndependentTiles();
       let expected = ['2A'];
-      assert.deepEqual(actual,expected);
+      assert.deepEqual(actual, expected);
     });
   });
-  describe('getCurrentPlayer',()=>{
-    it('should give current player details',()=>{
+  describe('getCurrentPlayer', () => {
+    it('should give current player details', () => {
       let game = new Game(1);
-      let player1=new Player(0,'pragya');
+      let player1 = new Player(0, 'pragya');
       game.addPlayer(player1);
-      game.addPlayer(new Player(1,'veera'));
+      game.addPlayer(new Player(1, 'veera'));
       game.start();
-      let actual=game.getCurrentPlayer();
-      assert.equal(actual.id,0)
+      let actual = game.getCurrentPlayer();
+      assert.equal(actual.id, 0)
     });
   });
-  describe('changeCurrentPlayer',()=>{
-    it('should change current player and give tile for current player',()=>{
+  describe('changeCurrentPlayer', () => {
+    it('should change current player and give tile for current player', () => {
       let game = new Game(2);
-      let player1=new Player(0,'pragya');
+      let player1 = new Player(0, 'pragya');
       game.addPlayer(player1);
-      game.addPlayer(new Player(1,'veera'));
+      game.addPlayer(new Player(1, 'veera'));
       game.start();
       game.changeCurrentPlayer();
-      let actual=game.getCurrentPlayer();
-      assert.equal(actual.id,1)
-      assert.equal(player1.tiles.length,7)
+      let actual = game.getCurrentPlayer();
+      assert.equal(actual.id, 1)
+      assert.equal(player1.tiles.length, 7)
     });
   });
-  describe('isCurrentPlayer',()=>{
-    it('should return true if player is current player',()=>{
+  describe('isCurrentPlayer', () => {
+    it('should return true if player is current player', () => {
       let game = new Game(2);
-      let player1=new Player(0,'pragya');
-      let player2=new Player(1,'aditi');
-      let turn = new Turn([0,1]);
+      let player1 = new Player(0, 'pragya');
+      let player2 = new Player(1, 'aditi');
+      let turn = new Turn([0, 1]);
       game.addPlayer(player1);
       game.start();
-      let playerId=turn.getCurrentPlayerID();
+      let playerId = turn.getCurrentPlayerID();
       assert.isOk(game.isCurrentPlayer(playerId));
     });
   });
-  describe('getAllPlayerDetails',()=>{
-    it('should return an object containig all player details',()=>{
+  describe('getAllPlayerDetails', () => {
+    it('should return an object containig all player details', () => {
       let expected = [{
-        tiles:[],
-        availableMoney : 0,
-        name:'veera',
-        id:0,
+        tiles: [],
+        availableMoney: 0,
+        name: 'veera',
+        id: 0,
         shares: {
           "America": 0,
           "Fusion": 0,
@@ -312,11 +323,11 @@ describe('game test',function(){
           "Sackson": 0,
           "Zeta": 0
         }
-      },{
-        tiles:[],
-        availableMoney : 0,
-        name:'pragya',
-        id:1,
+      }, {
+        tiles: [],
+        availableMoney: 0,
+        name: 'pragya',
+        id: 1,
         shares: {
           "America": 0,
           "Fusion": 0,
@@ -328,76 +339,84 @@ describe('game test',function(){
         }
       }]
       let game = new Game(2);
-      let player1=new Player(0,'veera');
-      let player2=new Player(1,'pragya');
+      let player1 = new Player(0, 'veera');
+      let player2 = new Player(1, 'pragya');
       game.addPlayer(player1);
       game.addPlayer(player2);
-      assert.deepEqual(game.getAllPlayerDetails(),expected);
+      assert.deepEqual(game.getAllPlayerDetails(), expected);
     });
   });
-  describe('getStatus',()=>{
-    it('should give current game status',()=>{
+  describe('getStatus', () => {
+    it('should give current game status', () => {
       let expected = {
-        hotelsData:[],
-        turnDetails:{currentPlayer:'pragya',otherPlayers:['aditi'],isMyTurn:true}
+        hotelsData: [],
+        turnDetails: {
+          currentPlayer: 'pragya',
+          otherPlayers: ['aditi'],
+          isMyTurn: true
+        }
       };
       let game = new Game(2);
-      let player1=new Player(0,'pragya');
-      let player2=new Player(1,'aditi');
+      let player1 = new Player(0, 'pragya');
+      let player2 = new Player(1, 'aditi');
       game.addPlayer(player1);
       game.addPlayer(player2);
       game.start();
-      assert.deepEqual(game.getStatus(0).independentTiles,[]);
-      assert.deepEqual(game.getStatus(0).turnDetails,expected.turnDetails);
+      assert.deepEqual(game.getStatus(0).independentTiles, []);
+      assert.deepEqual(game.getStatus(0).turnDetails, expected.turnDetails);
     });
   });
-  describe('deductMoneyFromPlayer',()=>{
-    it('should deduct money from player account',()=>{
+  describe('deductMoneyFromPlayer', () => {
+    it('should deduct money from player account', () => {
       let game = new Game(2);
-      let player1=new Player(0,'pragya');
+      let player1 = new Player(0, 'pragya');
       player1.addMoney(5000);
       game.addPlayer(player1);
-      game.deductMoneyFromPlayer(0,1600);
+      game.deductMoneyFromPlayer(0, 1600);
       let actual = game.getAvailableCashOfPlayer(0);
       let expected = 3400;
-      assert.deepEqual(actual,expected);
+      assert.deepEqual(actual, expected);
     });
   });
-  describe('purchaseShares',()=>{
-    it('should purchase shares to given players',()=>{
+  describe('purchaseShares', () => {
+    it('should purchase shares to given players', () => {
       //setup
       let game = new Game(3);
-      let player1 = new Player(0,'pragya');
-      let player2 = new Player(1,'wulfa');
-      let player3 = new Player(2,'harvar');
-      let sackson = new Hotel([{name:'sackson',color:'red'}]);
+      let player1 = new Player(0, 'pragya');
+      let player2 = new Player(1, 'wulfa');
+      let player3 = new Player(2, 'harvar');
+      let sackson = new Hotel([{
+        name: 'sackson',
+        color: 'red'
+      }]);
       game.addPlayer(player1);
       game.addPlayer(player2);
       game.addPlayer(player3);
       game.start();
-      game.placeTile(0,'1A');
-      game.status='place tile';
+      game.placeTile(0, '1A');
+      game.status = 'place tile';
       game.changeCurrentPlayer();
-      game.placeTile(1,'7A');
+      game.placeTile(1, '7A');
       game.changeCurrentPlayer();
-      game.status='place tile';
-      game.placeTile(2,'1B');
-      game.status='place tile';
+      game.status = 'place tile';
+      game.placeTile(2, '1B');
+      game.status = 'place tile';
       game.changeCurrentPlayer();
-      game.placeTile(0,'2A');
-      game.status='buy shares';
+      game.placeTile(0, '2A');
+      game.status = 'buy shares';
 
       //code execution
-      game.purchaseShares('Sackson',2,0);
-      game.purchaseShares('Sackson',25,0);
+      game.purchaseShares('Sackson', 2, 0);
+      game.purchaseShares('Sackson', 25, 0);
 
       //assertion
       let player = game.findPlayerBy(0);
       let expected = 5400;
       let actual = player.getAvailableCash();
-      assert.deepEqual(actual,expected);
+      assert.deepEqual(actual, expected);
 
-      expected = {  Sackson: 2,
+      expected = {
+        Sackson: 2,
         Zeta: 0,
         Hydra: 0,
         Fusion: 0,
@@ -406,30 +425,57 @@ describe('game test',function(){
         Quantum: 0
       };
       actual = player.getShareDetails();
-      assert.deepEqual(actual,expected);
+      assert.deepEqual(actual, expected);
 
-      expected ={ hotelName:'Sackson',
-      availableShares: 22,
-      shareHolders: [ 2, 0, 0 ]
-    };
-    actual = game.bank.sharesDetailsOfHotels;
-    assert.deepInclude(actual,expected);
+      expected = {
+        hotelName: 'Sackson',
+        availableShares: 22,
+        shareHolders: [2, 0, 0]
+      };
+      actual = game.bank.sharesDetailsOfHotels;
+      assert.deepInclude(actual, expected);
+    });
   });
-});
-describe('actions',()=>{
-  it('should add tile to an existing hotel',()=>{
+  describe('actions', () => {
+    it('should add tile to an existing hotel', () => {
+      let expected = {};
+      let game = new Game(2);
+      let player1 = new Player(0, 'pragya');
+      let player2 = new Player(1, 'aditi');
+      game.addPlayer(player1);
+      game.addPlayer(player2);
+      game.start();
+      assert.deepEqual(game.placeTile(0, '6A').status, 'Independent');
+      game.changeCurrentPlayer();
+      assert.deepEqual(game.placeTile(1, '7A').status, 'starting hotel');
+      game.changeCurrentPlayer();
+      assert.deepEqual(game.placeTile(0, '5A').status, 'Added to hotel');
+    });
+  });
+  it('merge', () => {
     let expected = {};
-    let game = new Game(2);
-    let player1=new Player(0,'pragya');
-    let player2=new Player(1,'aditi');
+    let game = new Game(3);
+    let player1 = new Player(0, 'pragya');
+    let player2 = new Player(1, 'aditi');
+    let player3 = new Player(2, 'praveen');
     game.addPlayer(player1);
     game.addPlayer(player2);
+    game.addPlayer(player3);
     game.start();
-    assert.deepEqual(game.placeTile(0,'6A').status,'Independent');
+    game.placeTile(0, '6A');
     game.changeCurrentPlayer();
-    assert.deepEqual(game.placeTile(1,'7A').status,'starting hotel');
+    game.placeTile(1, '7A');
     game.changeCurrentPlayer();
-    assert.deepEqual(game.placeTile(0,'5A').status,'Added to hotel');
+    game.placeTile(2, '4B');
+    game.changeCurrentPlayer();
+    game.placeTile(0, '4A');
+    game.changeCurrentPlayer();
+    game.placeTile(1, '8A');
+    game.changeCurrentPlayer();
+    game.placeTile(2, '1B');
+    game.changeCurrentPlayer();
+    game.placeTile(0, '5A');
+    let majorityShareHolderPlayerMoney=game.findPlayerBy(0).availableMoney;
+    assert.equal(majorityShareHolderPlayerMoney,9000);
   });
-});
 });

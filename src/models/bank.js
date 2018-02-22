@@ -9,7 +9,7 @@ class Bank {
   reduceMoney(money){
     this.availableCash -= money;
   }
-  createSharesOfHotel(nameOfHotel,noOfShares){
+  createSharesOfHotel(nameOfHotel,noOfShares){ //we can extract model of shares
     let sharesOf = {};
     sharesOf = {
       hotelName:nameOfHotel,
@@ -40,12 +40,33 @@ class Bank {
   }
   getShareholdersOfHotel(hotelName){
     let hotel = this.findHotelBy(hotelName);
-    return hotel.shareHolders;
+    return hotel.shareHolders.reduce((sharesCount,shareHolderId)=>{
+      if (sharesCount[shareHolderId]) {
+        sharesCount[shareHolderId]++;
+      }
+      sharesCount[shareHolderId]=1;
+      return sharesCount;
+    },{});
   }
   doesHotelhaveEnoughShares(hotelName,noOfShares){
     let hotel = this.findHotelBy(hotelName);
     let availableSharesOfHotel = hotel.availableShares;
     return noOfShares<=availableSharesOfHotel;
+  }
+  getShareHoldersInDescending(hotelName){
+    let hotelShareHolders=this.getShareholdersOfHotel(hotelName);
+    let shareHolders=this.getShareholdersOfHotel(hotelName);
+    let shareHolderIds=Object.keys(shareHolders);
+    let shareHolderList=shareHolderIds.map((id)=>{
+      let shares={};
+      shares[id]=shareHolders[id];
+      return shares;
+    });
+    return shareHolderList.sort((firstShareHolder,secondShareHolder)=>{
+      let secondShareHolderShares=Object.values(secondShareHolder)[0];
+      let firstShareHolderShares=Object.values(firstShareHolder)[0];
+      return secondShareHolderShares-firstShareHolderShares;
+    });
   }
   sellSharesToPlayer(hotelName,noOfShares,playerId,cartValue){
     let desiredHotel = this.findHotelBy(hotelName);

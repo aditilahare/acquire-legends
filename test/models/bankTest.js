@@ -49,7 +49,7 @@ describe('Bank test', () => {
       assert.deepEqual(actual,expected);
       kotakMahindra.giveOneFreeShare("sackson",0);
       actual = kotakMahindra.getShareholdersOfHotel("sackson");
-      expected = [0];
+      expected = {0:1};
       assert.deepEqual(actual,expected);
       actual = kotakMahindra.getAvalibleSharesOf("sackson");
       assert.equal(actual,22);

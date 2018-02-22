@@ -66,7 +66,7 @@ class Market{
         response.status="Added to hotel";
       }
       if (neighbourHotelsOfTile.length==2) {
-        this.megerOfTwoHotel(response,neighbourHotelsOfTile,tile);
+        response=this.megerOfTwoHotel(response,neighbourHotelsOfTile,tile);
       }
     }
     if(this.isStartingHotel(tile)){
@@ -88,10 +88,18 @@ class Market{
   }
   megerOfTwoHotel(response,neighbourHotelsOfTile,tile){
     response.status="merge";
-    response.mergerBetween=neighbourHotelsOfTile;
     response.mergingTile=tile;
-    let surviourHotel=this.getLargerHotel(neighbourHotelsOfTile);
+    let mergerBetween=neighbourHotelsOfTile;
+    let surviourHotel=this.getLargerHotel(mergerBetween);
+    let mergingHotels=this.getMergingHotels(mergerBetween,surviourHotel);
     response.surviourHotel=surviourHotel;
+    response.mergingHotels=mergingHotels;
+    return response;
+  }
+  getMergingHotels(mergerBetween,surviourHotel){
+    return mergerBetween.filter((hotel)=>{
+      return hotel!=surviourHotel;
+    });
   }
   getLargerHotel(hotelsList){
     let hotel=hotelsList[0];
@@ -127,6 +135,13 @@ class Market{
     let hotelLevel = hotel.level;
     let sharePrice = this.calculateSharePrice(hotelSize,hotelLevel);
     return sharePrice;
+  }
+  getBonusAmountsOf(hotelName){
+    let sharePrice=this.getSharePriceOfHotel(hotelName);
+    let bonusAmounts={};
+    bonusAmounts.majority=sharePrice*10;
+    bonusAmounts.minority=sharePrice*5;
+    return bonusAmounts;
   }
   giveIndependentTiles(){
     return this.occupiedTiles;
