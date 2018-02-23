@@ -467,15 +467,14 @@ describe('game test', function() {
       let response=game.placeTile(0, '5A');
 
       let zeta=new Hotel('Zeta','rgb(236, 222, 34)',2);
-      zeta.occupiedTiles=['4B','4A'];
-      zeta.status=true;
+      zeta.occupiedTiles=[];
+      zeta.status=false;
       let sackson=new Hotel('Sackson','rgb(205, 61, 65)',2);
-      sackson.occupiedTiles=['6A','7A','8A'];
+      sackson.occupiedTiles=['6A','7A','8A','4B','4A','5A'];
       sackson.status=true;
 
       assert.deepEqual(response.status, 'sellKeepOrTradeShares');
-      assert.deepEqual(response.expectedActions, ['sellKeepOrTradeShares']);
-      console.log(sackson,response.surviourHotel);
+      assert.deepEqual(response.expectedActions, ['sellKeepOrTradeShares','buyShares','changeTurn']);
       assert.deepEqual(response.mergingHotels,[zeta]);
       assert.deepEqual(response.surviourHotel,sackson);
 

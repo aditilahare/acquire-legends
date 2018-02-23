@@ -31,11 +31,14 @@ class Game {
         return response;
       },
       'merge':function (response) {
-        response.expectedActions=['sellKeepOrTradeShares'];
+        response.expectedActions=['sellKeepOrTradeShares'
+          ,'buyShares','changeTurn'];
         response.status='sellKeepOrTradeShares';
         let mergingHotels=response.mergingHotels;
         let surviourHotel=response.surviourHotel;
         this.giveMajorityMinorityBonus(mergingHotels[0].name);
+        this.market.addMergingHotelToSurviour(mergingHotels[0],surviourHotel);
+        this.market.placeMergingTile(response.mergingTile);
         return response;
       },
       'chooseHotel':function(response){
