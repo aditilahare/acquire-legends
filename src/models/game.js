@@ -8,6 +8,7 @@ let HOTEL_DATA = require('../../data/hotelsData.json');
 const INITIAL_SHARES = 25;
 const INITIAL_MONEY = 100000;
 const STARTING_BALANCE = 6000;
+
 class Game {
   constructor(maxPlayers,bank=new Bank(INITIAL_MONEY)) {
     this.maxPlayers=maxPlayers;
@@ -34,7 +35,7 @@ class Game {
         response.status='sellKeepOrTradeShares';
         let mergingHotels=response.mergingHotels;
         let surviourHotel=response.surviourHotel;
-        this.giveBonus(mergingHotels[0].name);
+        this.giveMajorityMinorityBonus(mergingHotels[0].name);
         return response;
       },
       'chooseHotel':function(response){
@@ -124,18 +125,24 @@ class Game {
       this.bank.createSharesOfHotel(hotel.name,INITIAL_SHARES);
     });
   }
-  giveBonus(hotelName){
+  giveMajorityMinorityBonus(hotelName){
     // this part is forcing us to think about our data_structure again
-    let shareHolders=this.bank.getShareHoldersInDescending(hotelName);
-    let majorityShareHolder=Object.keys(shareHolders[0])[0];
+    let shareHolders=this.bank.getShareHoldersForBonus(hotelName);
     let bonusAmounts=this.market.getBonusAmountsOf(hotelName);
-    if (shareHolders.length>1) {
-      let minorityShareHolder=Object.keys(shareHolders[1])[0];
-      this.distributeMoneyToPlayer(minorityShareHolder,bonusAmounts.minority);
+    if (shareHolders.minority.length==0) {
+      this.giveBonus(shareHolders.majority,bonusAmounts.majority);
+      this.giveBonus(shareHolders.majority,bonusAmounts.minority);
     }else {
-      this.distributeMoneyToPlayer(majorityShareHolder,bonusAmounts.minority);
+      this.giveBonus(shareHolders.majority,bonusAmounts.majority);
+      this.giveBonus(shareHolders.minority,bonusAmounts.minority);
     }
-    this.distributeMoneyToPlayer(majorityShareHolder,bonusAmounts.majority);
+  }
+  giveBonus(shareHolders,totalBonus){
+    let self=this;
+    let bonusAmount=totalBonus/(shareHolders.length);
+    shareHolders.forEach((shareHolder)=>{
+      self.distributeMoneyToPlayer(shareHolder.id,bonusAmount);
+    });
   }
   getHotel(hotelName){
     return this.market.getHotel(hotelName);

@@ -34,19 +34,11 @@ class Bank {
     });
   }
   giveOneFreeShare(startedHotelName,playerId){
-    let desiredHotel = this.findHotelBy(startedHotelName);
-    desiredHotel.availableShares -= 1;
-    desiredHotel.shareHolders.push(playerId);
+    this.addShareHolder(startedHotelName,playerId,1);
   }
   getShareholdersOfHotel(hotelName){
-    let hotel = this.findHotelBy(hotelName);
-    return hotel.shareHolders.reduce((sharesCount,shareHolderId)=>{
-      if (sharesCount[shareHolderId]) {
-        sharesCount[shareHolderId]++;
-      }
-      sharesCount[shareHolderId]=1;
-      return sharesCount;
-    },{});
+    let hotel=this.findHotelBy(hotelName);
+    return hotel.shareHolders;
   }
   doesHotelhaveEnoughShares(hotelName,noOfShares){
     let hotel = this.findHotelBy(hotelName);
@@ -54,28 +46,55 @@ class Bank {
     return noOfShares<=availableSharesOfHotel;
   }
   getShareHoldersInDescending(hotelName){
-    let hotelShareHolders=this.getShareholdersOfHotel(hotelName);
     let shareHolders=this.getShareholdersOfHotel(hotelName);
-    let shareHolderIds=Object.keys(shareHolders);
-    let shareHolderList=shareHolderIds.map((id)=>{
-      let shares={};
-      shares[id]=shareHolders[id];
-      return shares;
-    });
-    return shareHolderList.sort((firstShareHolder,secondShareHolder)=>{
-      let secondShareHolderShares=Object.values(secondShareHolder)[0];
-      let firstShareHolderShares=Object.values(firstShareHolder)[0];
+    return shareHolders.sort((firstShareHolder,secondShareHolder)=>{
+      let secondShareHolderShares=secondShareHolder.noOfShares;
+      let firstShareHolderShares=firstShareHolder.noOfShares;
       return secondShareHolderShares-firstShareHolderShares;
     });
   }
-  sellSharesToPlayer(hotelName,noOfShares,playerId,cartValue){
+  getShareHoldersForBonus(hotelName){
+    let shareHoldersInDescending=this.getShareHoldersInDescending(hotelName);
+    let majorityShareHolder=shareHoldersInDescending[0];
+    let noOfSharesMajorityHas=majorityShareHolder.noOfShares;
+    let majorityShareHolders=shareHoldersInDescending.filter((shareHolder)=>{
+      return shareHolder.noOfShares==noOfSharesMajorityHas;
+    });
+    let minorityShareHolders=[];
+    if (majorityShareHolders.length==1&&shareHoldersInDescending.length>1) {
+      let minorityShareHolder=shareHoldersInDescending[1];
+      let noOfSharesMinorityHas=minorityShareHolder.noOfShares;
+      minorityShareHolders=shareHoldersInDescending.filter((shareHolder)=>{
+        return shareHolder.noOfShares==noOfSharesMinorityHas;
+      });
+    }
+    let shareHolders={};
+    shareHolders.majority=majorityShareHolders;
+    shareHolders.minority=minorityShareHolders;
+    return shareHolders;
+  }
+  findShareHolderBy(playerId,desiredHotel){
+    return desiredHotel.shareHolders.find((shareHolder)=>{
+      return shareHolder.id==playerId;
+    });
+  }
+  addShareHolder(hotelName,playerId,noOfShares){
     let desiredHotel = this.findHotelBy(hotelName);
-    if(this.doesHotelhaveEnoughShares(hotelName,noOfShares)){
+    let shareHolder=this.findShareHolderBy(playerId,desiredHotel);
+    if (shareHolder) {
+      shareHolder.noOfShares+=noOfShares;
+    }else {
+      shareHolder={};
+      shareHolder.id=playerId;
+      shareHolder.noOfShares=noOfShares;
       desiredHotel.availableShares -= noOfShares;
-      while(noOfShares>0){
-        desiredHotel.shareHolders.push(playerId);
-        noOfShares--;
-      }
+      desiredHotel.shareHolders.push(shareHolder);
+    }
+  }
+  sellSharesToPlayer(hotelName,noOfShares,playerId,cartValue){
+    if(this.doesHotelhaveEnoughShares(hotelName,noOfShares)){
+      let desiredHotel = this.findHotelBy(hotelName);
+      this.addShareHolder(hotelName,playerId,noOfShares);
       this.availableCash += cartValue;
       return true;
     }
