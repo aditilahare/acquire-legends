@@ -6,7 +6,7 @@ const placeTile = require('./placeTile');
 const changeTurn = require('./changeTurn');
 const chooseHotel = require('./chooseHotel');
 const getTurnState = require('./getTurnState');
-
+const purchaseShares = require('./purchaseShares');
 const isCurrentPlayer = function(req){
   let game=req.app.game;
   let id=req.cookies.playerId;
@@ -32,6 +32,7 @@ const verifyCurrentPlayer = function(req,res,next){
 };
 app.get('/turnState',getTurnState);
 app.use(verifyCurrentPlayer);
+app.post('/purchaseShares',purchaseShares);
 app.post('/placeTile',placeTile);
 app.post('/chooseHotel',chooseHotel);
 app.get('/changeTurn',changeTurn);

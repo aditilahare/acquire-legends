@@ -438,7 +438,7 @@ describe('game test', function() {
       assert.deepEqual(game.placeTile(1, '7A').status, 'chooseHotel');
       game.startHotel('Zeta',1);
       game.changeCurrentPlayer();
-      assert.deepEqual(game.placeTile(0, '5A').status, 'Added to hotel');
+      assert.deepEqual(game.placeTile(0, '5A').status, 'purchaseShares');
     });
     it('merge', () => {
       let game = new Game(3);
