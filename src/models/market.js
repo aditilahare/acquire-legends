@@ -67,11 +67,15 @@ class Market{
         response=this.megerOfTwoHotel(response,neighbourHotelsOfTile,tile);
       }
     }else if(this.isStartingHotel(tile)){
-      response.tiles=this.getNeighbourOccupiedTiles(tile);
-      response.tiles.push(tile);
-      response.status="chooseHotel";
+      response=this.startingOfHotel(response,tile);
     }
     this.occupiedTiles.push(tile);
+    return response;
+  }
+  startingOfHotel(response,tile){
+    response.tiles=this.getNeighbourOccupiedTiles(tile);
+    response.tiles.push(tile);
+    response.status="chooseHotel";
     return response;
   }
   megerOfTwoHotel(response,neighbourHotelsOfTile,tile){

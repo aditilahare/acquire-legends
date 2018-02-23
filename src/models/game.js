@@ -3,46 +3,11 @@ const Bank = require('./bank');
 const Market = require('./market');
 const Turn = require('./turn');
 
+let HOTEL_DATA = require('../../data/hotelsData.json');
+
 const INITIAL_SHARES = 25;
 const INITIAL_MONEY = 100000;
 const STARTING_BALANCE = 6000;
-const HOTEL_DATA = [{
-  name: 'Sackson',
-  color: 'rgb(205, 61, 65)',
-  level: 2
-},
-{
-  name: 'Zeta',
-  color: 'rgb(236, 222, 34)',
-  level: 2
-},
-{
-  name: 'Hydra',
-  color: 'orange',
-  level: 3
-},
-{
-  name: 'Fusion',
-  color: 'green',
-  level: 3
-},
-{
-  name: 'America',
-  color: 'rgba(23, 60, 190, 0.79)',
-  level: 3
-},
-{
-  name: 'Phoenix',
-  color: 'violet',
-  level: 4
-},
-{
-  name: 'Quantum',
-  color: 'rgb(83, 161, 149)',
-  level: 4
-}
-];
-
 class Game {
   constructor(maxPlayers,bank=new Bank(INITIAL_MONEY)) {
     this.maxPlayers=maxPlayers;
