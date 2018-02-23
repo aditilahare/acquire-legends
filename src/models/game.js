@@ -20,14 +20,16 @@ class Game {
     this.market = new Market();
     this.actions = {
       'Independent':function(response){
-        response.expectedActions=['buyShares','changeTurn'];
+        response.expectedActions=['purchaseShares','changeTurn'];
+        response.status="purchaseShares";
         if(response.activeHotels.length==0) {
           response.status="changeTurn";
         }
         return response;
       },
       'Added to hotel':function(response){
-        response.expectedActions=['buyShares','changeTurn'];
+        response.expectedActions=['purchaseShares','changeTurn'];
+        response.status="purchaseShares";
         return response;
       },
       'merge':function (response) {
@@ -42,7 +44,7 @@ class Game {
         return response;
       },
       'chooseHotel':function(response){
-        response.expectedActions=['buyShares','changeTurn'];
+        response.expectedActions=['purchaseShares','changeTurn'];
         if(response.inactiveHotels.length>0){
           response.expectedActions=['chooseHotel'];
           response.status="chooseHotel";
@@ -50,8 +52,8 @@ class Game {
         return response;
       },
       'starting hotel':function(response){
-        response.expectedActions=['buyShares','changeTurn'];
-        response.status="buyShares";
+        response.expectedActions=['purchaseShares','changeTurn'];
+        response.status="purchaseShares";
         return response;
       }
     };
@@ -259,6 +261,7 @@ class Game {
     let response=this.market.startHotel(hotelName,tiles);
     this.bank.giveOneFreeShare(hotelName,playerId);
     this.addSharesToPlayer(playerId,hotelName,1);
+    debugger;
     this.setState(response);
     return response;
   }
@@ -271,6 +274,7 @@ class Game {
       this.addSharesToPlayer(playerId, hotelName, noOfShares);
       this.bank.sellSharesToPlayer(hotelName,noOfShares,playerId,cartValue);
     }
+    this.changeCurrentPlayer();
     return;
   }
   getAvailableCashOfPlayer(playerId){

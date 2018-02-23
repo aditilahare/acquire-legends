@@ -3,11 +3,10 @@ let cart =[];
 
 const chooseHotel = function(){
   let hotelName=getElement('#choose-hotel select[name="hotelName"]').value;
-  sendAjaxRequest('POST','/actions/chooseHotel',`hotelName=${hotelName}`,()=>{
-    console.log(this.responseText);
-  });
+  sendAjaxRequest('POST','/actions/chooseHotel',`hotelName=${hotelName}`,
+    placeTileHandler);
   getElement('#choose-hotel').classList.add('hidden');
-  showEndTurn();
+  // showEndTurn();
 };
 
 const createInactiveHotelsForm = function(hotels){
@@ -30,7 +29,8 @@ actions['chooseHotel']=function(res){
   getElement('#choose-hotel').innerHTML=form;
   getElement('#choose-hotel').classList.remove('hidden');
 };
-actions['buyShares']=function(res){
+actions['purchaseShares']=function(res){
+  getElement('#listed-hotels').classList.remove('hidden');
   showEndTurn();
 };
 
@@ -47,10 +47,10 @@ let listToHTML = function(list,className,elementName='p') {
 
 const changeTurn = function () {
   let cartDetails = JSON.stringify(prepareCart());
-  sendAjaxRequest('POST','/purchaseShares',`cart=${cartDetails}`);
+  sendAjaxRequest('POST','/actions/purchaseShares',`cart=${cartDetails}`);
   cart=[];
   getElement('#cart').innerText='';
-  console.log('changing player turn');
+  getElement('#listed-hotels').classList.add('hidden');
   sendAjaxRequest('GET','/actions/changeTurn','',getPlayerDetails);
 };
 
@@ -104,7 +104,7 @@ const generateTiles = function (tiles){
 
 const generateTilesAsButton = function(tiles,tile){
   tiles+=`<button class='tile' value=${tile}\
-   ondblclick="placeTile(this.value)">\
+   onclick="placeTile(this.value)">\
  <span>${tile}</span></button>`;
   return tiles;
 };
@@ -169,9 +169,7 @@ const addToCart = function(hotelName){
   preview.classList.add(`${hotelName}`,`cartCards`);
   cartDiv.appendChild(preview);
 };
-const addShare = function(){
-  console.log(event.target.parentElement.parentElement);
-  let hotelName= event.target.parentElement.parentElement.id;
+const addShare = function(hotelName){
   // let hotelColor = event.target.parentElement.parentElement.;
   console.log(hotelName);
   addToCart(hotelName);
@@ -186,17 +184,18 @@ const removeShare = function(){
   // console.log(hotelColor);
 };
 const displayHotelNames = function(allHotelsDetails){
+  getElement('#listed-hotels').innerHTML='';
   let hotelsHtml=allHotelsDetails.reduce((prev,cur)=>{
     let shareButtons = '';
     if(cur.status){
-      shareButtons=`<button id="${cur.name}AddShare" onclick="addShare()"> + \
-      </button></br><button id="${cur.name}RemoveShare" \
-      onclick="removeShare()"> - </button></button>`;
+      shareButtons=`<button class="${cur.name} share-button" \
+      id="${cur.name}AddShare" onclick="addShare('${cur.name}')"> ${cur.name} \
+      </button>`;
+      getElement('#listed-hotels').innerHTML += shareButtons;
     }
     prev +=`<div class="fakeContent" id="${cur.name}" \
    style="background-color:${cur.color}"><div class="hotels">${cur.name}</div>\
-   <div class="hotels">${cur.shares}<br>${cur.sharePrice}</div><div>\
-   ${shareButtons}</div></div>`;
+   <div class="hotels">${cur.shares}<br>${cur.sharePrice}</div></div>`;
     return prev;
   },'<h3 id="hotel-heading">Hotels</h3>   ');
   document.getElementById('hotels-place').innerHTML = hotelsHtml;
@@ -229,9 +228,9 @@ const updateHotelsOnBoard= function (allHotelsDetails){
 
 const placeTileHandler = function () {
   let response;
-  console.log(this.status);
   if(this.status!=403){
     response=JSON.parse(this.responseText);
+    console.log(response);
     if(actions[response.status]) {
       actions[response.status](response);
     }

@@ -393,20 +393,27 @@ describe('game test', function() {
       game.changeCurrentPlayer();
       assert.deepEqual(game.placeTile(1,'7A').status,'chooseHotel');
       game.startHotel('Zeta',1);
-      game.changeCurrentPlayer();
-      game.changeCurrentPlayer();
       game.placeTile(0,'2A');
+      game.purchaseShares('Zeta',2,0);
+      game.changeCurrentPlayer();
+      game.placeTile(1,'9A');
+      game.purchaseShares('Zeta',2,1);
+      game.changeCurrentPlayer();
+      game.placeTile(2,'4B');
+      game.purchaseShares('Zeta',2,2);
+      game.changeCurrentPlayer();
 
       //code execution
+      game.placeTile(0,'5A')
       game.purchaseShares('Zeta',2,0);
 
       //assertion
-      let expected = 5600;
+      let expected = 5000;
       let actual = player1.getAvailableCash();
       assert.deepEqual(actual,expected);
 
       expected = {  Sackson: 0,
-        Zeta: 2,
+        Zeta: 4,
         Hydra: 0,
         Fusion: 0,
         America: 0,
@@ -417,8 +424,8 @@ describe('game test', function() {
       assert.deepEqual(actual,expected);
 
       expected ={ hotelName:'Zeta',
-        availableShares: 22,
-        shareHolders: [{"id":1,"noOfShares":1},{"id":0,"noOfShares":2}]
+        availableShares: 16,
+        shareHolders: [{"id":1,"noOfShares":3},{"id":0,"noOfShares":4},{"id":2,"noOfShares":2}]
       };
       actual = game.bank.sharesDetailsOfHotels;
       assert.deepInclude(actual[1],expected);
@@ -438,7 +445,7 @@ describe('game test', function() {
       assert.deepEqual(game.placeTile(1, '7A').status, 'chooseHotel');
       game.startHotel('Zeta',1);
       game.changeCurrentPlayer();
-      assert.deepEqual(game.placeTile(0, '5A').status, 'Added to hotel');
+      assert.deepEqual(game.placeTile(0, '5A').status, 'purchaseShares');
     });
     it('merge', () => {
       let game = new Game(3);

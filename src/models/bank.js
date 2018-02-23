@@ -83,6 +83,7 @@ class Bank {
     let shareHolder=this.findShareHolderBy(playerId,desiredHotel);
     if (shareHolder) {
       shareHolder.noOfShares+=noOfShares;
+      desiredHotel.availableShares -= noOfShares;
     }else {
       shareHolder={};
       shareHolder.id=playerId;
@@ -91,11 +92,10 @@ class Bank {
       desiredHotel.shareHolders.push(shareHolder);
     }
   }
-  sellSharesToPlayer(hotelName,noOfShares,playerId,cartValue){
+  sellSharesToPlayer(hotelName,noOfShares,playerId){
     if(this.doesHotelhaveEnoughShares(hotelName,noOfShares)){
       let desiredHotel = this.findHotelBy(hotelName);
       this.addShareHolder(hotelName,playerId,noOfShares);
-      this.availableCash += cartValue;
       return true;
     }
     return false;

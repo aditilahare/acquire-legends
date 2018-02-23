@@ -310,7 +310,31 @@ describe('App Test', () => {
         .post('/actions/chooseHotel')
         .set('Cookie','playerId=1')
         .send('hotelName=Zeta')
-        .expect(/buyShares/i)
+        .expect(/purchaseShares/i)
+        .expect(200)
+        .end(done);
+    });
+  });
+  describe('/purchaseShares', function() {
+    it('should allow current player to purchase shares', function(done) {
+      let game = new Game(3);
+      let cart={
+        Zeta:3
+      }
+      game.addPlayer(new Player(0, 'veera'));
+      game.addPlayer(new Player(1, 'gupta'));
+      game.addPlayer(new Player(2, 'sachin'));
+      game.start();
+      game.placeTile(0,'6A');
+      game.changeCurrentPlayer();
+      game.placeTile(1,'7A');
+      game.startHotel('Zeta',1);
+      app.game = game;
+      request(app)
+        .post('/actions/purchaseShares')
+        .set('Cookie','playerId=1')
+        .send(`cart=${JSON.stringify(cart)}`)
+        .expect(/placeTile/i)
         .expect(200)
         .end(done);
     });
