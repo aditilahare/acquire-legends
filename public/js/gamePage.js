@@ -50,7 +50,8 @@ const changeTurn = function () {
   sendAjaxRequest('POST','/purchaseShares',`cart=${cartDetails}`);
   cart=[];
   getElement('#cart').innerText='';
-  sendAjaxRequest('GET','/changeTurn','',getPlayerDetails);
+  console.log('changing player turn');
+  sendAjaxRequest('GET','/actions/changeTurn','',getPlayerDetails);
 };
 
 const prepareCart = function(){
