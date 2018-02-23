@@ -52,9 +52,7 @@ class Market{
     });
   }
   placeTile(tile){
-    let response={
-      status:false
-    };
+    let response=this.getState();
     if (this.isIndependentTile(tile)) {
       this.placeAsIndependentTile(tile);
       response.status="Independent";
@@ -68,23 +66,13 @@ class Market{
       if (neighbourHotelsOfTile.length==2) {
         response=this.megerOfTwoHotel(response,neighbourHotelsOfTile,tile);
       }
-    }
-    if(this.isStartingHotel(tile)){
-      this.startHotel(response,tile);
+    }else if(this.isStartingHotel(tile)){
+      response.tiles=this.getNeighbourOccupiedTiles(tile);
+      response.tiles.push(tile);
+      response.status="chooseHotel";
     }
     this.occupiedTiles.push(tile);
     return response;
-  }
-  startHotel(response,tile){
-    response.tiles=this.getNeighbourOccupiedTiles(tile);
-    response.tiles.push(tile);
-    response.status="starting hotel";
-    let hotel = this.getInactiveHotels()[0];
-    hotel.status=true;
-    response.tiles.forEach((tile)=>{
-      hotel.occupyTile(tile);
-    });
-    response.hotelName=hotel.name;
   }
   megerOfTwoHotel(response,neighbourHotelsOfTile,tile){
     response.status="merge";
@@ -98,7 +86,7 @@ class Market{
   }
   getMergingHotels(mergerBetween,surviourHotel){
     return mergerBetween.filter((hotel)=>{
-      return hotel!=surviourHotel;
+      return hotel!=surviourHotel; // Does double equals-to work with 'Object'
     });
   }
   getLargerHotel(hotelsList){
@@ -110,6 +98,25 @@ class Market{
       hotel=hotelsList[1];
     }
     return hotel;
+  }
+  getState(){
+    let response={
+      status:false
+    };
+    response.activeHotels=this.getActiveHotels();
+    response.inactiveHotels=this.getInactiveHotels();
+    return response;
+  }
+  startHotel(hotelName,tiles){
+    let response=this.getState();
+    let hotel = this.getHotel(hotelName);
+    hotel.status=true;
+    tiles.forEach((tile)=>{
+      hotel.occupyTile(tile);
+    });
+    response.status="starting hotel";
+    response.hotelName=hotel.name;
+    return response;
   }
   createHotel(hotel){
     this.hotels.push(new Hotel(hotel.name,hotel.color,hotel.level));
