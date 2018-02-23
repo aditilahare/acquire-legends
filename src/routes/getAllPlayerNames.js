@@ -1,5 +1,5 @@
-const haveAllPlayersJoined=function (req,res) {
+const getAllPlayerNames=function (req,res) {
   res.send(req.app.game.getAllPlayerNames());
 };
 
-module.exports=haveAllPlayersJoined;
+module.exports=getAllPlayerNames;

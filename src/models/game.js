@@ -52,11 +52,11 @@ class Game {
       }
     };
   }
-  isVacancy() {
+  isVacant() {
     return this.getPlayerCount() < this.maxPlayers;
   }
   addPlayer(player) {
-    if (this.isVacancy()) {
+    if (this.isVacant()) {
       HOTEL_DATA.forEach(function(hotel) {
         let hotelName = hotel.name;
         player.addShares(hotelName, 0);
@@ -72,28 +72,24 @@ class Game {
   haveAllPlayersJoined() {
     return this.maxPlayers == this.getPlayerCount();
   }
-  findPlayerBy(id) {
+  findPlayerById(id) {
     return this.players.find(player => {
       return player.id == id;
     });
   }
-  getPlayerNameOf(id) {
-    if (this.findPlayerBy(id)) {
-      return this.findPlayerBy(id).name;
+  getPlayerNameById(id) {
+    if (this.findPlayerById(id)) {
+      return this.findPlayerById(id).name;
     }
     return '';
   }
   deductMoneyFromPlayer(playerId,money){
-    let player = this.findPlayerBy(playerId);
+    let player = this.findPlayerById(playerId);
     player.deductMoney(money);
   }
   distributeMoneyToPlayer(id, money) {
-    let player = this.findPlayerBy(id);
+    let player = this.findPlayerById(id);
     player.addMoney(money);
-  }
-  getAvailableCashOf(id) {
-    let player = this.findPlayerBy(id);
-    return player.getAvailableCash();
   }
   distributeInitialMoney(initialMoney) {
     this.players.forEach(player => {
@@ -109,7 +105,7 @@ class Game {
   distributeInitialTiles() {
     let tileBox = this.tileBox;
     this.players.forEach(function(player) {
-      player.addTiles(tileBox.getNTiles(6));
+      player.addTiles(tileBox.getTiles(6));
     });
   }
   start() {
@@ -145,7 +141,7 @@ class Game {
     return this.market.getHotel(hotelName);
   }
   getPlayerDetails(id) {
-    let player = this.findPlayerBy(id);
+    let player = this.findPlayerById(id);
     return player.getDetails();
   }
   isInPlayMode() {
@@ -165,16 +161,16 @@ class Game {
     });
   }
   addSharesToPlayer(id, hotelName, noOfShares) {
-    let player = this.findPlayerBy(id);
+    let player = this.findPlayerById(id);
     player.addShares(hotelName, noOfShares);
   }
   getPlayerSharesDetails(id) {
-    let player = this.findPlayerBy(id);
+    let player = this.findPlayerById(id);
     return player.getShareDetails();
   }
   placeTile(id, tile) {
     let currentPlayerId = this.turn.getCurrentPlayerID();
-    let player = this.findPlayerBy(id);
+    let player = this.findPlayerById(id);
     let playerTile = player.getTile(tile);
     let response=this.market.placeTile(playerTile);
     if(response.status){
@@ -209,9 +205,9 @@ class Game {
     return playerId == this.turn.getCurrentPlayerID();
   }
   changeCurrentPlayer() {
-    let tiles = this.tileBox.getNTiles(1);
+    let tiles = this.tileBox.getTiles(1);
     let currentPlayerID = this.turn.getCurrentPlayerID();
-    let currentPlayer = this.findPlayerBy(currentPlayerID);
+    let currentPlayer = this.findPlayerById(currentPlayerID);
     currentPlayer.addTile(tiles[0]);
     this.turn.setState({
       expectedActions:['placeTile']
@@ -257,7 +253,7 @@ class Game {
     return response;
   }
   purchaseShares(hotelName,noOfShares,playerId){
-    let player = this.findPlayerBy(playerId);
+    let player = this.findPlayerById(playerId);
     let sharePrice = this.market.getSharePriceOfHotel(hotelName);
     let cartValue = sharePrice * noOfShares;
     if(this.bank.doesHotelhaveEnoughShares(hotelName,noOfShares)){
@@ -268,7 +264,7 @@ class Game {
     return;
   }
   getAvailableCashOfPlayer(playerId){
-    let player = this.findPlayerBy(playerId);
+    let player = this.findPlayerById(playerId);
     return player.getAvailableCash();
   }
 }

@@ -13,7 +13,9 @@ class Player {
     return this.tiles;
   }
   addTiles(tiles){
-    this.tiles=tiles;
+    tiles.forEach(tile=>{
+      this.addTile(tile);
+    });
   }
   getAvailableCash() {
     return this.availableMoney;

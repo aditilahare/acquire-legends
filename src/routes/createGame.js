@@ -1,5 +1,6 @@
 const Game = require('../models/game.js');
-const addPlayer = require('./join').addPlayer;
+const addPlayer = require('./joinGame').addPlayer;
+const isNumberBetween = require('../utils/utilities').isNumberBetween;
 
 const createGame = function(req, res, next) {
   let body = req.body;
@@ -14,7 +15,5 @@ const createGame = function(req, res, next) {
 game is currently running');
 };
 
-const isNumberBetween = function (number,min,max) {
-  return number >= min && number <= max;
-};
+
 module.exports = createGame;
