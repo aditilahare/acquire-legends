@@ -63,8 +63,8 @@ class Market{
         this.addTileToExistingHotel(tile);
         response.status="Added to hotel";
       }
-      if (neighbourHotelsOfTile.length==2) {
-        response=this.megerOfTwoHotel(response,neighbourHotelsOfTile,tile);
+      if (neighbourHotelsOfTile.length>1) {
+        response=this.mergerOfHotel(response,neighbourHotelsOfTile,tile);
       }
     }else if(this.isStartingHotel(tile)){
       response=this.startingOfHotel(response,tile);
@@ -78,30 +78,42 @@ class Market{
     response.status="chooseHotel";
     return response;
   }
-  megerOfTwoHotel(response,neighbourHotelsOfTile,tile){
+  mergerOfHotel(response,neighbourHotelsOfTile,tile){
     response.status="merge";
     response.mergingTile=tile;
     let mergerBetween=neighbourHotelsOfTile;
-    let surviourHotel=this.getLargerHotel(mergerBetween);
-    let mergingHotels=this.getMergingHotels(mergerBetween,surviourHotel);
-    response.surviourHotel=surviourHotel;
+    let surviourHotels=this.getLargeHotels(mergerBetween);
+    let mergingHotels=this.getMergingHotels(mergerBetween,surviourHotels);
+    response.surviourHotels=surviourHotels;
     response.mergingHotels=mergingHotels;
     return response;
   }
-  getMergingHotels(mergerBetween,surviourHotel){
+
+  getMergingHotels(mergerBetween,surviourHotels){
     return mergerBetween.filter((hotel)=>{
-      return hotel!=surviourHotel; // Does double equals-to work with 'Object'
+      return !surviourHotels.includes(hotel);
     });
   }
-  getLargerHotel(hotelsList){
-    let hotel=hotelsList[0];
-    let sizeOfFirstHotel=hotelsList[0].getSize();
-    let sizeOfSecondHotel=hotelsList[1].getSize();
-
-    if (sizeOfSecondHotel>sizeOfFirstHotel) {
-      hotel=hotelsList[1];
+  reduceHotelsBySize(largerHotel,currentHotel){
+    let sizeOfLargerHotel=largerHotel.getSize();
+    let sizeOfCurrentHotel=currentHotel.getSize();
+    if (sizeOfCurrentHotel>=sizeOfLargerHotel) {
+      return currentHotel;
     }
-    return hotel;
+    return largerHotel;
+  }
+  getLargeHotels(mergerBetween){
+    let self = this;
+    let dummyHotel={occupiedTiles:[],
+      getSize:function(){
+        return 0;
+      }
+    };
+    let largerHotel= mergerBetween.reduce(self.reduceHotelsBySize,dummyHotel);
+    let sizeOfLargerHotel=largerHotel.getSize();
+    return mergerBetween.filter(hotel=>{
+      return hotel.getSize()==sizeOfLargerHotel;
+    });
   }
   getState(){
     let response={

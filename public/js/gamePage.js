@@ -169,27 +169,31 @@ const addToCart = function(hotelName){
   let cartDiv = getElement('#cart');
   let preview = document.createElement('div');
   preview.classList.add(`${hotelName}`,`cartCards`);
+  preview.innerHTML=`<span class="removeButton" id="removeButton">&times;\
+  </span>`;
   cartDiv.appendChild(preview);
+  preview.onclick=()=>{
+    removeFromCart(hotelName);
+  };
 };
 const addShare = function(hotelName){
-  // let hotelColor = event.target.parentElement.parentElement.;
-  console.log(hotelName);
-  addToCart(hotelName);
-  // console.log(hotelColor);
+  console.log(`adding ${hotelName} to cart.`);
+  cart.length<3 && addToCart(hotelName);
 };
-const removeShare = function(){
-  cart[hotelName]-=1;
-  console.log(event.target.parentElement.parentElement);
-  let hotelName= event.target.parentElement.parentElement.id;
-  console.log(hotelName);
-  removeFromCart(hotelName);
-  // console.log(hotelColor);
+const removeFromCart = function(hotelName){
+  console.log(`removing ${hotelName} from cart.`);
+  let indexOfHotel = cart.indexOf(hotelName);
+  cart.splice(indexOfHotel,1);
+  let cartDiv = getElement('#cart');
+  let card = getElement(`.${hotelName}.cartCards`);
+  cartDiv.removeChild(card);
 };
+
 const displayHotelNames = function(allHotelsDetails){
   getElement('#listed-hotels').innerHTML='';
   let hotelsHtml=allHotelsDetails.reduce((prev,cur)=>{
     let shareButtons = '';
-    if(cur.status){
+    if(cur.status&& cur.shares > 0){
       shareButtons=`<button class="${cur.name} share-button" \
       id="${cur.name}AddShare" onclick="addShare('${cur.name}')"> ${cur.name} \
       </button>`;
@@ -203,14 +207,6 @@ const displayHotelNames = function(allHotelsDetails){
   },`<h3 id="hotel-heading">Hotel's Information</h3> `);
   document.getElementById('hotels-place').innerHTML = hotelsHtml;
 };
-
-const createBtn = function(innerText,onclickFn=''){
-  let btn = document.createElement('button');
-  btn.innerText = innerText;
-  btn.onclick = onclickFn;
-  return btn;
-};
-
 
 const displayHotelDetails = function (allHotelsDetails) {
   displayHotelNames(allHotelsDetails);
@@ -233,7 +229,6 @@ const placeTileHandler = function () {
   let response;
   if(this.status!=403){
     response=JSON.parse(this.responseText);
-    console.log(response);
     if(actions[response.status]) {
       actions[response.status](response);
     }
@@ -280,7 +275,6 @@ const assignTileIndependentClass = function(tile){
 
 const renderGameStatus = function(){
   let gameStatus = JSON.parse(this.responseText);
-  // console.log(gameStatus);
   displayHotelDetails(gameStatus.hotelsData);
   displayIndependentTiles(gameStatus.independentTiles);
   displayTurnDetails(gameStatus.turnDetails);

@@ -1,8 +1,7 @@
 const TileBox = require('./tileBox');
 const Bank = require('./bank');
-const Market = require('./market');
+const Market = require('./market.js');
 const Turn = require('./turn');
-
 let HOTEL_DATA = require('../../data/hotelsData.json');
 
 const INITIAL_SHARES = 25;
@@ -34,13 +33,19 @@ class Game {
         return response;
       },
       'merge':function (response) {
-        response.expectedActions=['sellKeepOrTradeShares'
-          ,'buyShares','changeTurn'];
-        response.status='sellKeepOrTradeShares';
+        response.expectedActions=['purchaseShares','changeTurn'];
+        response.status='purchaseShares';
         let mergingHotels=response.mergingHotels;
-        let surviourHotel=response.surviourHotel;
-        this.giveMajorityMinorityBonus(mergingHotels[0].name);
-        this.market.addMergingHotelToSurviour(mergingHotels[0],surviourHotel);
+        let surviourHotels=response.surviourHotels;
+        if (surviourHotels.length==1) {
+          let surviourHotel=surviourHotels[0];
+          mergingHotels.forEach((mergingHotel)=>{
+            this.giveMajorityMinorityBonus(mergingHotel.name);
+            this.market.addMergingHotelToSurviour(mergingHotel,surviourHotel);
+          });
+          response.activeHotels=surviourHotel;
+          response.inactiveHotels.concat(mergingHotels);
+        }
         this.market.placeMergingTile(response.mergingTile);
         return response;
       },
@@ -184,7 +189,6 @@ class Game {
     return player.getShareDetails();
   }
   placeTile(id, tile) {
-    let currentPlayerId = this.turn.getCurrentPlayerID();
     let player = this.findPlayerById(id);
     let playerTile = player.getTile(tile);
     let response=this.market.placeTile(playerTile);
@@ -267,7 +271,6 @@ class Game {
     let playerName= this.getPlayerNameById(playerId);
     this.bank.giveOneFreeShare(hotelName,playerId);
     this.addSharesToPlayer(playerId,hotelName,1);
-    debugger;
     this.setState(response);
     this.logActivity(`${playerName} has started ${hotelName} hotel.`);
     return response;
@@ -287,12 +290,10 @@ class Game {
     return;
   }
   getAvailableCashOfPlayer(playerId){
-    let player = this.findPlayerById(playerId);
-    return player.getAvailableCash();
+    return this.findPlayerById(playerId).getAvailableCash();
   }
   logActivity(activity){
     this.activityLog.push(activity);
-    return;
   }
   getActivityLog(){
     return this.activityLog;
