@@ -203,10 +203,12 @@ const displayHotelNames = function(allHotelsDetails){
     }
     prev +=`<div class="fakeContent" id="${cur.name}">\
     <div class="hotels ${cur.name} bg-none"></div>\
-    <div class="hotels">${cur.shares}\
-    <br>${cur.sharePrice}</div><div>${shareButtons}</div></div>`;
+    <div class="hotels">${cur.shares}</div>
+    <div class="hotels">${cur.sharePrice}</div></div>`;
     return prev;
-  },`<h3 id="hotel-heading">Hotel's Information</h3> `);
+  },`<h3 id="hotel-heading" >Hotel's Information</h3> \
+  <div class="fakeContent titles"><div class='title'>Hotel</div>\
+  <div class="title">Shares</div><div class="title">Cost</div></div>`);
   document.getElementById('hotels-place').innerHTML = hotelsHtml;
 };
 
