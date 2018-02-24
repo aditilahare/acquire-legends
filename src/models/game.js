@@ -17,6 +17,7 @@ class Game {
     this.tileBox = new TileBox(12,9);
     this.bank=bank;
     this.MODE='wait';
+    this.activityLog=[];
     this.market = new Market();
     this.actions = {
       'Independent':function(response){
@@ -68,6 +69,7 @@ class Game {
         player.addShares(hotelName, 0);
       });
       this.players.push(player);
+      this.logActivity(`${player.name} has joined the game.`);
       return true;
     }
     return false;
@@ -123,6 +125,7 @@ class Game {
     this.turn.setState({
       expectedActions:['placeTile']
     });
+    this.logActivity(`Game has started.`);
   }
   createHotels(hotels){
     hotels.forEach((hotel) => {
@@ -190,6 +193,7 @@ class Game {
       response.player=player;
       this.setState(response);
     }
+    this.logActivity(`${player.name} has placed ${playerTile}.`);
     return response;
   }
   setState(response){
@@ -247,7 +251,8 @@ class Game {
     return {
       independentTiles:this.giveIndependentTiles(),
       hotelsData:this.getAllHotelsDetails(),
-      turnDetails:this.getTurnDetails(playerId)
+      turnDetails:this.getTurnDetails(playerId),
+      gameActivityLog:this.activityLog
     };
   }
   getTurnState(){
@@ -259,10 +264,12 @@ class Game {
   startHotel(hotelName,playerId){
     let tiles=this.getTurnState().tiles;
     let response=this.market.startHotel(hotelName,tiles);
+    let playerName= this.getPlayerNameById(playerId);
     this.bank.giveOneFreeShare(hotelName,playerId);
     this.addSharesToPlayer(playerId,hotelName,1);
     debugger;
     this.setState(response);
+    this.logActivity(`${playerName} has started ${hotelName} hotel.`);
     return response;
   }
   purchaseShares(hotelName,noOfShares,playerId){
@@ -274,12 +281,21 @@ class Game {
       this.addSharesToPlayer(playerId, hotelName, noOfShares);
       this.bank.sellSharesToPlayer(hotelName,noOfShares,playerId,cartValue);
     }
+    this.logActivity(`${player.name} has bought ${noOfShares}\
+       shares of ${hotelName}.`);
     this.changeCurrentPlayer();
     return;
   }
   getAvailableCashOfPlayer(playerId){
     let player = this.findPlayerById(playerId);
     return player.getAvailableCash();
+  }
+  logActivity(activity){
+    this.activityLog.push(activity);
+    return;
+  }
+  getActivityLog(){
+    return this.activityLog;
   }
 }
 module.exports = Game;

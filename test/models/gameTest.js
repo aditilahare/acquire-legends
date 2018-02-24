@@ -624,4 +624,18 @@ describe('game test', function() {
       assert.equal(otherMinorityPlayer,6300);
     })
   });
+  describe('getActivityLog', () => {
+    it('should give activity log', () => {
+      let game = new Game(3);
+      let player1 = new Player(0, 'pragya');
+      let player2 = new Player(1, 'aditi');
+      let player3 = new Player(2, 'praveen');
+      game.addPlayer(player1);
+      game.addPlayer(player2);
+      game.addPlayer(player3);
+      game.start();
+      let expected=['pragya has joined the game.','aditi has joined the game.','praveen has joined the game.','Game has started.'];
+      assert.deepEqual(game.getActivityLog(),expected);
+    });
+  });
 });

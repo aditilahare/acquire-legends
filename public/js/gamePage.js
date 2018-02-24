@@ -21,7 +21,7 @@ const createInactiveHotelsForm = function(hotels){
 };
 
 const actions={};
-actions['eTurn']=function(){
+actions['changeTurn']=function(){
   changeTurn();
   hideEndTurn();
 };
@@ -130,7 +130,7 @@ const displayMoney = function(money){
 /*Display player name */
 
 const displayPlayerName = function (name) {
-  document.getElementById('playerName').innerHTML = `<p>Logged in as ${name}\
+  document.getElementById('playerName').innerHTML = `<p>${name}\
   </p>`;
 };
 
@@ -144,7 +144,7 @@ const processShareDetails = function(sharesDiv,sharesDetails){
   let hotelsNames = Object.keys(sharesDetails);
   let html = ``;
   hotelsNames.forEach(function(hotelName){
-    html += `<div class='shareCard ${hotelName}'>`+
+    html += `<div class='shareCard ${hotelName} no-img'>`+
   `<center><label>${hotelName}</label></br>`+
   `<label>${sharesDetails[hotelName]}</center><label></div>`;
   });
@@ -196,10 +196,9 @@ const displayHotelNames = function(allHotelsDetails){
       getElement('#listed-hotels').innerHTML += shareButtons;
     }
     prev +=`<div class="fakeContent" id="${cur.name}">\
-    <div class="hotels" style="background-image:\
-    url('../images/${cur.name}.png')">\
-    </div><div class="hotels">${cur.shares}<br>${cur.sharePrice}</div>\
-    <div>${shareButtons}</div></div>`;
+    <div class="hotels ${cur.name} bg-none"></div>\
+    <div class="hotels">${cur.shares}\
+    <br>${cur.sharePrice}</div><div>${shareButtons}</div></div>`;
     return prev;
   },`<h3 id="hotel-heading">Hotel's Information</h3> `);
   document.getElementById('hotels-place').innerHTML = hotelsHtml;
@@ -274,6 +273,7 @@ const displayTurnDetails = function(turnDetails) {
 const assignTileIndependentClass = function(tile){
   let tileOnMarket = document.getElementById(tile);
   tileOnMarket.classList.add('tile');
+  tileOnMarket.classList.add('no-img');
   // tileOnMarket.classList.add('independent');
   return;
 };
@@ -284,6 +284,7 @@ const renderGameStatus = function(){
   displayHotelDetails(gameStatus.hotelsData);
   displayIndependentTiles(gameStatus.independentTiles);
   displayTurnDetails(gameStatus.turnDetails);
+  updateActivityLog(gameStatus.gameActivityLog);
 };
 
 let getGameStatus = function(){
@@ -294,6 +295,20 @@ let getTurnState = function(){
   sendAjaxRequest('GET','/actions/turnState','',placeTileHandler);
 };
 
+const updateActivityLog = function(gameActivityLog){
+  let activityLog = gameActivityLog;
+  getElement('#activity-log').innerHTML = listToHTML(activityLog,'log-items');
+  let lastLog = getElement('#activity-log').lastElementChild;
+  let lastPos = lastLog.getBoundingClientRect().y;
+  getElement('#activity-log').scrollTo(0,lastPos);
+};
+
+const updateGameStatus=function(gameStatus){
+  let currentPlayer = gameStatus.currentPlayer;
+  let notification = `Waiting ${currentPlayer} to complete his move.`;
+  console.log(notification);
+  getElement('#gameStatus').innerText=notification;
+};
 
 const actionsPerformed = function () {
   generateTable();

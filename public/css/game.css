@@ -62,6 +62,7 @@ body {
 
 /* Left column */
 td{
+  border-radius: 15%;
  background: #6f4e37;
  color: #FFC7A6;
  text-align: center;
@@ -101,9 +102,9 @@ td{
 /* Fake content */
 
 .hotels{
- height:48px;
- width:48px;
- float: left;
+  height:48px;
+  width:48px;
+  float: left;
 }
 
 .logSpace {
@@ -176,7 +177,7 @@ td{
 }
 
 .tile{
-  border-radius: 15%;
+  border-radius: 0%;
   line-height: 5px;
   font-weight: 300;
   font-size: 17px;
@@ -202,28 +203,37 @@ td{
    align-self: center;
  }
 
+
  .independent{
-   background-color: #2d2016;
+  background-color: #2d2016;
  }
  .Sackson{
+   background-image:url('../images/Sackson.png');
    background-color:#D33744;
  }
  .Zeta{
+   background-repeat: no-repeat;
+   background-image:url('../images/Zeta.png');
    background-color: #D39F18;
  }
  .Hydra{
+   background-image:url('../images/Hydra.png');
    background-color: #FF7930;
  }
  .Fusion{
+   background-image:url('../images/Fusion.png');
    background-color: #53B856;
  }
  .America{
+   background-image:url('../images/America.png');
    background-color: #4364F0;
  }
  .Phoenix{
+   background-image:url('../images/Phoenix.png');
    background-color:#A863E4;
  }
  .Quantum{
+   background-image:url('../images/Quantum.png');
    background-color:#2496B0;
  }
 
@@ -285,6 +295,10 @@ td{
 
 .currentActivity{
   width: 50%;
+}
+
+#activity-log{
+  overflow-y: scroll;
 }
 
 #turns{
@@ -364,4 +378,11 @@ button[name="Start hotel"], select{
   margin-top: 5px;
   width: 100%;
   font-size: 18px;
+}
+
+.no-img{
+  background-image: none;
+}
+.bg-none{
+  background-color:rgba(207, 177, 156, 0);
 }
