@@ -49,7 +49,7 @@ describe('Bank test', () => {
       assert.deepEqual(actual,expected);
       kotakMahindra.giveOneFreeShare("sackson",0);
       actual = kotakMahindra.getShareholdersOfHotel("sackson");
-      expected = {0:1};
+      expected = [{"id":0,"noOfShares":1}];
       assert.deepEqual(actual,expected);
       actual = kotakMahindra.getAvalibleSharesOf("sackson");
       assert.equal(actual,22);
@@ -66,6 +66,26 @@ describe('Bank test', () => {
   });
   describe('sellSharesToPlayer', function(){
     it('should return true if enough shares are there to sell a player',()=>{
+      let kotakMahindra=new Bank(100000);
+      kotakMahindra.createSharesOfHotel('Zeta',6);
+      let hotelName = 'Zeta';
+      let noOfShares = 3;
+      let playerId = 1;
+      let actual=kotakMahindra.sellSharesToPlayer(hotelName,noOfShares,playerId);
+      assert.isOk(actual);
+    });
+    it('should return false if enough shares are there to sell a player',()=>{
+      let kotakMahindra=new Bank(100000);
+      kotakMahindra.createSharesOfHotel('Zeta',1);
+      let hotelName = 'Zeta';
+      let noOfShares = 3;
+      let playerId = 1;
+      let actual=kotakMahindra.sellSharesToPlayer(hotelName,noOfShares,playerId);
+      assert.isNotOk(actual);
+    });
+  });
+  describe('findShareHolderBy(playerId,hotelName)', function(){
+    it('should ',()=>{
       let kotakMahindra=new Bank(100000);
       kotakMahindra.createSharesOfHotel('Zeta',6);
       let hotelName = 'Zeta';

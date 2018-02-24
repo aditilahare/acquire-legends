@@ -20,9 +20,19 @@ class Hotel {
   occupyTile(tile){
     this.occupiedTiles.push(tile);
   }
+  getAllOccupiedTiles(){
+    return this.occupiedTiles;
+  }
+  removeAllOccupiedTiles(){
+    this.occupiedTiles=[];
+    return ;
+  }
   doesOccupiedTilesInclude(tile){
     let placedTile = tile;
     return this.occupiedTiles.includes(tile);
+  }
+  addTilesToOccupiedTiles(tiles){
+    this.occupiedTiles=this.occupiedTiles.concat(tiles);
   }
   getSize(){
     return this.occupiedTiles.length;

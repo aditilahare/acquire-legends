@@ -8,6 +8,7 @@ let HOTEL_DATA = require('../../data/hotelsData.json');
 const INITIAL_SHARES = 25;
 const INITIAL_MONEY = 100000;
 const STARTING_BALANCE = 6000;
+
 class Game {
   constructor(maxPlayers,bank=new Bank(INITIAL_MONEY)) {
     this.maxPlayers=maxPlayers;
@@ -19,26 +20,31 @@ class Game {
     this.market = new Market();
     this.actions = {
       'Independent':function(response){
-        response.expectedActions=['buyShares','changeTurn'];
+        response.expectedActions=['purchaseShares','changeTurn'];
+        response.status="purchaseShares";
         if(response.activeHotels.length==0) {
           response.status="changeTurn";
         }
         return response;
       },
       'Added to hotel':function(response){
-        response.expectedActions=['buyShares','changeTurn'];
+        response.expectedActions=['purchaseShares','changeTurn'];
+        response.status="purchaseShares";
         return response;
       },
       'merge':function (response) {
-        response.expectedActions=['sellKeepOrTradeShares'];
+        response.expectedActions=['sellKeepOrTradeShares'
+          ,'buyShares','changeTurn'];
         response.status='sellKeepOrTradeShares';
         let mergingHotels=response.mergingHotels;
         let surviourHotel=response.surviourHotel;
-        this.giveBonus(mergingHotels[0].name);
+        this.giveMajorityMinorityBonus(mergingHotels[0].name);
+        this.market.addMergingHotelToSurviour(mergingHotels[0],surviourHotel);
+        this.market.placeMergingTile(response.mergingTile);
         return response;
       },
       'chooseHotel':function(response){
-        response.expectedActions=['buyShares','changeTurn'];
+        response.expectedActions=['purchaseShares','changeTurn'];
         if(response.inactiveHotels.length>0){
           response.expectedActions=['chooseHotel'];
           response.status="chooseHotel";
@@ -46,8 +52,8 @@ class Game {
         return response;
       },
       'starting hotel':function(response){
-        response.expectedActions=['buyShares','changeTurn'];
-        response.status="buyShares";
+        response.expectedActions=['purchaseShares','changeTurn'];
+        response.status="purchaseShares";
         return response;
       }
     };
@@ -124,18 +130,24 @@ class Game {
       this.bank.createSharesOfHotel(hotel.name,INITIAL_SHARES);
     });
   }
-  giveBonus(hotelName){
+  giveMajorityMinorityBonus(hotelName){
     // this part is forcing us to think about our data_structure again
-    let shareHolders=this.bank.getShareHoldersInDescending(hotelName);
-    let majorityShareHolder=Object.keys(shareHolders[0])[0];
+    let shareHolders=this.bank.getShareHoldersForBonus(hotelName);
     let bonusAmounts=this.market.getBonusAmountsOf(hotelName);
-    if (shareHolders.length>1) {
-      let minorityShareHolder=Object.keys(shareHolders[1])[0];
-      this.distributeMoneyToPlayer(minorityShareHolder,bonusAmounts.minority);
+    if (shareHolders.minority.length==0) {
+      this.giveBonus(shareHolders.majority,bonusAmounts.majority);
+      this.giveBonus(shareHolders.majority,bonusAmounts.minority);
     }else {
-      this.distributeMoneyToPlayer(majorityShareHolder,bonusAmounts.minority);
+      this.giveBonus(shareHolders.majority,bonusAmounts.majority);
+      this.giveBonus(shareHolders.minority,bonusAmounts.minority);
     }
-    this.distributeMoneyToPlayer(majorityShareHolder,bonusAmounts.majority);
+  }
+  giveBonus(shareHolders,totalBonus){
+    let self=this;
+    let bonusAmount=totalBonus/(shareHolders.length);
+    shareHolders.forEach((shareHolder)=>{
+      self.distributeMoneyToPlayer(shareHolder.id,bonusAmount);
+    });
   }
   getHotel(hotelName){
     return this.market.getHotel(hotelName);
@@ -249,6 +261,7 @@ class Game {
     let response=this.market.startHotel(hotelName,tiles);
     this.bank.giveOneFreeShare(hotelName,playerId);
     this.addSharesToPlayer(playerId,hotelName,1);
+    debugger;
     this.setState(response);
     return response;
   }
@@ -261,6 +274,7 @@ class Game {
       this.addSharesToPlayer(playerId, hotelName, noOfShares);
       this.bank.sellSharesToPlayer(hotelName,noOfShares,playerId,cartValue);
     }
+    this.changeCurrentPlayer();
     return;
   }
   getAvailableCashOfPlayer(playerId){

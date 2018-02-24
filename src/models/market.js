@@ -207,6 +207,17 @@ class Market{
     }
     return sharePrice;
   }
+  addMergingHotelToSurviour(mergingHotel,surviourHotel){
+    let hotelToBeMerged=this.getHotel(mergingHotel.name);
+    let hotelGoingToSurvive=this.getHotel(surviourHotel.name);
+    let tiles=hotelToBeMerged.getAllOccupiedTiles();
+    hotelToBeMerged.removeAllOccupiedTiles();
+    hotelToBeMerged.status=false;
+    hotelGoingToSurvive.addTilesToOccupiedTiles(tiles);
+  }
+  placeMergingTile(tile){
+    this.addTileToExistingHotel(tile);
+  }
 }
 
 

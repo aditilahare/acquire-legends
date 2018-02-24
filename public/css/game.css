@@ -186,6 +186,9 @@ td{
   height:57px;
 }
 
+.share-button{
+  border-radius: 60%;
+}
 
  .tile span {
    cursor: pointer;
