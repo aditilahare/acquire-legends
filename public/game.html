@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-
+<title>ACQUIRE</title>
 <head>
   <link href="https://fonts.googleapis.com/css?family=Montserrat:100,200,300,400,500,700" rel="stylesheet">
   <link href='https://fonts.googleapis.com/css?family=Aclonica' rel='stylesheet'>
@@ -13,7 +13,7 @@
 
 <body>
   <div class="header">
-  <span class="heading">Acquire</span>
+  <span class="heading">ACQUIRE</span>
   <span id="playerName">
   </div>
   <div class="actionPane">
@@ -33,22 +33,25 @@
   <div class='leftcolumn'>
     <div class="region" id="hotels-place">
     </div>
-  </div>
-  <div class="row">
-    <div class="centercolumn">
-      <div >
-        <div id='board'  style="height:540px;width:720px;">
-
-        </div>
-        <div class="hidden" id="choose-hotel">
-
-        </div>
+    <div class="modal" id="choose-hotel">
+      <div class="modal-content">
       </div>
     </div>
+  </div>
+
+  <div class="row">
+    <div class="centercolumn">
+      <div id="centercolumn">
+        <div >
+          <div id='board'  style="height:540px;width:720px;">
+          </div>
+        </div>
+      </div>
+  </div>
     <div class="rightcolumn">
       <div class="region">
         <h2>Activity Log</h2>
-        <div class="logSpace" style="height:475px;">content</div>
+        <div class="logSpace">content</div>
       </div>
     </div>
   </div>
@@ -57,7 +60,10 @@
     </div>
     <div id='wallet' class="cash">
     </div>
-    <div id='tileBox' class="tiles">
+    <div class="tiles">
+      <div id='tileBox' >
+
+      </div>
 
     </div>
   </div>

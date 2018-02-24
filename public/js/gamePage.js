@@ -6,7 +6,7 @@ const chooseHotel = function(){
   sendAjaxRequest('POST','/actions/chooseHotel',`hotelName=${hotelName}`,()=>{
     console.log(this.responseText);
   });
-  getElement('#choose-hotel').classList.add('hidden');
+  document.getElementById('choose-hotel').style.display = "none";
   showEndTurn();
 };
 
@@ -15,7 +15,7 @@ const createInactiveHotelsForm = function(hotels){
   html +=hotels.map((hotel)=>{
     return `<option value="${hotel.name}">${hotel.name}</option>`;
   }).join('');
-  html += `</select><button name="Start hotel" onclick="chooseHotel()">
+  html += `</select><br><button name="Start hotel" onclick="chooseHotel()">
   Start hotel</button>`;
   return html;
 };
@@ -28,7 +28,7 @@ actions['changeTurn']=function(){
 actions['chooseHotel']=function(res){
   let form=createInactiveHotelsForm(res.inactiveHotels);
   getElement('#choose-hotel').innerHTML=form;
-  getElement('#choose-hotel').classList.remove('hidden');
+  document.getElementById('choose-hotel').style.display = "block";
 };
 actions['buyShares']=function(res){
   showEndTurn();
@@ -129,7 +129,8 @@ const displayMoney = function(money){
 /*Display player name */
 
 const displayPlayerName = function (name) {
-  document.getElementById('playerName').innerHTML = `<p>Hello ${name} !</p>`;
+  document.getElementById('playerName').innerHTML = `<p>Logged in as ${name}\
+  </p>`;
 };
 
 /*Get player details*/
@@ -193,12 +194,13 @@ const displayHotelNames = function(allHotelsDetails){
       </button></br><button id="${cur.name}RemoveShare" \
       onclick="removeShare()"> - </button></button>`;
     }
-    prev +=`<div class="fakeContent" id="${cur.name}" \
-   style="background-color:${cur.color}"><div class="hotels">${cur.name}</div>\
-   <div class="hotels">${cur.shares}<br>${cur.sharePrice}</div><div>\
-   ${shareButtons}</div></div>`;
+    prev +=`<div class="fakeContent" id="${cur.name}">\
+    <div class="hotels" style="background-image:\
+    url('../images/${cur.name}.png')">\
+    </div><div class="hotels">${cur.shares}<br>${cur.sharePrice}</div>\
+    <div>${shareButtons}</div></div>`;
     return prev;
-  },'<h3 id="hotel-heading">Hotels</h3>   ');
+  },`<h3 id="hotel-heading">Hotel's Information</h3> `);
   document.getElementById('hotels-place').innerHTML = hotelsHtml;
 };
 
@@ -270,7 +272,8 @@ const displayTurnDetails = function(turnDetails) {
 
 const assignTileIndependentClass = function(tile){
   let tileOnMarket = document.getElementById(tile);
-  tileOnMarket.classList.add('independent');
+  tileOnMarket.classList.add('tile');
+  // tileOnMarket.classList.add('independent');
   return;
 };
 

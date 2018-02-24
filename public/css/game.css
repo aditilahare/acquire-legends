@@ -4,9 +4,9 @@
 /*CSS for headng*/
 .heading{
   color: #2d2016;
-	text-shadow: 0px 1px 0px #999, 0px 2px 0px #888, 0px 3px 0px #777, 0px 4px 0px #666, 0px 5px 0px #555, 0px 6px 0px #444, 0px 7px 0px #333, 0px 8px 7px #001135;
-	font: 60px 'Montserrat';
-  font-weight: 500;
+	text-shadow: 0px 1px 0px #999, 0px 2px 0px #888, 0px 2px 0px #777, 0px 2px 0px #666, 0px 2px 0px #555, 0px 2px 0px #444, 0px 2px 0px #333, 0px 2px 7px #001135;
+	font: 50px 'Montserrat';
+  font-weight: 300;
 
 }
 /* Css for shares */
@@ -17,8 +17,9 @@
   justify-content: space-around;
 	align-items: center;
 	align-content: center;
-  width: 57.9%;
+  width: 60%;
   height: inherit;
+  border: 1px solid black;
 }
 
 /* Css for cash  */
@@ -37,6 +38,8 @@
  height: inherit;
 }
 
+
+
 /* Add a gray background color with some padding */
 
 body {
@@ -48,11 +51,11 @@ body {
 /* Header/Blog Title */
 
 .header {
-  border: 5px solid #f1f1f1;
- padding: 10px;
- font-size: 10px;
- text-align: center;
- background: #ceb19c;
+  height: 65px;
+  padding: 5px;
+  font-size: 10px;
+  text-align: center;
+  background: #ceb19c;
 }
 
 /* Create two unequal columns that floats next to each other */
@@ -98,15 +101,15 @@ td{
 /* Fake content */
 
 .hotels{
- height: 100%;
- width:33%;
+ height:48px;
+ width:48px;
  float: left;
 }
 
 .logSpace {
  background-color: #e7d9ce;
  width: 100%;
- height: 50px;
+ height: 450px;
  padding: 5px;
 }
 
@@ -118,11 +121,16 @@ td{
  margin-bottom: 5px;
 }
 
+#centercolumn{
+  display: flex;
+  justify-content: center;
+}
+
 /* Add a card effect for articles */
 
 .region {
  background-color: #ceb19c;
- padding: 20px;
+ padding: 14px;
  margin-top: 5px;
 }
 
@@ -139,8 +147,7 @@ td{
 .footer {
  height: 100px;
  background: #ceb19c;
- margin-top: 20px;
- border: 1px solid red;
+ margin-top: 10px;
 }
 
 /* Responsive layout - when the screen is less than 800px wide, make the two columns stack on top of each other instead of next to each other */
@@ -159,14 +166,24 @@ td{
  font-size: 22px;
 }
 
+
 /*CSS for tiles*/
+
+#tileBox{
+  margin-top: 21px;
+  display: flex;
+  justify-content: space-around;
+}
+
 .tile{
- color: white;
- border: 2px solid white;
- background-color: #2d2016;
- position: relative;
- width: 16.65%;
- height:65%;
+  border-radius: 15%;
+  line-height: 5px;
+  font-weight: 300;
+  font-size: 17px;
+  color: #FFC7A6;
+  background-color: #2d2016;
+  width: 57px;
+  height:57px;
 }
 
 
@@ -186,41 +203,41 @@ td{
    background-color: #2d2016;
  }
  .Sackson{
-   background-color:rgb(205, 61, 65);
+   background-color:#D33744;
  }
  .Zeta{
-   background-color: rgb(236, 222, 34);
+   background-color: #D39F18;
  }
  .Hydra{
-   background-color: orange;
+   background-color: #FF7930;
  }
  .Fusion{
-   background-color: green;
+   background-color: #53B856;
  }
  .America{
-   background-color: rgba(23, 60, 190, 0.79);
+   background-color: #4364F0;
  }
  .Phoenix{
-   background-color:violet;
+   background-color:#A863E4;
  }
  .Quantum{
-   background-color:rgb(83, 161, 149);
+   background-color:#2496B0;
  }
 
 #turns div{
-  border-radius: 25px;
-  width:50px;
+  width:70px;
   height: 50px;
+  font-size:18px;
   align-content: center;
   align-items: center;
   justify-content: center;
   display: inline-flex;
-  border: 2px solid black;
 }
 
  #currentPlayer{
-   background-color: red;
-   color: white
+   border-radius: 35%;
+   background-color: rgba(222, 28, 28, 0.47);
+   color: black;
  }
 
 .hidden{
@@ -268,9 +285,8 @@ td{
 }
 
 #turns{
-  border-radius: 10px;
-  width: 25%;
-  height: 80%;
+  width:300px;
+  height: 85%;
   display: flex;
   float: left;
   justify-content: space-around;
@@ -287,6 +303,7 @@ td{
 }
 
 .actionPane {
+  width: 100%;
   height: 70px;
   display: flex;
 	flex-direction: row;
@@ -294,10 +311,9 @@ td{
 	justify-content: center;
 	align-items: center;
 	align-content: center;
-  border: 5px solid #f1f1f1;
- font-size: 10px;
- text-align: center;
- background: #ceb19c;
+  font-size: 10px;
+  text-align: center;
+  background: #ceb19c;
 }
 
 #board{
@@ -311,4 +327,38 @@ td{
   width: 100px;
   border:1px solid black;
   background-color: white;
+}
+
+.modal {
+    padding: 12px;
+    text-align: center;
+    display: none; /* Hidden by default */
+    width:100%; /* Full width */
+    height: 75px; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.15); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-content {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 12px;
+    border: 1px solid #888;
+    width: 80%;
+}
+button[name="Start hotel"]{
+  background: rgb(133, 71, 32);
+  color: rgb(106, 191, 238);
+  font-weight: 100;
+}
+button[name="Start hotel"]:hover{
+  opacity: 0.8;
+}
+
+button[name="Start hotel"], select{
+  margin-top: 5px;
+  width: 100%;
+  font-size: 18px;
 }
