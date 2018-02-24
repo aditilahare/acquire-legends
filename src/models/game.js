@@ -286,7 +286,7 @@ class Game {
     }
     this.logActivity(`${player.name} has bought ${noOfShares}\
        shares of ${hotelName}.`);
-    this.changeCurrentPlayer();
+    // this.changeCurrentPlayer();
     return;
   }
   getAvailableCashOfPlayer(playerId){
