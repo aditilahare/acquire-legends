@@ -187,7 +187,7 @@ td{
 }
 
 .share-button{
-  border-radius: 60%;
+  border-radius: 10%;
 }
 
  .tile span {
@@ -263,28 +263,35 @@ td{
 .cartCards{
   width:30%;
   height: 80%;
-  display: flex;
-  border-radius: 10px;
+  border: 1px solid #000000;
   justify-content: space-around;
-  align-items: center;
-  align-content: space-around;
   flex-direction: row;
+}
+
+.removeButton{
+  z-index: -1;
+  font-size: 22px;
+}
+
+.removeButton:hover{
+  color:#fb0000;
+  cursor: pointer;
 }
 /*CSS for actions*/
 .actions{
   border-radius: 10px;
-  width:25%;
+  width:50%;
   height: 80%;
   display: flex;
-	flex-direction: column;
+	flex-direction: row;
 	flex-wrap: nowrap;
-	justify-content: flex-start;
+	justify-content:flex-start;
 	align-items: flex-start;
 	align-content: flex-start;
 }
 
 .currentActivity{
-  width: 50%;
+  width: 30%;
 }
 
 #turns{
@@ -311,7 +318,7 @@ td{
   display: flex;
 	flex-direction: row;
 	flex-wrap: nowrap;
-	justify-content: center;
+	/* justify-content: center; */
 	align-items: center;
 	align-content: center;
   font-size: 10px;
@@ -324,10 +331,14 @@ td{
   padding-top: 25px;
   justify-content: center;
 }
+
 #cart{
   display: inline-flex;
-  height: 25px;
-  width: 100px;
+  align-items: center;
+  justify-content:space-around;
+  /* align-content: center; */
+  height: 40px;
+  width: 150px;
   border:1px solid black;
   background-color: white;
 }
@@ -364,4 +375,9 @@ button[name="Start hotel"], select{
   margin-top: 5px;
   width: 100%;
   font-size: 18px;
+}
+
+#buyButton{
+  height:30px;
+  width:50px;
 }
