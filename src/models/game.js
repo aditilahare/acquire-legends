@@ -1,6 +1,6 @@
 const TileBox = require('./tileBox');
 const Bank = require('./bank');
-const Market = require('./market');
+const Market = require('./market.js');
 const Turn = require('./turn');
 
 let HOTEL_DATA = require('../../data/hotelsData.json');
@@ -33,13 +33,19 @@ class Game {
         return response;
       },
       'merge':function (response) {
-        response.expectedActions=['sellKeepOrTradeShares'
-          ,'buyShares','changeTurn'];
-        response.status='sellKeepOrTradeShares';
+        response.expectedActions=['purchaseShares','changeTurn'];
+        response.status='purchaseShares';
         let mergingHotels=response.mergingHotels;
-        let surviourHotel=response.surviourHotel;
-        this.giveMajorityMinorityBonus(mergingHotels[0].name);
-        this.market.addMergingHotelToSurviour(mergingHotels[0],surviourHotel);
+        let surviourHotels=response.surviourHotels;
+        if (surviourHotels.length==1) {
+          let surviourHotel=surviourHotels[0];
+          mergingHotels.forEach((mergingHotel)=>{
+            this.giveMajorityMinorityBonus(mergingHotel.name);
+            this.market.addMergingHotelToSurviour(mergingHotel,surviourHotel);
+          });
+          response.activeHotels=surviourHotel;
+          response.inactiveHotels.concat(mergingHotels);
+        }
         this.market.placeMergingTile(response.mergingTile);
         return response;
       },
