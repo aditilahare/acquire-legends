@@ -45,7 +45,7 @@
 body {
  font-family: 'Montserrat', sans-serif;;
  padding: 20px;
- background: #f1f1f1;
+ background: #fff;
 }
 
 /* Header/Blog Title */
@@ -102,6 +102,7 @@ td{
 /* Fake content */
 
 .hotels{
+  margin-left: 50px;
   height:48px;
   width:48px;
   float: left;
@@ -131,7 +132,7 @@ td{
 
 .region {
  background-color: #ceb19c;
- padding: 14px;
+padding: 14px;
  margin-top: 5px;
 }
 
@@ -395,9 +396,21 @@ button[name="Start hotel"], select{
   background-image: none;
 }
 .bg-none{
+  margin-left: 0;
   background-color:rgba(207, 177, 156, 0);
 }
 #buyButton{
   height:30px;
   width:50px;
+}
+
+.titles{
+  padding: 3px;
+  height: 23px;
+  margin-bottom: 3px;
+}
+.title{
+  font-weight: 500;
+  float: left;
+  width: 33%;
 }
