@@ -339,4 +339,36 @@ describe('App Test', () => {
         .end(done);
     });
   });
+  describe('merge', function() {
+    it('merge for two equal hotels', (done) => {
+      let game = new Game(3);
+      app.game=game;
+      let player1 = new Player(0, 'pragya');
+      let player2 = new Player(1, 'aditi');
+      let player3 = new Player(2, 'praveen');
+      game.addPlayer(player1);
+      game.addPlayer(player2);
+      game.addPlayer(player3);
+      game.start();
+      game.placeTile(0, '5A');
+      game.changeCurrentPlayer();
+      game.placeTile(1, '7A');
+      game.changeCurrentPlayer();
+      game.placeTile(2, '5B');
+      game.startHotel('Zeta',2);
+      game.changeCurrentPlayer();
+      game.placeTile(0, '7B');
+      game.startHotel('Sackson',0);
+      game.changeCurrentPlayer();
+      game.placeTile(1, '9A');
+      game.changeCurrentPlayer();
+      game.placeTile(2, '6B');
+      request(app)
+        .post('/actions/chooseHotelForMerge')
+        .set('Cookie','playerId=2')
+        .send('hotelName=Sackson')
+        .expect(200)
+        .end(done)
+    });
+  });
 });

@@ -2,6 +2,8 @@ const TileBox = require('./tileBox');
 const Bank = require('./bank');
 const Market = require('./market.js');
 const Turn = require('./turn');
+const actions = require('../utils/actions.js');
+
 let HOTEL_DATA = require('../../data/hotelsData.json');
 
 const INITIAL_SHARES = 25;
@@ -18,51 +20,7 @@ class Game {
     this.MODE='wait';
     this.activityLog=[];
     this.market = new Market();
-    this.actions = {
-      'Independent':function(response){
-        response.expectedActions=['purchaseShares','changeTurn'];
-        response.status="purchaseShares";
-        if(response.activeHotels.length==0) {
-          response.status="changeTurn";
-        }
-        return response;
-      },
-      'Added to hotel':function(response){
-        response.expectedActions=['purchaseShares','changeTurn'];
-        response.status="purchaseShares";
-        return response;
-      },
-      'merge':function (response) {
-        response.expectedActions=['purchaseShares','changeTurn'];
-        response.status='purchaseShares';
-        let mergingHotels=response.mergingHotels;
-        let surviourHotels=response.surviourHotels;
-        if (surviourHotels.length==1) {
-          let surviourHotel=surviourHotels[0];
-          mergingHotels.forEach((mergingHotel)=>{
-            this.giveMajorityMinorityBonus(mergingHotel.name);
-            this.market.addMergingHotelToSurviour(mergingHotel,surviourHotel);
-          });
-          response.activeHotels=surviourHotel;
-          response.inactiveHotels.concat(mergingHotels);
-        }
-        this.market.placeMergingTile(response.mergingTile);
-        return response;
-      },
-      'chooseHotel':function(response){
-        response.expectedActions=['purchaseShares','changeTurn'];
-        if(response.inactiveHotels.length>0){
-          response.expectedActions=['chooseHotel'];
-          response.status="chooseHotel";
-        }
-        return response;
-      },
-      'starting hotel':function(response){
-        response.expectedActions=['purchaseShares','changeTurn'];
-        response.status="purchaseShares";
-        return response;
-      }
-    };
+    this.actions = actions;
   }
   isVacant() {
     return this.getPlayerCount() < this.maxPlayers;
@@ -143,18 +101,20 @@ class Game {
     let shareHolders=this.bank.getShareHoldersForBonus(hotelName);
     let bonusAmounts=this.market.getBonusAmountsOf(hotelName);
     if (shareHolders.minority.length==0) {
-      this.giveBonus(shareHolders.majority,bonusAmounts.majority);
-      this.giveBonus(shareHolders.majority,bonusAmounts.minority);
+      this.giveBonus(shareHolders.majority,bonusAmounts.majority,'majority');
+      this.giveBonus(shareHolders.majority,bonusAmounts.minority,'minority');
     }else {
-      this.giveBonus(shareHolders.majority,bonusAmounts.majority);
-      this.giveBonus(shareHolders.minority,bonusAmounts.minority);
+      this.giveBonus(shareHolders.majority,bonusAmounts.majority,'majority');
+      this.giveBonus(shareHolders.minority,bonusAmounts.minority,'minority');
     }
   }
-  giveBonus(shareHolders,totalBonus){
+  giveBonus(shareHolders,totalBonus,bonusType){
     let self=this;
     let bonusAmount=totalBonus/(shareHolders.length);
     shareHolders.forEach((shareHolder)=>{
       self.distributeMoneyToPlayer(shareHolder.id,bonusAmount);
+      self.logActivity(`${self.getPlayerNameById(shareHolder.id)}\
+       got ${bonusAmount} as ${bonusType} bonus`);
     });
   }
   getHotel(hotelName){
@@ -196,8 +156,8 @@ class Game {
       player.removeTile(tile);
       response.player=player;
       this.setState(response);
+      this.logActivity(`${player.name} has placed ${playerTile}.`);
     }
-    this.logActivity(`${player.name} has placed ${playerTile}.`);
     return response;
   }
   setState(response){
@@ -233,7 +193,6 @@ class Game {
       expectedActions:['placeTile']
     });
     this.turn.updateTurn();
-    debugger;
   }
   getTurnDetails(id){
     let turnDetails={};
@@ -297,6 +256,32 @@ class Game {
   }
   getActivityLog(){
     return this.activityLog;
+  }
+  performMergeAction(surviourHotels,mergingHotels,response){
+    let surviourHotel=surviourHotels[0];
+    mergingHotels.forEach((mergingHotel)=>{
+      this.giveMajorityMinorityBonus(mergingHotel.name);
+      this.market.addMergingHotelToSurviour(mergingHotel,surviourHotel);
+      this.logActivity(`${surviourHotel.name} acquired ${mergingHotel.name}`);
+    });
+    response.activeHotels=surviourHotel;
+    response.inactiveHotels.concat(mergingHotels);
+  }
+  tieBreaker(surviourHotel){
+    let oldResponse=this.getTurnState();
+    let oldSurviourHotels=oldResponse.surviourHotels;
+    let surviourHotels=[this.getHotel(surviourHotel)];
+    oldResponse.surviourHotels = surviourHotels;
+    let mergingHotels = oldSurviourHotels.filter(hotel=>{
+      return !surviourHotels.includes(hotel);
+    });
+    mergingHotels.forEach(hotel=>{
+      oldResponse.mergingHotels.push(hotel);
+    });
+    this.logActivity(`${this.getCurrentPlayer().name} has\
+     choosen ${surviourHotel} to stay`);
+    this.actions['merge'].call(this,oldResponse);
+    return 200;
   }
 }
 module.exports = Game;

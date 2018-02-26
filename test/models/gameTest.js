@@ -548,6 +548,119 @@ describe('game test', function() {
       let majorityShareHolderPlayerMoney=game.findPlayerById(0).availableMoney;
       assert.equal(majorityShareHolderPlayerMoney,8600);
     });
+    it('merge for two equal hotels', () => {
+      let game = new Game(4);
+      let player1 = new Player(0, 'pragya');
+      let player2 = new Player(1, 'aditi');
+      let player3 = new Player(2, 'praveen');
+      game.addPlayer(player1);
+      game.addPlayer(player2);
+      game.addPlayer(player3);
+      game.start();
+      game.placeTile(0, '5A');
+      game.changeCurrentPlayer();
+      game.placeTile(1, '7A');
+      game.changeCurrentPlayer();
+      game.placeTile(2, '5B');
+      game.startHotel('Zeta',2);
+      game.changeCurrentPlayer();
+      game.placeTile(0, '7B');
+      game.startHotel('Sackson',0);
+      game.changeCurrentPlayer();
+      game.placeTile(1, '9A');
+      game.changeCurrentPlayer();
+      game.placeTile(2, '6B');
+      game.tieBreaker("Sackson");
+
+      let zeta=new Hotel('Zeta','rgb(236, 222, 34)',2);
+      zeta.occupiedTiles=[];
+      zeta.status=false;
+      let sackson=new Hotel('Sackson','rgb(205, 61, 65)',2);
+      let expectedTilesOfSackson=['7A','7B','5A','5B','6B'];
+      sackson.occupiedTiles=expectedTilesOfSackson;
+      sackson.status=true;
+      assert.deepEqual(game.getTurnState().status, 'purchaseShares');
+      assert.deepEqual(game.getTurnState().expectedActions, ['purchaseShares','changeTurn']);
+      assert.deepEqual(game.getTurnState().mergingHotels,[zeta]);
+      assert.deepEqual(game.getTurnState().surviourHotels,[sackson]);
+
+      let majorityShareHolderPlayerMoney=game.findPlayerById(2).availableMoney;
+      assert.equal(majorityShareHolderPlayerMoney,9000);
+    });
+    it('merge', () => {
+      let game = new Game(4);
+      let player1 = new Player(0, 'pragya');
+      let player2 = new Player(1, 'aditi');
+      let player3 = new Player(2, 'praveen');
+      let player4 = new Player(3, 'specailPlayer');
+      game.addPlayer(player1);
+      game.addPlayer(player2);
+      game.addPlayer(player3);
+      game.addPlayer(player4);
+      game.start();
+      game.placeTile(0, '5A');
+      game.changeCurrentPlayer();
+      game.placeTile(1, '7A');
+      game.changeCurrentPlayer();
+      game.placeTile(2, '6B');
+      game.changeCurrentPlayer();
+      game.placeTile(3, '8B');
+      game.changeCurrentPlayer();
+      game.placeTile(0, '4A');
+      game.startHotel('Zeta',0);
+      game.purchaseShares('Zeta',2,0)
+      game.changeCurrentPlayer();
+      game.placeTile(1, '8A');
+      game.startHotel('Sackson',1);
+      game.purchaseShares('Zeta',1,1)
+      game.purchaseShares('Sackson',1,1)
+      game.changeCurrentPlayer();
+      game.placeTile(2, '4B');
+      game.changeCurrentPlayer();
+      game.placeTile(3, '9B');
+
+      game.placeTile(0, '1A');
+      game.changeCurrentPlayer();
+      game.placeTile(1, '6C');
+      game.startHotel('Fusion',2)
+      game.changeCurrentPlayer();
+      game.placeTile(3, '10B');
+      game.changeCurrentPlayer();
+      let response=game.placeTile(0, '6A');
+
+      let zeta=new Hotel('Zeta','rgb(236, 222, 34)',2);
+      zeta.occupiedTiles=[];
+      zeta.status=false;
+      let sackson=new Hotel('Sackson','rgb(205, 61, 65)',2);
+      let expectedTilesOfSackson=[ '7A', '8B', '8A', '9B', '10B', '5A', '4A', '4B', '6B', '6C', '6A' ]
+      sackson.occupiedTiles=expectedTilesOfSackson;
+      sackson.status=true;
+      let fusion=new Hotel('Fusion','green',3);
+      fusion.occupiedTiles=[];
+      fusion.status=false;
+
+      assert.deepEqual(response.status, 'purchaseShares');
+      assert.deepEqual(response.expectedActions, ['purchaseShares','changeTurn']);
+      assert.deepEqual(response.mergingHotels,[zeta,fusion]);
+      assert.deepEqual(response.surviourHotels,[sackson]);
+
+      let majorityShareHolderPlayerMoney=game.findPlayerById(0).availableMoney;
+      assert.equal(majorityShareHolderPlayerMoney,8600);
+    });
+    it('place invalid tile between stable hotels', () => {
+      let game = new Game(3);
+      let player1 = new Player(0, 'pragya');
+      player1.addTile('8A');
+      game.addPlayer(player1);
+      game.turn = new Turn(game.getPlayersOrder());
+      game.market.hotels=[new Hotel('Zeta'),new Hotel('Sackson')];
+      let tiles=['2A','3A','4A','5A','6A','7A','4B','5B','6B','7B','5C'];
+      game.market.startHotel('Zeta',tiles);
+      tiles=['10A','11A','12A','9A','9B','10B','11B','12B','9C','10C','11C','12C'];
+      game.market.startHotel('Sackson',tiles);
+      game.placeTile(0,'8A');
+      assert.deepEqual(game.getTurnState().expectedActions, ['placeTile']);
+    });
   });
   describe('giveMajorityMinorityBonus', () => {
     it('it should give majority and minority bonus to single player when only \

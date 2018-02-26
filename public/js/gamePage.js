@@ -3,13 +3,10 @@ let cart =[];
 
 const chooseHotel = function(){
   let hotelName=getElement('#choose-hotel select[name="hotelName"]').value;
-  sendAjaxRequest('POST','/actions/chooseHotel',`hotelName=${hotelName}`,()=>{
-    console.log(this.responseText);
-  });
+  sendAjaxRequest('POST','/actions/chooseHotel',`hotelName=${hotelName}`);
   document.getElementById('choose-hotel').style.display = "none";
   showEndTurn();
 };
-
 const createInactiveHotelsForm = function(hotels){
   let html=`<select name="hotelName">`;
   html +=hotels.map((hotel)=>{
@@ -19,7 +16,22 @@ const createInactiveHotelsForm = function(hotels){
   Start hotel</button>`;
   return html;
 };
-
+const mergerForTieCase = function(){
+  let hotelName=getElement('#choose-hotel select[name="hotelName"]').value;
+  let data=`hotelName=${hotelName}`;
+  sendAjaxRequest('POST','/actions/chooseHotelForMerge',data);
+  document.getElementById('choose-hotel').style.display = "none";
+  showEndTurn();
+};
+const chooseForMergerSurvivour = function(hotels){
+  let html=`<select name="hotelName">`;
+  html +=hotels.map((hotel)=>{
+    return `<option value="${hotel.name}">${hotel.name}</option>`;
+  }).join('');
+  html += `</select><br><button name="SurviourHotel" \
+  onclick="mergerForTieCase()">Keep Hotel</button>`;
+  return html;
+};
 const actions={};
 actions['changeTurn']=function(){
   changeTurn();
@@ -30,22 +42,24 @@ actions['chooseHotel']=function(res){
   getElement('#choose-hotel').innerHTML=form;
   document.getElementById('choose-hotel').style.display = "block";
 };
+actions["merge"]=function(res){
+  let form=chooseForMergerSurvivour(res.surviourHotels);
+  getElement('#choose-hotel').innerHTML=form;
+  document.getElementById('choose-hotel').style.display = "block";
+};
 actions['purchaseShares']=function(res){
   getElement('#listed-hotels').classList.remove('hidden');
   showEndTurn();
 };
-
 let getElement = function(selector){
   return document.querySelector(selector);
 };
-
 let listToHTML = function(list,className,elementName='p') {
   let html=list.map((item)=>{
     return `<${elementName} class=${className} > ${item} </${elementName}>`;
   }).join('');
   return html;
 };
-
 const changeTurn = function () {
   let cartDetails = JSON.stringify(prepareCart());
   sendAjaxRequest('POST','/actions/purchaseShares',`cart=${cartDetails}`);
@@ -54,7 +68,6 @@ const changeTurn = function () {
   getElement('#listed-hotels').classList.add('hidden');
   sendAjaxRequest('GET','/actions/changeTurn','',getPlayerDetails);
 };
-
 const prepareCart = function(){
   return cart.reduce((previous,current)=>{
     if(!previous[current]) {
@@ -64,21 +77,16 @@ const prepareCart = function(){
     return previous;
   },{});
 };
-
-
 const showEndTurn = function () {
   let element=getElement('#change-turn');
   element.classList.remove('hidden');
   element=getElement('#change-turn button').onclick=changeTurn;
 };
-
 const hideEndTurn = function () {
   let element=getElement('#change-turn');
   element.classList.add('hidden');
   element=getElement('#change-turn button').onclick='';
 };
-/*Creating Table*/
-
 const tableGenerator = function(rows,columns){
   let grid='';
   for (let row = 1; row <= rows; row++) {
@@ -91,55 +99,37 @@ const tableGenerator = function(rows,columns){
   }
   return `<table id="grid">${grid}</table>`;
 };
-
 const generateTable = function () {
   document.getElementById('board').innerHTML = tableGenerator(9,12);
 };
-
-
-/*tile Generator*/
-
 const generateTiles = function (tiles){
   return tiles.reduce(generateTilesAsButton,'');
 };
-
 const generateTilesAsButton = function(tiles,tile){
   tiles+=`<button class='tile' value=${tile}\
    onclick="placeTile(this.value)">\
  <span>${tile}</span></button>`;
   return tiles;
 };
-
-/* formatting money as rupee*/
 const getCashInRupee = function (money) {
   return `<center><h2 class='myCash'> &#8377; ${money}<h2></center>`;
 };
-
-/*Display Player tiles*/
-
 const displayTiles = function(tiles){
   document.getElementById('tileBox').innerHTML = generateTiles(tiles);
   return;
 };
-/*Display Player Money*/
 const displayMoney = function(money){
   document.getElementById('wallet').innerHTML = getCashInRupee(money);
   return;
 };
-
-/*Display player name */
-
 const displayPlayerName = function (name) {
   document.getElementById('playerName').innerHTML = `<p>${name}\
   </p>`;
 };
-
-/*Get player details*/
 const getPlayerDetails = function () {
   sendAjaxRequest('GET','/playerDetails','',displayPlayerDetails);
   return;
 };
-
 const processShareDetails = function(sharesDiv,sharesDetails){
   let hotelsNames = Object.keys(sharesDetails);
   let html = ``;
@@ -150,13 +140,11 @@ const processShareDetails = function(sharesDiv,sharesDetails){
   });
   return html;
 };
-
 const displaySharesDetails = function(sharesDetails){
   let sharesDiv = document.getElementById('playerShares');
   sharesDiv.innerHTML = processShareDetails(sharesDiv,sharesDetails);
   return;
 };
-
 const displayPlayerDetails = function () {
   let playerDetails = JSON.parse(this.responseText);
   displayTiles(playerDetails.tiles);
@@ -177,18 +165,15 @@ const addToCart = function(hotelName){
   };
 };
 const addShare = function(hotelName){
-  console.log(`adding ${hotelName} to cart.`);
   cart.length<3 && addToCart(hotelName);
 };
 const removeFromCart = function(hotelName){
-  console.log(`removing ${hotelName} from cart.`);
   let indexOfHotel = cart.indexOf(hotelName);
   cart.splice(indexOfHotel,1);
   let cartDiv = getElement('#cart');
   let card = getElement(`.${hotelName}.cartCards`);
   cartDiv.removeChild(card);
 };
-
 const displayHotelNames = function(allHotelsDetails){
   getElement('#listed-hotels').innerHTML='';
   let hotelsHtml=allHotelsDetails.reduce((prev,cur)=>{
@@ -209,45 +194,42 @@ const displayHotelNames = function(allHotelsDetails){
   <div class="title">Shares</div><div class="title">Cost</div></div>`);
   document.getElementById('hotels-place').innerHTML = hotelsHtml;
 };
-
 const displayHotelDetails = function (allHotelsDetails) {
   displayHotelNames(allHotelsDetails);
   updateHotelsOnBoard(allHotelsDetails);
 };
-
 const assignTilesWithRespectiveHotel = function(hotel){
+  let hotels=['Zeta','Sackson','Hydra','America','Quantum','Phoenix','Fusion'];
   hotel.occupiedTiles.forEach(tile=>{
     let tileOnMarket = document.getElementById(tile);
+    if (hotels.includes(tileOnMarket.classList[2])) {
+      let index = hotels.indexOf(tileOnMarket.classList[2]);
+      tileOnMarket.classList.remove(hotels[index]);
+    }
     tileOnMarket.classList.add(hotel.name);
   });
   return;
 };
-
 const updateHotelsOnBoard= function (allHotelsDetails){
   allHotelsDetails.forEach(assignTilesWithRespectiveHotel);
 };
-
 const placeTileHandler = function () {
   let response;
-  if(this.status!=403){
+  if(this.status!=403&&this.responseText){
     response=JSON.parse(this.responseText);
     if(actions[response.status]) {
       actions[response.status](response);
     }
   }
 };
-
 const placeTile = function(tile){
   sendAjaxRequest('POST','/actions/placeTile',`tile=${tile}`,placeTileHandler);
   return;
 };
-
-
 const displayIndependentTiles = function(independentTiles) {
   independentTiles.forEach(assignTileIndependentClass);
   return;
 };
-
 const displayTurnDetails = function(turnDetails) {
   let currentPlayer=turnDetails.currentPlayer;
   currentPlayer = `<div id='currentPlayer'>${currentPlayer}</div>`;
@@ -265,16 +247,12 @@ const displayTurnDetails = function(turnDetails) {
     hideEndTurn();
   }
 };
-
-
 const assignTileIndependentClass = function(tile){
   let tileOnMarket = document.getElementById(tile);
   tileOnMarket.classList.add('tile');
   tileOnMarket.classList.add('no-img');
-  // tileOnMarket.classList.add('independent');
   return;
 };
-
 const renderGameStatus = function(){
   let gameStatus = JSON.parse(this.responseText);
   displayHotelDetails(gameStatus.hotelsData);
@@ -282,15 +260,12 @@ const renderGameStatus = function(){
   displayTurnDetails(gameStatus.turnDetails);
   updateActivityLog(gameStatus.gameActivityLog);
 };
-
 let getGameStatus = function(){
   sendAjaxRequest('GET','/gameStatus','',renderGameStatus);
 };
-
 let getTurnState = function(){
   sendAjaxRequest('GET','/actions/turnState','',placeTileHandler);
 };
-
 const updateActivityLog = function(gameActivityLog){
   let activityLog = gameActivityLog;
   getElement('#activity-log').innerHTML = listToHTML(activityLog,'log-items');
@@ -298,14 +273,11 @@ const updateActivityLog = function(gameActivityLog){
   let lastPos = lastLog.getBoundingClientRect().y;
   getElement('#activity-log').scrollTo(0,lastPos);
 };
-
 const updateGameStatus=function(gameStatus){
   let currentPlayer = gameStatus.currentPlayer;
   let notification = `Waiting ${currentPlayer} to complete his move.`;
-  console.log(notification);
   getElement('#gameStatus').innerText=notification;
 };
-
 const actionsPerformed = function () {
   generateTable();
   getGameStatus();
@@ -315,5 +287,4 @@ const actionsPerformed = function () {
   getTurnState();
   IGNORE_MY_TURN=false;
 };
-
 window.onload = actionsPerformed;

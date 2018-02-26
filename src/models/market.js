@@ -51,6 +51,16 @@ class Market{
       this.independentTiles.splice(index,1);
     });
   }
+  mergeManager(tile,neighbourHotelsOfTile,response){
+    let stableHotels = neighbourHotelsOfTile.filter(hotel=>{
+      return hotel.getSize()>10;
+    });
+    if (stableHotels.length>1) {
+      response.status="Invalid Tile";
+    }else {
+      response=this.mergerOfHotel(response,neighbourHotelsOfTile,tile);
+    }
+  }
   placeTile(tile){
     let response=this.getState();
     if (this.isIndependentTile(tile)) {
@@ -64,7 +74,7 @@ class Market{
         response.status="Added to hotel";
       }
       if (neighbourHotelsOfTile.length>1) {
-        response=this.mergerOfHotel(response,neighbourHotelsOfTile,tile);
+        this.mergeManager(tile,neighbourHotelsOfTile,response);
       }
     }else if(this.isStartingHotel(tile)){
       response=this.startingOfHotel(response,tile);

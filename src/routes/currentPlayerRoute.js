@@ -5,6 +5,7 @@ const app= router();
 const placeTile = require('./placeTile');
 const changeTurn = require('./changeTurn');
 const chooseHotel = require('./chooseHotel');
+const mergingForTieCase = require('./merging.js');
 const getTurnState = require('./getTurnState');
 const purchaseShares = require('./purchaseShares');
 const isCurrentPlayer = function(req){
@@ -35,6 +36,7 @@ app.use(verifyCurrentPlayer);
 app.post('/purchaseShares',purchaseShares);
 app.post('/placeTile',placeTile);
 app.post('/chooseHotel',chooseHotel);
+app.post('/chooseHotelForMerge',mergingForTieCase);
 app.get('/changeTurn',changeTurn);
 
 module.exports=app;
