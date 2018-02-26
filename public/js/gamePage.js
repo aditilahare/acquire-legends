@@ -34,8 +34,8 @@ const chooseForMergerSurvivour = function(hotels){
 };
 const actions={};
 actions['changeTurn']=function(){
-  changeTurn();
   hideEndTurn();
+  changeTurn();
 };
 actions['chooseHotel']=function(res){
   let form=createInactiveHotelsForm(res.inactiveHotels);
@@ -61,12 +61,16 @@ let listToHTML = function(list,className,elementName='p') {
   return html;
 };
 const changeTurn = function () {
+  sendAjaxRequest('GET','/actions/changeTurn','',getPlayerDetails);
+};
+
+const purchaseShares = function(){
   let cartDetails = JSON.stringify(prepareCart());
   sendAjaxRequest('POST','/actions/purchaseShares',`cart=${cartDetails}`);
   cart=[];
   getElement('#cart').innerText='';
   getElement('#listed-hotels').classList.add('hidden');
-  sendAjaxRequest('GET','/actions/changeTurn','',getPlayerDetails);
+  hideEndTurn();
 };
 const prepareCart = function(){
   return cart.reduce((previous,current)=>{
@@ -80,7 +84,7 @@ const prepareCart = function(){
 const showEndTurn = function () {
   let element=getElement('#change-turn');
   element.classList.remove('hidden');
-  element=getElement('#change-turn button').onclick=changeTurn;
+  element=getElement('#change-turn button').onclick=purchaseShares;
 };
 const hideEndTurn = function () {
   let element=getElement('#change-turn');
@@ -217,6 +221,7 @@ const placeTileHandler = function () {
   let response;
   if(this.status!=403&&this.responseText){
     response=JSON.parse(this.responseText);
+    console.log(response);
     if(actions[response.status]) {
       actions[response.status](response);
     }
@@ -239,7 +244,6 @@ const displayTurnDetails = function(turnDetails) {
   if(eval(isMyTurn)){
     if(!IGNORE_MY_TURN){
       IGNORE_MY_TURN=true;
-      alert(`${turnDetails.currentPlayer} it's your turn`);
     }
   }else{
     document.tile=`${turnDetails.currentPlayer} it's your turn`;

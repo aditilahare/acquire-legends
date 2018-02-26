@@ -5,6 +5,7 @@ const purchaseShares = function(req,res,next){
   Object.keys(cartData).forEach(hotelName=>{
     game.purchaseShares(hotelName,cartData[hotelName],id);
   });
+  game.changeCurrentPlayer();
   res.send(game.getTurnState());
 };
 module.exports=purchaseShares;

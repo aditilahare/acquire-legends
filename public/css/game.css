@@ -102,7 +102,7 @@ td{
 /* Fake content */
 
 .hotels{
-  margin-left: 50px;
+  margin-left: 40px;
   height:48px;
   width:48px;
   float: left;
@@ -350,7 +350,6 @@ padding: 14px;
   display: inline-flex;
   align-items: center;
   justify-content:space-around;
-  /* align-content: center; */
   height: 40px;
   width: 150px;
   border:1px solid black;
