@@ -42,6 +42,9 @@ class Player {
       this.shares[hotelName]=noOfShares;
     }
   }
+  removeShares(hotelName,noOfShares){
+    this.shares[hotelName]-=noOfShares;
+  }
   getShareDetails(){
     return this.shares;
   }

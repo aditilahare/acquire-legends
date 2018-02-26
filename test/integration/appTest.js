@@ -220,6 +220,56 @@ describe('App Test', () => {
         .expect(200)
         .end(done);
     });
+    it('should respond with deployShares status when merger tile is placed', function(done) {
+      let game = new Game(4);
+      let player1 = new Player(0, 'pragya');
+      let player2 = new Player(1, 'aditi');
+      let player3 = new Player(2, 'praveen');
+      let player4 = new Player(3, 'specailPlayer');
+      game.addPlayer(player1);
+      game.addPlayer(player2);
+      game.addPlayer(player3);
+      game.addPlayer(player4);
+      game.start();
+      game.placeTile(0, '5A');
+      game.changeCurrentPlayer();
+      game.placeTile(1, '7A');
+      game.changeCurrentPlayer();
+      game.placeTile(2, '6B');
+      game.changeCurrentPlayer();
+      game.placeTile(3, '8B');
+      game.changeCurrentPlayer();
+      game.placeTile(0, '4A');
+      game.startHotel('Zeta',0);
+      game.purchaseShares('Zeta',2,0)
+      game.changeCurrentPlayer();
+      game.placeTile(1, '8A');
+      game.startHotel('Sackson',1);
+      game.purchaseShares('Zeta',1,1)
+      game.purchaseShares('Sackson',1,1)
+      game.changeCurrentPlayer();
+      game.placeTile(2, '4B');
+      game.changeCurrentPlayer();
+      game.placeTile(3, '9B');
+      game.changeCurrentPlayer();
+      game.placeTile(0, '1A');
+      game.changeCurrentPlayer();
+      game.placeTile(1, '6C');
+      game.startHotel('Fusion',1);
+      game.changeCurrentPlayer();
+      game.placeTile(2, '1B');
+      game.changeCurrentPlayer();
+      game.placeTile(3, '10B');
+      game.changeCurrentPlayer();
+      app.game = game;
+      request(app)
+        .post('/actions/placeTile')
+        .set('Cookie','playerId=0')
+        .send(`tile=6A`)
+        .expect(/deployShares/i)
+        .expect(200)
+        .end(done);
+    });
   });
   describe('/changeTurn', function() {
     it('change turn to next player', function(done) {
@@ -335,6 +385,64 @@ describe('App Test', () => {
         .set('Cookie','playerId=1')
         .send(`cart=${JSON.stringify(cart)}`)
         .expect(/placeTile/i)
+        .expect(200)
+        .end(done);
+    });
+  });
+  describe('/deployShares', function() {
+    it('should allow current player to purchase shares', function(done) {
+      let game = new Game(4);
+      let player1 = new Player(0, 'pragya');
+      let player2 = new Player(1, 'aditi');
+      let player3 = new Player(2, 'praveen');
+      let player4 = new Player(3, 'specailPlayer');
+      game.addPlayer(player1);
+      game.addPlayer(player2);
+      game.addPlayer(player3);
+      game.addPlayer(player4);
+      game.start();
+      game.placeTile(0, '5A');
+      game.changeCurrentPlayer();
+      game.placeTile(1, '7A');
+      game.changeCurrentPlayer();
+      game.placeTile(2, '6B');
+      game.changeCurrentPlayer();
+      game.placeTile(3, '8B');
+      game.changeCurrentPlayer();
+      game.placeTile(0, '4A');
+      game.startHotel('Zeta',0);
+      game.purchaseShares('Zeta',2,0)
+      game.changeCurrentPlayer();
+      game.placeTile(1, '8A');
+      game.startHotel('Sackson',1);
+      game.purchaseShares('Zeta',1,1)
+      game.purchaseShares('Sackson',1,1)
+      game.changeCurrentPlayer();
+      game.placeTile(2, '4B');
+      game.changeCurrentPlayer();
+      game.placeTile(3, '9B');
+      game.changeCurrentPlayer();
+
+      game.placeTile(0, '1A');
+      game.changeCurrentPlayer();
+      game.placeTile(1, '6C');
+      game.startHotel('Fusion',1)
+      game.changeCurrentPlayer();
+      game.placeTile(2, '1B');
+      game.changeCurrentPlayer();
+      game.placeTile(3, '10B');
+      game.changeCurrentPlayer();
+      let response=game.placeTile(0, '6A');
+      app.game = game;
+      request(app)
+        .post('/merge/deployShares')
+        .set('Cookie','playerId=0')
+        .send(`hotelName=Zeta&noOfSharesToSell=2`)
+        .expect(/"currentMergingHotel":{"name":"Zeta"/i)
+        .expect(/"activeHotels":\[{"name":"Sackson"/i)
+        .expect(/"survivorHotel":{"name":"Sackson/i)
+        .expect(/"expectedActions":\["deployShares"]/i)
+        .expect(/"status":"merge"/i)
         .expect(200)
         .end(done);
     });

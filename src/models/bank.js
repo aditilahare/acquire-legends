@@ -40,6 +40,12 @@ class Bank {
     let hotel=this.findHotelBy(hotelName);
     return hotel.shareHolders;
   }
+  getAllShareHolderIds(hotelName){
+    let shareHolders=this.getShareholdersOfHotel(hotelName);
+    return shareHolders.map((shareHolder)=>{
+      return shareHolder.id;
+    })
+  }
   doesHotelhaveEnoughShares(hotelName,noOfShares){
     let hotel = this.findHotelBy(hotelName);
     let availableSharesOfHotel = hotel.availableShares;
@@ -99,6 +105,12 @@ class Bank {
       return true;
     }
     return false;
+  }
+  removeSharesOfPlayer(playerId,noOfSharesToSell,hotelName){
+    let desiredHotel = this.findHotelBy(hotelName);
+    let shareHolder=this.findShareHolderBy(playerId,desiredHotel);
+    shareHolder.noOfShares-=noOfSharesToSell;
+    desiredHotel.availableShares += noOfSharesToSell;
   }
 }
 module.exports = Bank;

@@ -33,20 +33,22 @@ class Game {
         return response;
       },
       'merge':function (response) {
-        response.expectedActions=['purchaseShares','changeTurn'];
-        response.status='purchaseShares';
+        response.expectedActions=['deployShares'];
+        response.status='merge';
+
         let mergingHotels=response.mergingHotels;
-        let surviourHotels=response.surviourHotels;
-        if (surviourHotels.length==1) {
-          let surviourHotel=surviourHotels[0];
+        let survivorHotels=response.survivorHotels;
+        if (survivorHotels.length==1) {
+          let survivorHotel=survivorHotels[0];
+          response.survivorHotel=survivorHotel;
+          let currentMergingHotel=mergingHotels[0];
+          response.currentMergingHotel=currentMergingHotel
+          this.mergingTurn=this.createMergingTurn(currentMergingHotel.name);
           mergingHotels.forEach((mergingHotel)=>{
             this.giveMajorityMinorityBonus(mergingHotel.name);
-            this.market.addMergingHotelToSurviour(mergingHotel,surviourHotel);
+            // this.market.addMergingHotelToSurvivor(mergingHotel,survivorHotel);
           });
-          response.activeHotels=surviourHotel;
-          response.inactiveHotels.concat(mergingHotels);
         }
-        this.market.placeMergingTile(response.mergingTile);
         return response;
       },
       'chooseHotel':function(response){
@@ -63,6 +65,42 @@ class Game {
         return response;
       }
     };
+  }
+  createMergingTurn(hotelName){
+    let deployers=this.bank.getAllShareHolderIds(hotelName);
+    let playerSequence=this.turn.getPlayerIdSequence();
+    let currentPlayerIndex=this.turn.getCurrentPlayerIndex();
+    let playersBeforeCurrentPlayer=playerSequence.slice(0,currentPlayerIndex);
+    let playersFromCurrentPlayer=playerSequence.slice(currentPlayerIndex);
+    let sequence=playersFromCurrentPlayer.concat(playersBeforeCurrentPlayer);
+    let deployersSequence=sequence.filter((id)=>{
+      return deployers.includes(id);
+    });
+    let mergingTurn=new Turn(deployersSequence);
+    return mergingTurn;
+  }
+  deployShares(playerId,sharesToDeploy){
+    let hotelName=sharesToDeploy.hotelName;
+    let state=this.turn.getState();
+    let mergingHotelName=state.mergingHotels[0].name;
+    let isSameHotel=(hotelName==mergingHotelName);
+    if (isSameHotel&&this.canSharesBeDeployed(playerId,sharesToDeploy)) {
+      let noOfSharesToSell=sharesToDeploy.noOfSharesToSell;
+      this.playerSellsShares(playerId,noOfSharesToSell,hotelName)
+    }
+  }
+  canSharesBeDeployed(playerId,sharesToDeploy){
+    let hotelName=sharesToDeploy.hotelName;
+    let playerShares=this.getPlayerSharesDetails(playerId);
+    return playerShares[hotelName]>=sharesToDeploy.noOfSharesToSell;
+  }
+  playerSellsShares(playerId,noOfSharesToSell,hotelName){
+    this.bank.removeSharesOfPlayer(playerId,noOfSharesToSell,hotelName);
+    let player=this.findPlayerById(playerId);
+    player.removeShares(hotelName,noOfSharesToSell);
+    let currentSharePrice=this.market.getSharePriceOfHotel(hotelName);
+    let totalMoney=currentSharePrice*noOfSharesToSell;
+    this.distributeMoneyToPlayer(playerId,totalMoney);
   }
   isVacant() {
     return this.getPlayerCount() < this.maxPlayers;
@@ -194,7 +232,7 @@ class Game {
     let response=this.market.placeTile(playerTile);
     if(response.status){
       player.removeTile(tile);
-      response.player=player;
+      // response.player=player;
       this.setState(response);
     }
     this.logActivity(`${player.name} has placed ${playerTile}.`);
@@ -241,6 +279,10 @@ class Game {
     let otherPlayers=this.getAllPlayerDetails().filter((player)=>{
       return currentPlayer.id!=player.id;
     });
+    let state=this.turn.getState();
+    if (state.status=="merge") {
+      turnDetails.shouldIDeploy=this.mergingTurn.isTurnOf(id)
+    }
     turnDetails.currentPlayer = currentPlayer.name;
     turnDetails.otherPlayers = otherPlayers.map((player)=>{
       return player.name;
@@ -252,12 +294,14 @@ class Game {
     return turnDetails;
   }
   getStatus(playerId){
-    return {
+    let status={
       independentTiles:this.giveIndependentTiles(),
       hotelsData:this.getAllHotelsDetails(),
       turnDetails:this.getTurnDetails(playerId),
-      gameActivityLog:this.activityLog
-    };
+      gameActivityLog:this.activityLog,
+      state:this.turn.getState()
+    }
+    return status;
   }
   getTurnState(){
     return this.turn.getState();
