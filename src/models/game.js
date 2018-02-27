@@ -23,6 +23,92 @@ class Game {
     this.market = new Market();
     this.actions = actions;
   }
+  createMergingTurn(hotelName){
+    let deployers=this.bank.getAllShareHolderIds(hotelName);
+    console.log("this is deployers",deployers);
+    let playerSequence=this.turn.getPlayerIdSequence();
+    let currentPlayerIndex=this.turn.getCurrentPlayerIndex();
+    let playersBeforeCurrentPlayer=playerSequence.slice(0,currentPlayerIndex);
+    let playersFromCurrentPlayer=playerSequence.slice(currentPlayerIndex);
+    let sequence=playersFromCurrentPlayer.concat(playersBeforeCurrentPlayer);
+    console.log("this is sequence",sequence);
+    let deployersSequence=sequence.filter((id)=>{
+      return deployers.includes(Number(id));
+    });
+    console.log("this is deployersSequence",deployersSequence);
+    let mergingTurn=new Turn(deployersSequence);
+    this.mergingTurn=mergingTurn;
+    console.log(this.mergingTurn);
+    return mergingTurn;
+  }
+  deployShares(playerId,sharesToDeploy){
+    let hotelName=sharesToDeploy.hotelName;
+    let state=this.turn.getState();
+    let mergingHotels=state.mergingHotels;
+    let currentMergingHotel=state.currentMergingHotel;
+    let mergingHotelName=currentMergingHotel.name;
+    let isSameHotel=(hotelName==mergingHotelName);//validate player turn
+    if (isSameHotel&&this.canSharesBeDeployed(playerId,sharesToDeploy)) {
+      this.letPlayerDeployShares(playerId,sharesToDeploy,state);
+    }
+  }
+  letPlayerDeployShares(playerId,sharesToDeploy,state){
+    let mergingHotels=state.mergingHotels;
+    let currentMergingHotel=state.currentMergingHotel;
+    let mergingHotelName=currentMergingHotel.name;
+    let hotelName=sharesToDeploy.hotelName;
+    let noOfSharesToSell=sharesToDeploy.noOfSharesToSell;
+    this.playerSellsShares(playerId,noOfSharesToSell,hotelName);
+    this.mergingTurn.updateTurn();
+    let haveAllPlayersDeployed=(this.mergingTurn.getCurrentPlayerIndex()==0);
+    let indexOfMergingHotel=mergingHotels.indexOf(currentMergingHotel);
+    if (haveAllPlayersDeployed) {
+      let haveAllHotelsMerged=((indexOfMergingHotel+1)==mergingHotels.length);
+      if (haveAllHotelsMerged) {
+        this.endMergingProcess();
+      }else {
+        state.currentMergingHotel=mergingHotels[indexOfMergingHotel+1];
+        this.createMergingTurn(state.currentMergingHotel.name);
+      }
+    }
+  }
+  endMergingProcess(){
+    this.mergingTurn.clearTurn();//test
+    let currentGameState=this.turn.getState();
+    let survivorHotel=currentGameState.survivorHotel;
+    let mergingHotels=currentGameState.mergingHotels;
+    this.market.addMergingsHotelsToSurvivor(mergingHotels,survivorHotel);
+    this.market.placeMergingTile(currentGameState.mergingTile);
+    let inactiveHotels=currentGameState.inactiveHotels.concat(mergingHotels);
+    mergingHotels.forEach((mergingHotel)=>{
+      let hotelToRemove=undefined;
+      currentGameState.inactiveHotels.concat(mergingHotels);
+      hotelToRemove=currentGameState.activeHotels.indexOf(mergingHotel.name);
+      currentGameState.activeHotels.splice(hotelToRemove,1);
+    });
+    let state={
+      expectedActions:['purchaseShares'],
+      status:'purchaseShares'
+    };
+    if (isGameOver(currentGameState.activeHotels)) {
+      state.status="gameOver";
+      expectedActions:[];
+    }
+    this.turn.setState(state);
+  }
+  canSharesBeDeployed(playerId,sharesToDeploy){
+    let hotelName=sharesToDeploy.hotelName;
+    let playerShares=this.getPlayerSharesDetails(playerId);
+    return playerShares[hotelName]>=sharesToDeploy.noOfSharesToSell;
+  }
+  playerSellsShares(playerId,noOfSharesToSell,hotelName){
+    this.bank.removeSharesOfPlayer(playerId,noOfSharesToSell,hotelName);
+    let player=this.findPlayerById(playerId);
+    player.removeShares(hotelName,noOfSharesToSell);
+    let currentSharePrice=this.market.getSharePriceOfHotel(hotelName);
+    let totalMoney=currentSharePrice*noOfSharesToSell;
+    this.distributeMoneyToPlayer(playerId,totalMoney);
+  }
   isVacant() {
     return this.getPlayerCount() < this.maxPlayers;
   }
@@ -123,6 +209,7 @@ class Game {
   }
   getPlayerDetails(id) {
     let player = this.findPlayerById(id);
+    console.log(id);
     return player.getDetails();
   }
   isInPlayMode() {
@@ -155,7 +242,7 @@ class Game {
     let response=this.market.placeTile(playerTile);
     if(response.status){
       player.removeTile(tile);
-      response.player=player;
+      // response.player=player;
       this.setState(response);
       this.logActivity(`${player.name} has placed ${playerTile}.`);
     }
@@ -204,6 +291,12 @@ class Game {
     let otherPlayers=this.getAllPlayerDetails().filter((player)=>{
       return currentPlayer.id!=player.id;
     });
+    let state=this.turn.getState();
+    if (state.status=="merge"&&state.expectedActions.includes("deployShares")) {
+      console.log(id,this.mergingTurn);
+      console.log(this.mergingTurn.isTurnOf(id));
+      turnDetails.shouldIDeploy=this.mergingTurn.isTurnOf(id);
+    }
     turnDetails.currentPlayer = currentPlayer.name;
     turnDetails.otherPlayers = otherPlayers.map((player)=>{
       return player.name;
@@ -215,12 +308,14 @@ class Game {
     return turnDetails;
   }
   getStatus(playerId){
-    return {
+    let status={
       independentTiles:this.giveIndependentTiles(),
       hotelsData:this.getAllHotelsDetails(),
       turnDetails:this.getTurnDetails(playerId),
-      gameActivityLog:this.activityLog
+      gameActivityLog:this.activityLog,
+      state:this.turn.getState()
     };
+    return status;
   }
   getTurnState(){
     return this.turn.getState();
@@ -262,29 +357,29 @@ class Game {
   getActivityLog(){
     return this.activityLog;
   }
-  performMergeAction(surviourHotels,mergingHotels,response){
-    let surviourHotel=surviourHotels[0];
+  performMergeAction(survivorHotels,mergingHotels,response){
+    let survivorHotel=survivorHotels[0];
+    response.survivorHotel=survivorHotel;
+    let currentMergingHotel=mergingHotels[0];
+    response.currentMergingHotel=currentMergingHotel;
+    this.mergingTurn=this.createMergingTurn(currentMergingHotel.name);
     mergingHotels.forEach((mergingHotel)=>{
       this.giveMajorityMinorityBonus(mergingHotel.name);
-      this.market.addMergingHotelToSurviour(mergingHotel,surviourHotel);
-      this.logActivity(`${surviourHotel.name} acquired ${mergingHotel.name}`);
     });
-    response.activeHotels=this.market.getActiveHotels();
-    response.inactiveHotels.concat(mergingHotels);
   }
-  tieBreaker(surviourHotel){
+  tieBreaker(survivorHotel){
     let oldResponse=this.getTurnState();
-    let oldSurviourHotels=oldResponse.surviourHotels;
-    let surviourHotels=[this.getHotel(surviourHotel)];
-    oldResponse.surviourHotels = surviourHotels;
-    let mergingHotels = oldSurviourHotels.filter(hotel=>{
-      return !surviourHotels.includes(hotel);
+    let oldsurvivorHotels=oldResponse.survivorHotels;
+    let survivorHotels=[this.getHotel(survivorHotel)];
+    oldResponse.survivorHotels = survivorHotels;
+    let mergingHotels = oldsurvivorHotels.filter(hotel=>{
+      return !survivorHotels.includes(hotel);
     });
     mergingHotels.forEach(hotel=>{
       oldResponse.mergingHotels.push(hotel);
     });
     this.logActivity(`${this.getCurrentPlayer().name} has\
-     choosen ${surviourHotel} to stay`);
+     choosen ${survivorHotel} to stay`);
     this.actions['merge'].call(this,oldResponse);
     return 200;
   }

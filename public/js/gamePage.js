@@ -44,14 +44,43 @@ actions['chooseHotel']=function(res){
   document.getElementById('choose-hotel').style.display = "block";
 };
 actions["merge"]=function(res){
-  let form=chooseForMergerSurvivour(res.surviourHotels);
-  getElement('#choose-hotel').innerHTML=form;
-  document.getElementById('choose-hotel').style.display = "block";
+  console.log(res);
+  if (res.state.expectedActions.includes('chooseHotelForMerge')) {
+    let form=chooseForMergerSurvivour(res.surviourHotels);
+    getElement('#choose-hotel').innerHTML=form;
+    document.getElementById('choose-hotel').style.display = "block";
+  }
+  if (res.state.expectedActions.includes('deployShares')) {
+    sendAjaxRequest('GET','/gameStatus','',function(){
+      let res=JSON.parse(this.responseText);
+      letPlayerDeployShares(res);
+    });
+  }
+
 };
 actions['purchaseShares']=function(res){
   getElement('#listed-hotels').classList.remove('hidden');
   showEndTurn();
 };
+
+let letPlayerDeployShares=function(res){
+  if (res.turnDetails.shouldIDeploy) {
+    let deploySharesOption=getElement('#deployShares');
+    deploySharesOption.classList.remove('hidden');
+    hotelName=("#hotelNameOfwhichSharesToSell").value;
+    hotelName=res.state.currentMergingHotel.name;
+  }
+};
+
+let requestDeployShares=function(){
+  let noOfSharesToSell=getElement("#noOfSharesToSell").value;
+  let hotelName=getElement("#hotelNameOfwhichSharesToSell").value;
+  let dataToSend=`hotelName=${hotelName}&noOfSharesToSell=${noOfSharesToSell}`;
+  sendAjaxRequest('POST','/merge/deployShares',dataToSend,renderGameStatus);
+  let deploySharesOption=getElement('#deployShares');
+  deploySharesOption.classList.add('hidden');
+};
+
 let getElement = function(selector){
   return document.querySelector(selector);
 };
@@ -253,6 +282,12 @@ const renderGameStatus = function(){
   displayIndependentTiles(gameStatus.independentTiles);
   displayTurnDetails(gameStatus.turnDetails);
   updateActivityLog(gameStatus.gameActivityLog);
+  if (gameStatus.state.status=="merge") {
+    actions["merge"](gameStatus);
+  }
+  if (gameStatus.state.status&&gameStatus.turnDetails.isMyTurn) {
+    actions[gameStatus.state.status](gameStatus);
+  }
 };
 let getGameStatus = function(){
   sendAjaxRequest('GET','/gameStatus','',renderGameStatus);

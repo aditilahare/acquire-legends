@@ -75,6 +75,7 @@ class Market{
       }
       if (neighbourHotelsOfTile.length>1) {
         this.mergeManager(tile,neighbourHotelsOfTile,response);
+        return response;
       }
     }else if(this.isStartingHotel(tile)){
       response=this.startingOfHotel(response,tile);
@@ -92,16 +93,16 @@ class Market{
     response.status="merge";
     response.mergingTile=tile;
     let mergerBetween=neighbourHotelsOfTile;
-    let surviourHotels=this.getLargeHotels(mergerBetween);
-    let mergingHotels=this.getMergingHotels(mergerBetween,surviourHotels);
-    response.surviourHotels=surviourHotels;
+    let survivorHotels=this.getLargeHotels(mergerBetween);
+    let mergingHotels=this.getMergingHotels(mergerBetween,survivorHotels);
+    response.survivorHotels=survivorHotels;
     response.mergingHotels=mergingHotels;
     return response;
   }
 
-  getMergingHotels(mergerBetween,surviourHotels){
+  getMergingHotels(mergerBetween,survivorHotels){
     return mergerBetween.filter((hotel)=>{
-      return !surviourHotels.includes(hotel);
+      return !survivorHotels.includes(hotel);
     });
   }
   reduceHotelsBySize(largerHotel,currentHotel){
@@ -229,13 +230,15 @@ class Market{
     }
     return sharePrice;
   }
-  addMergingHotelToSurviour(mergingHotel,surviourHotel){
-    let hotelToBeMerged=this.getHotel(mergingHotel.name);
-    let hotelGoingToSurvive=this.getHotel(surviourHotel.name);
-    let tiles=hotelToBeMerged.getAllOccupiedTiles();
-    hotelToBeMerged.removeAllOccupiedTiles();
-    hotelToBeMerged.status=false;
-    hotelGoingToSurvive.addTilesToOccupiedTiles(tiles);
+  addMergingsHotelsToSurvivor(mergingHotels,survivorHotel){
+    mergingHotels.forEach((mergingHotel)=>{
+      let hotelToBeMerged=this.getHotel(mergingHotel.name);
+      let hotelGoingToSurvive=this.getHotel(survivorHotel.name);
+      let tiles=hotelToBeMerged.getAllOccupiedTiles();
+      hotelToBeMerged.removeAllOccupiedTiles();
+      hotelToBeMerged.status=false;
+      hotelGoingToSurvive.addTilesToOccupiedTiles(tiles);
+    });
   }
   placeMergingTile(tile){
     this.addTileToExistingHotel(tile);

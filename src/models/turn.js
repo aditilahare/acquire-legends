@@ -14,8 +14,22 @@ class Turn {
   setState(state){
     this.state=state;
   }
+  getPlayerIdSequence(){
+    return this.playerIDSequence;
+  }
+  getCurrentPlayerIndex(){
+    return this.currentPlayerIndex;
+  }
   getState(){
     return this.state;
+  }
+  isTurnOf(playerId){
+    return (this.getCurrentPlayerID()==playerId);
+  }
+  clearTurn(){
+    this.playerIdSequence=[];
+    this.currentPlayerIndex=null;
+    return this.playerIDSequence;
   }
 }
 

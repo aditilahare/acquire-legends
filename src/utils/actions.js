@@ -13,18 +13,17 @@ let actions = {
     return response;
   },
   'merge':function (response) {
-    response.expectedActions=['purchaseShares','changeTurn'];
-    response.status='purchaseShares';
+    response.expectedActions=['deployShares'];
+    response.status='merge';
     let mergingHotels=response.mergingHotels;
-    let surviourHotels=response.surviourHotels;
-    if (surviourHotels.length==1) {
-      this.performMergeAction(surviourHotels,mergingHotels,response);
+    let survivorHotels=response.survivorHotels;
+    if (survivorHotels.length==1) {
+      this.performMergeAction(survivorHotels,mergingHotels,response);
     } else{
       response.expectedActions=["chooseHotelForMerge"];
       response.status="merge";
       return response;
     }
-    this.market.placeMergingTile(response.mergingTile);
     return response;
   },
   'chooseHotel':function(response){
