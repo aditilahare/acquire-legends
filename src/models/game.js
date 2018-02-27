@@ -76,20 +76,32 @@ class Game {
       return deployers.includes(Number(id));
     });
     let mergingTurn=new Turn(deployersSequence);
+    this.mergingTurn=mergingTurn;
     return mergingTurn;
   }
   deployShares(playerId,sharesToDeploy){
     let hotelName=sharesToDeploy.hotelName;
     let state=this.turn.getState();
-    let mergingHotelName=state.mergingHotels[0].name;
-    let isSameHotel=(hotelName==mergingHotelName);//validate player turn
+    let mergingHotels=state.mergingHotels;
+    let currentMergingHotel=state.currentMergingHotel;
+    let mergingHotelName=currentMergingHotel.name;
+    let isSameHotel=(hotelName==mergingHotelName);
     if (isSameHotel&&this.canSharesBeDeployed(playerId,sharesToDeploy)) {
       let noOfSharesToSell=sharesToDeploy.noOfSharesToSell;
       this.playerSellsShares(playerId,noOfSharesToSell,hotelName)
       this.mergingTurn.updateTurn();
       let haveAllPlayersDeployed=(this.mergingTurn.getCurrentPlayerIndex()==0);
       if (haveAllPlayersDeployed) {
-        this.endMergingProcess();
+        let mergingHotelIndex=mergingHotels.indexOf(currentMergingHotel)
+        let areAllHotelsMerged=((mergingHotelIndex+1)==mergingHotels.length);
+        if (areAllHotelsMerged) {
+          this.endMergingProcess();
+        }else {
+          state.currentMergingHotel=state.mergingHotels[mergingHotelIndex+1];
+          // console.log(currentMergingHotel);
+          this.createMergingTurn(state.currentMergingHotel.name);
+        }
+
       }
     }
   }
@@ -108,8 +120,11 @@ class Game {
   }
   canSharesBeDeployed(playerId,sharesToDeploy){
     let hotelName=sharesToDeploy.hotelName;
+    let noOfSharesToSell=sharesToDeploy.noOfSharesToSell
     let playerShares=this.getPlayerSharesDetails(playerId);
-    return playerShares[hotelName]>=sharesToDeploy.noOfSharesToSell;
+    let isThisPlayerTurnToDeploy=this.mergingTurn.isTurnOf(playerId);
+    let doesPlayerHaveEnoughShares=(playerShares[hotelName]>=noOfSharesToSell)
+    return doesPlayerHaveEnoughShares&&isThisPlayerTurnToDeploy;
   }
   playerSellsShares(playerId,noOfSharesToSell,hotelName){
     this.bank.removeSharesOfPlayer(playerId,noOfSharesToSell,hotelName);

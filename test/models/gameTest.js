@@ -864,7 +864,7 @@ describe('game test', function() {
       game.startHotel('Fusion', 1)
       game.purchaseShares('Sackson', 1, 1)
       game.changeCurrentPlayer();
-      game.placeTile(2, '1B');
+      game.placeTile(2, '2B');
       game.changeCurrentPlayer();
       game.placeTile(3, '10B');
       game.purchaseShares('Sackson', 1, 3)
@@ -873,20 +873,105 @@ describe('game test', function() {
       game.deployShares(0, {hotelName:"Zeta",noOfSharesToSell:2});
       game.deployShares(1, {hotelName:"Zeta",noOfSharesToSell:1});
       let gameState = game.getStatus(0).state;
+
       let turnDetailsForPlayer1=game.getStatus(0).turnDetails
+
+      let fusion = new Hotel('Fusion', 'green', 3);
+      fusion.occupiedTiles = ['6B','6C'];
+      fusion.shares=24;
+      fusion.sharePrice=300;
+      fusion.status = true;
+
       let zeta = new Hotel('Zeta', 'rgb(236, 222, 34)', 2);
-      zeta.occupiedTiles = [];
-      zeta.status = false;
-      let sackson = new Hotel('Sackson', 'rgb(205, 61, 65)', 2);
+      zeta.occupiedTiles = ['5A','4A','4B'];
+      zeta.shares=24;
+      zeta.sharePrice=300;
+      zeta.status = true;      let sackson = new Hotel('Sackson', 'rgb(205, 61, 65)', 2);
       let expectedTilesOfSackson = ['7A', '8B', '8A', '9B', '10B', '5A', '4A', '4B']
       sackson.occupiedTiles = expectedTilesOfSackson;
       sackson.status = true;
-      assert.deepEqual(gameState.status, 'purchaseShares');
-      assert.deepEqual(gameState.expectedActions, ['purchaseShares']);
-      assert.notDeepEqual(gameState.mergingHotels, [zeta]);
+      assert.deepEqual(gameState.status, 'merge');
+      assert.deepEqual(gameState.expectedActions, ['deployShares']);
+      assert.deepEqual(gameState.mergingHotels, [zeta,fusion]);
       assert.notDeepEqual(gameState.survivorHotels, [sackson]);
       assert.notDeepEqual(gameState.survivorHotel, sackson);
       assert.notDeepEqual(gameState.currentMergingHotel, zeta);
+      assert.isNotOk(turnDetailsForPlayer1.shouldIDeploy);
+      assert.isTrue(turnDetailsForPlayer1.isMyTurn);
+    })
+    it('should give chance to player who has shares of next merging hotel \
+          when all players deployed shares of currentMergingHotel', () => {
+      let game = new Game(4);
+      let player1 = new Player(0, 'pragya');
+      let player2 = new Player(1, 'aditi');
+      let player3 = new Player(2, 'praveen');
+      let player4 = new Player(3, 'specailPlayer');
+      game.addPlayer(player1);
+      game.addPlayer(player2);
+      game.addPlayer(player3);
+      game.addPlayer(player4);
+      game.start();
+      game.placeTile(0, '5A');
+      game.changeCurrentPlayer();
+      game.placeTile(1, '7A');
+      game.changeCurrentPlayer();
+      game.placeTile(2, '6B');
+      game.changeCurrentPlayer();
+      game.placeTile(3, '8B');
+      game.changeCurrentPlayer();
+      game.placeTile(0, '4A');
+      game.startHotel('Zeta', 0);
+      game.purchaseShares('Zeta', 2, 0)
+      game.changeCurrentPlayer();
+      game.placeTile(1, '8A');
+      game.startHotel('Sackson', 1);
+      game.purchaseShares('Zeta', 1, 1)
+      game.purchaseShares('Sackson', 1, 1)
+      game.changeCurrentPlayer();
+      game.placeTile(2, '4B');
+      game.changeCurrentPlayer();
+      game.placeTile(3, '9B');
+      game.changeCurrentPlayer();
+      game.placeTile(0, '1A');
+      game.changeCurrentPlayer();
+      game.placeTile(1, '6C');
+      game.startHotel('Fusion', 1)
+      game.purchaseShares('Sackson', 1, 1)
+      game.changeCurrentPlayer();
+      game.placeTile(2, '2B');
+      game.changeCurrentPlayer();
+      game.placeTile(3, '10B');
+      game.purchaseShares('Sackson', 1, 3)
+      game.changeCurrentPlayer();
+      game.placeTile(0, '6A');
+      game.deployShares(0, {hotelName:"Zeta",noOfSharesToSell:2});
+      game.deployShares(1, {hotelName:"Zeta",noOfSharesToSell:1});
+      game.deployShares(1, {hotelName:"Fusion",noOfSharesToSell:1});
+      let gameState = game.getStatus(0).state;
+
+      let turnDetailsForPlayer1=game.getStatus(0).turnDetails
+
+      let fusion = new Hotel('Fusion', 'green', 3);
+      fusion.occupiedTiles = ['6B','6C'];
+      fusion.shares=24;
+      fusion.sharePrice=300;
+      fusion.status = true;
+
+      let zeta = new Hotel('Zeta', 'rgb(236, 222, 34)', 2);
+      zeta.occupiedTiles = ['5A','4A','4B'];
+      zeta.shares=24;
+      zeta.sharePrice=300;
+      zeta.status = true;
+      let sackson = new Hotel('Sackson', 'rgb(205, 61, 65)', 2);
+      let expectedTilesOfSackson = [ '7A', '8B', '8A', '9B', '10B', '5A', '4A', '4B', '6B', '6C','6A']
+      sackson.occupiedTiles = expectedTilesOfSackson;
+      sackson.status = true;
+      sackson.sharePrice=700;
+      sackson.shares=21;
+      let actualSackson=game.market.getHotel('Sackson');
+      assert.deepEqual(gameState.status, 'purchaseShares');
+      assert.deepEqual(gameState.expectedActions, ['purchaseShares']);
+      assert.deepEqual(actualSackson,sackson)
       assert.isNotOk(turnDetailsForPlayer1.shouldIDeploy);
       assert.isTrue(turnDetailsForPlayer1.isMyTurn);
     })
@@ -939,6 +1024,8 @@ describe('game test', function() {
       game.startHotel('Zeta', 0);
       game.purchaseShares('Zeta', 2, 0)
       game.changeCurrentPlayer();
+      let dummyMergingTurn=new Turn([0]);
+      game.mergingTurn=dummyMergingTurn;
       assert.isTrue(game.canSharesBeDeployed(0, {
         hotelName: 'Zeta',
         noOfSharesToSell: 1
@@ -963,6 +1050,8 @@ describe('game test', function() {
       game.startHotel('Zeta', 0);
       game.purchaseShares('Zeta', 2, 0)
       game.changeCurrentPlayer();
+      let dummyMergingTurn=new Turn([0]);
+      game.mergingTurn=dummyMergingTurn;
       assert.isFalse(game.canSharesBeDeployed(0, {
         hotelName: 'Zeta',
         noOfSharesToSell: 6
