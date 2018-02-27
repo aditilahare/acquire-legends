@@ -3,7 +3,8 @@ let cart =[];
 
 const chooseHotel = function(){
   let hotelName=getElement('#choose-hotel select[name="hotelName"]').value;
-  sendAjaxRequest('POST','/actions/chooseHotel',`hotelName=${hotelName}`);
+  let data = `hotelName=${hotelName}`;
+  sendAjaxRequest('POST','/actions/chooseHotel',data,placeTileHandler);
   document.getElementById('choose-hotel').style.display = "none";
   showEndTurn();
 };
@@ -19,7 +20,7 @@ const createInactiveHotelsForm = function(hotels){
 const mergerForTieCase = function(){
   let hotelName=getElement('#choose-hotel select[name="hotelName"]').value;
   let data=`hotelName=${hotelName}`;
-  sendAjaxRequest('POST','/actions/chooseHotelForMerge',data);
+  sendAjaxRequest('POST','/actions/chooseHotelForMerge',data,placeTileHandler);
   document.getElementById('choose-hotel').style.display = "none";
   showEndTurn();
 };
@@ -203,14 +204,9 @@ const displayHotelDetails = function (allHotelsDetails) {
   updateHotelsOnBoard(allHotelsDetails);
 };
 const assignTilesWithRespectiveHotel = function(hotel){
-  let hotels=['Zeta','Sackson','Hydra','America','Quantum','Phoenix','Fusion'];
   hotel.occupiedTiles.forEach(tile=>{
     let tileOnMarket = document.getElementById(tile);
-    if (hotels.includes(tileOnMarket.classList[2])) {
-      let index = hotels.indexOf(tileOnMarket.classList[2]);
-      tileOnMarket.classList.remove(hotels[index]);
-    }
-    tileOnMarket.classList.add(hotel.name);
+    tileOnMarket.className= hotel.name;
   });
   return;
 };
