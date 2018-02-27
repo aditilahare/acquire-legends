@@ -83,11 +83,29 @@ class Game {
     let hotelName=sharesToDeploy.hotelName;
     let state=this.turn.getState();
     let mergingHotelName=state.mergingHotels[0].name;
-    let isSameHotel=(hotelName==mergingHotelName);
+    let isSameHotel=(hotelName==mergingHotelName);//validate player turn
     if (isSameHotel&&this.canSharesBeDeployed(playerId,sharesToDeploy)) {
       let noOfSharesToSell=sharesToDeploy.noOfSharesToSell;
       this.playerSellsShares(playerId,noOfSharesToSell,hotelName)
+      this.mergingTurn.updateTurn();
+      let haveAllPlayersDeployed=(this.mergingTurn.getCurrentPlayerIndex()==0);
+      if (haveAllPlayersDeployed) {
+        this.endMergingProcess();
+      }
     }
+  }
+  endMergingProcess(){
+    let currentGameState=this.turn.getState();
+    let survivorHotel=currentGameState.survivorHotel;
+    let mergingHotels=currentGameState.mergingHotels;
+    this.market.addMergingHotelsToSurvivor(mergingHotels,survivorHotel);
+    this.market.placeMergingTile(currentGameState.mergingTile);
+    let state={
+      expectedActions:['purchaseShares'],
+      status:'purchaseShares'
+    }
+    this.mergingTurn.clearTurn();//test
+    this.turn.setState(state)
   }
   canSharesBeDeployed(playerId,sharesToDeploy){
     let hotelName=sharesToDeploy.hotelName;
@@ -281,7 +299,7 @@ class Game {
     });
     let state=this.turn.getState();
     if (state.status=="merge") {
-      turnDetails.shouldIDeploy=this.mergingTurn.isTurnOf(id)
+      turnDetails.shouldIDeploy=this.mergingTurn.isTurnOf(id);
     }
     turnDetails.currentPlayer = currentPlayer.name;
     turnDetails.otherPlayers = otherPlayers.map((player)=>{

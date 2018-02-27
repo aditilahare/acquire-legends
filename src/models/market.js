@@ -220,13 +220,15 @@ class Market{
     }
     return sharePrice;
   }
-  addMergingHotelToSurvivor(mergingHotel,surviourHotel){
-    let hotelToBeMerged=this.getHotel(mergingHotel.name);
-    let hotelGoingToSurvive=this.getHotel(surviourHotel.name);
-    let tiles=hotelToBeMerged.getAllOccupiedTiles();
-    hotelToBeMerged.removeAllOccupiedTiles();
-    hotelToBeMerged.status=false;
-    hotelGoingToSurvive.addTilesToOccupiedTiles(tiles);
+  addMergingHotelsToSurvivor(mergingHotels,surviourHotel){
+    mergingHotels.forEach((mergingHotel)=>{
+      let hotelToBeMerged=this.getHotel(mergingHotel.name);
+      let hotelGoingToSurvive=this.getHotel(surviourHotel.name);
+      let tiles=hotelToBeMerged.getAllOccupiedTiles();
+      hotelToBeMerged.removeAllOccupiedTiles();
+      hotelToBeMerged.status=false;
+      hotelGoingToSurvive.addTilesToOccupiedTiles(tiles);
+    })
   }
   placeMergingTile(tile){
     this.addTileToExistingHotel(tile);

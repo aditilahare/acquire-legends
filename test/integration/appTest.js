@@ -443,6 +443,7 @@ describe('App Test', () => {
         .expect(/"survivorHotel":{"name":"Sackson/i)
         .expect(/"expectedActions":\["deployShares"]/i)
         .expect(/"status":"merge"/i)
+        .expect(/"shouldIDeploy":false/i)
         .expect(200)
         .end(done);
     });
