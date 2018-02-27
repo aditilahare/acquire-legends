@@ -253,7 +253,7 @@ class Game {
     return this.findPlayerById(playerId).getAvailableCash();
   }
   logActivity(activity){
-    this.activityLog.push(activity);
+    this.activityLog.push(`> ${new Date().toLocaleTimeString()}: ${activity}`);
   }
   getActivityLog(){
     return this.activityLog;

@@ -64,7 +64,6 @@ let listToHTML = function(list,className,elementName='p') {
 const changeTurn = function () {
   sendAjaxRequest('GET','/actions/changeTurn','',getPlayerDetails);
 };
-
 const purchaseShares = function(){
   let cartDetails = JSON.stringify(prepareCart());
   sendAjaxRequest('POST','/actions/purchaseShares',`cart=${cartDetails}`);
@@ -110,6 +109,12 @@ const generateTable = function () {
 const generateTiles = function (tiles){
   return tiles.reduce(generateTilesAsButton,'');
 };
+const selectTile=function (tile) {
+  tile.focus();
+  tile.onclick=function (event) {
+    placeTile(event.target.value);
+  };
+};
 const generateTilesAsButton = function(tiles,tile){
   tiles+=`<button class='tile' value=${tile}\
    onclick="placeTile(this.value)">\
@@ -139,9 +144,11 @@ const processShareDetails = function(sharesDiv,sharesDetails){
   let hotelsNames = Object.keys(sharesDetails);
   let html = ``;
   hotelsNames.forEach(function(hotelName){
-    html += `<div class='shareCard ${hotelName} no-img'>`+
-  `<center><label>${hotelName}</label></br>`+
-  `<label>${sharesDetails[hotelName]}</center><label></div>`;
+    if (sharesDetails[hotelName]!=0) {
+      html += `<div class='shareCard ${hotelName} no-img'>`+
+    `<center><label>${hotelName}</label></br>`+
+    `<label>${sharesDetails[hotelName]}</center><label></div>`;
+    }
   });
   return html;
 };
@@ -179,29 +186,17 @@ const removeFromCart = function(hotelName){
   let card = getElement(`.${hotelName}.cartCards`);
   cartDiv.removeChild(card);
 };
-const displayHotelNames = function(allHotelsDetails){
-  getElement('#listed-hotels').innerHTML='';
-  let hotelsHtml=allHotelsDetails.reduce((prev,cur)=>{
-    let shareButtons = '';
-    if(cur.status&& cur.shares > 0){
-      shareButtons=`<button class="${cur.name} share-button" \
-      id="${cur.name}AddShare" onclick="addShare('${cur.name}')"> ${cur.name} \
-      </button>`;
-      getElement('#listed-hotels').innerHTML += shareButtons;
+const removeHotelIcon = function (allHotelsDetails) {
+  allHotelsDetails.forEach(function (cur) {
+    if (cur.status) {
+      getElement(`div.${cur.name}.bg-none`).classList.add('no-img');
     }
-    prev +=`<div class="fakeContent" id="${cur.name}">\
-    <div class="hotels ${cur.name} bg-none"></div>\
-    <div class="hotels">${cur.shares}</div>
-    <div class="hotels">${cur.sharePrice}</div></div>`;
-    return prev;
-  },`<h3 id="hotel-heading" >Hotel's Information</h3> \
-  <div class="fakeContent titles"><div class='title'>Hotel</div>\
-  <div class="title">Shares</div><div class="title">Cost</div></div>`);
-  document.getElementById('hotels-place').innerHTML = hotelsHtml;
+  });
 };
 const displayHotelDetails = function (allHotelsDetails) {
   displayHotelNames(allHotelsDetails);
   updateHotelsOnBoard(allHotelsDetails);
+  removeHotelIcon(allHotelsDetails);
 };
 const assignTilesWithRespectiveHotel = function(hotel){
   hotel.occupiedTiles.forEach(tile=>{
@@ -217,7 +212,6 @@ const placeTileHandler = function () {
   let response;
   if(this.status!=403&&this.responseText){
     response=JSON.parse(this.responseText);
-    console.log(response);
     if(actions[response.status]) {
       actions[response.status](response);
     }
@@ -267,8 +261,16 @@ let getTurnState = function(){
   sendAjaxRequest('GET','/actions/turnState','',placeTileHandler);
 };
 const updateActivityLog = function(gameActivityLog){
-  let activityLog = gameActivityLog;
-  getElement('#activity-log').innerHTML = listToHTML(activityLog,'log-items');
+  let oldLogs=document.querySelectorAll('.log-items');
+  let newLogs = gameActivityLog.slice(oldLogs.length);
+  let newLogHtml='';
+  if (oldLogs.length==0) {
+    newLogHtml = listToHTML(gameActivityLog,'log-items');
+    getElement('#activity-log').innerHTML = newLogHtml;
+  }else {
+    newLogHtml = listToHTML(newLogs,'log-items');
+    getElement('#activity-log').appendChild = newLogHtml;
+  }
   let lastLog = getElement('#activity-log').lastElementChild;
   let lastPos = lastLog.getBoundingClientRect().y;
   getElement('#activity-log').scrollTo(0,lastPos);

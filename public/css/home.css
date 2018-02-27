@@ -73,7 +73,8 @@ input[type=text], input[type=password] {
   font-size: 20px;
   width: 100%;
   padding: 12px 20px;
-  margin: 8px 0;
+  margin-top: 25px;
+  margin-bottom: 10px;
   display: inline-block;
   border: 1px solid #ccc;
   box-sizing: border-box;
@@ -214,6 +215,10 @@ span.psw {
   }
 }
 .sel {
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  border-radius: 0%;
   margin-top: 10px;
   font-family: inherit;
   font-size: 17px;
@@ -227,4 +232,8 @@ span.psw {
 
 .sel:focus{
   outline: none;
+}
+
+label{
+  font-weight: 400;
 }
