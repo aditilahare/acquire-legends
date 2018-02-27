@@ -4,6 +4,7 @@ const Market = require('./market.js');
 const Turn = require('./turn');
 const actions = require('../utils/actions.js');
 const isGameOver = require('../utils/endGame.js').isGameOver;
+const decidePlayerRank = require('../utils/endGame.js').decidePlayerRank;
 
 let HOTEL_DATA = require('../../data/hotelsData.json');
 
@@ -160,7 +161,9 @@ class Game {
       this.logActivity(`${player.name} has placed ${playerTile}.`);
     }
     if(isGameOver(response.activeHotels)){
-      response.status="gameOver";
+      response.rankList=decidePlayerRank.call(this);
+      response.status = 'gameOver';
+      this.logActivity("WellDone..Game has Over..You Played well.");
     }
     return response;
   }

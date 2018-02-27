@@ -20,3 +20,15 @@ const displayHotelNames = function(allHotelsDetails){
   <div class="title">Cost</div></div>`);
   document.getElementById('hotels-place').innerHTML = hotelsHtml;
 };
+
+
+const rankListHtmlGenerator = function (rankList) {
+  let rank = 1;
+  let htmlText = '<table class="rankList"><tr><th>Rank</th>\
+  <th>Name</th><th>Cash</th></tr>';
+  rankList.forEach(player=>{
+    htmlText+=`<tr><td>${rank++}</td>\
+    <td>${player.name}</td><td>${player.cash}</td></tr>`;
+  });
+  return `${htmlText} </table>`;
+};

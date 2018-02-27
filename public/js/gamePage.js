@@ -52,6 +52,10 @@ actions['purchaseShares']=function(res){
   getElement('#listed-hotels').classList.remove('hidden');
   showEndTurn();
 };
+actions['gameOver'] = function (res) {
+  let rankListHtml = rankListHtmlGenerator(res.rankList);
+  getElement('#rankListDiplay').innerHTML = rankListHtml;
+};
 let getElement = function(selector){
   return document.querySelector(selector);
 };

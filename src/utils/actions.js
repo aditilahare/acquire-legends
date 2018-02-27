@@ -29,6 +29,7 @@ let actions = {
   },
   'chooseHotel':function(response){
     response.expectedActions=['purchaseShares','changeTurn'];
+    response.status = 'purchaseShares';
     if(response.inactiveHotels.length>0){
       response.expectedActions=['chooseHotel'];
       response.status="chooseHotel";
@@ -45,6 +46,7 @@ let actions = {
     let currentPlayerID = this.turn.getCurrentPlayerID();
     let currentPlayer = this.findPlayerById(currentPlayerID);
     currentPlayer.addTile(tiles[0]);
+    this.logActivity(`${currentPlayer.name} placed an Invalid tile`);
     response.expectedActions=['placeTile'];
     return response;
   }
