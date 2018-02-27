@@ -33,6 +33,29 @@ actions['purchaseShares']=function(res){
   getElement('#listed-hotels').classList.remove('hidden');
   showEndTurn();
 };
+actions['merge']=function(res){
+  sendAjaxRequest('GET','/gameStatus','',function(){
+    let res=JSON.parse(this.responseText);
+    letPlayerDeployShares(res);
+  })
+}
+
+let letPlayerDeployShares=function(res){
+  console.log(res);
+  if (res.turnDetails.shouldIDeploy) {
+    let deploySharesOption=getElement('#deployShares');
+    deploySharesOption.classList.remove('hidden');
+    getElement("#hotelNameOfwhichSharesToSell").value=res.state.currentMergingHotel.name;
+  }
+}
+
+let requestDeployShares=function(){
+  let noOfSharesToSell=getElement("#noOfSharesToSell").value;
+  let hotelName=getElement("#hotelNameOfwhichSharesToSell").value;
+  sendAjaxRequest('POST','/merge/deployShares',`hotelName=${hotelName}&noOfSharesToSell=${noOfSharesToSell}`,renderGameStatus)
+  let deploySharesOption=getElement('#deployShares');
+  deploySharesOption.classList.add('hidden');
+}
 
 let getElement = function(selector){
   return document.querySelector(selector);
@@ -233,7 +256,6 @@ const placeTileHandler = function () {
   let response;
   if(this.status!=403){
     response=JSON.parse(this.responseText);
-    console.log(response);
     if(actions[response.status]) {
       actions[response.status](response);
     }
@@ -283,6 +305,12 @@ const renderGameStatus = function(){
   displayIndependentTiles(gameStatus.independentTiles);
   displayTurnDetails(gameStatus.turnDetails);
   updateActivityLog(gameStatus.gameActivityLog);
+  if (gameStatus.state.status=="merge") {
+    actions["merge"](gameStatus);
+  }
+  if (gameStatus.state.status&&gameStatus.turnDetails.isMyTurn) {
+    actions[gameStatus.state.status](gameStatus);
+  }
 };
 
 let getGameStatus = function(){

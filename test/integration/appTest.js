@@ -390,7 +390,7 @@ describe('App Test', () => {
     });
   });
   describe('/deployShares', function() {
-    it('should allow current player to purchase shares', function(done) {
+    it('should allow current player to deploy shares', function(done) {
       let game = new Game(4);
       let player1 = new Player(0, 'pragya');
       let player2 = new Player(1, 'aditi');
@@ -428,9 +428,9 @@ describe('App Test', () => {
       game.placeTile(1, '6C');
       game.startHotel('Fusion',1)
       game.changeCurrentPlayer();
-      game.placeTile(2, '1B');
+      game.placeTile(2, '2B');
       game.changeCurrentPlayer();
-      game.placeTile(3, '10B');
+      game.placeTile(3, '12B');
       game.changeCurrentPlayer();
       let response=game.placeTile(0, '6A');
       app.game = game;

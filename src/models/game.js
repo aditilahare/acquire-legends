@@ -35,7 +35,6 @@ class Game {
       'merge':function (response) {
         response.expectedActions=['deployShares'];
         response.status='merge';
-
         let mergingHotels=response.mergingHotels;
         let survivorHotels=response.survivorHotels;
         if (survivorHotels.length==1) {
@@ -74,7 +73,7 @@ class Game {
     let playersFromCurrentPlayer=playerSequence.slice(currentPlayerIndex);
     let sequence=playersFromCurrentPlayer.concat(playersBeforeCurrentPlayer);
     let deployersSequence=sequence.filter((id)=>{
-      return deployers.includes(id);
+      return deployers.includes(Number(id));
     });
     let mergingTurn=new Turn(deployersSequence);
     return mergingTurn;
@@ -289,7 +288,6 @@ class Game {
       expectedActions:['placeTile']
     });
     this.turn.updateTurn();
-    debugger;
   }
   getTurnDetails(id){
     let turnDetails={};
