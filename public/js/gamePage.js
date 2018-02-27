@@ -260,20 +260,24 @@ let getGameStatus = function(){
 let getTurnState = function(){
   sendAjaxRequest('GET','/actions/turnState','',placeTileHandler);
 };
+const prependLog = function (newLogs) {
+  newLogs.forEach(log=>{
+    let node = document.createElement('p');
+    node.innerText = log;
+    node.className = 'log-items';
+    document.getElementById('activity-log').prepend(node);
+  });
+};
 const updateActivityLog = function(gameActivityLog){
   let oldLogs=document.querySelectorAll('.log-items');
-  let newLogs = gameActivityLog.slice(oldLogs.length);
+  let newLogs = gameActivityLog.slice(0,gameActivityLog.length-oldLogs.length);
   let newLogHtml='';
   if (oldLogs.length==0) {
     newLogHtml = listToHTML(gameActivityLog,'log-items');
     getElement('#activity-log').innerHTML = newLogHtml;
   }else {
-    newLogHtml = listToHTML(newLogs,'log-items');
-    getElement('#activity-log').appendChild = newLogHtml;
+    prependLog(newLogs);
   }
-  let lastLog = getElement('#activity-log').lastElementChild;
-  let lastPos = lastLog.getBoundingClientRect().y;
-  getElement('#activity-log').scrollTo(0,lastPos);
 };
 const updateGameStatus=function(gameStatus){
   let currentPlayer = gameStatus.currentPlayer;
