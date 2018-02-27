@@ -33,5 +33,6 @@ class TileBox {
     this.tiles.splice(tileIndex, 1);
     return true;
   }
+
 }
 module.exports=TileBox;

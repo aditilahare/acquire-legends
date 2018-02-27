@@ -477,8 +477,7 @@ describe('game test', function() {
       game.changeCurrentPlayer();
       game.placeTile(2, '1B');
       game.changeCurrentPlayer();
-      let response=game.placeTile(0, '5A');
-
+      let response=game.placeTile(0,'5A');
       let zeta=new Hotel('Zeta','rgb(236, 222, 34)',2);
       zeta.occupiedTiles=[];
       zeta.status=false;
@@ -545,8 +544,7 @@ describe('game test', function() {
       let fusion=new Hotel('Fusion','green',3);
       fusion.occupiedTiles=[];
       fusion.status=false;
-
-      assert.deepEqual(response.status, 'purchaseShares');
+      assert.deepEqual(response.status, 'gameOver');
       assert.deepEqual(response.expectedActions, ['purchaseShares','changeTurn']);
       assert.deepEqual(response.mergingHotels,[zeta,fusion]);
       assert.deepEqual(response.surviourHotels,[sackson]);
@@ -591,6 +589,7 @@ describe('game test', function() {
       let expectedTilesOfSackson=['7A','7B','5A','5B','6B'];
       sackson.occupiedTiles=expectedTilesOfSackson;
       sackson.status=true;
+
       assert.deepEqual(game.getTurnState().status, 'purchaseShares');
       assert.deepEqual(game.getTurnState().expectedActions, ['purchaseShares','changeTurn']);
       assert.deepEqual(game.getTurnState().mergingHotels,[zeta]);
@@ -650,7 +649,6 @@ describe('game test', function() {
       game.changeCurrentPlayer();
       player4.addTile('6A');
       let response=game.placeTile(3, '6A');
-
       let zeta=new Hotel('Zeta','rgb(236, 222, 34)',2);
       zeta.occupiedTiles=[];
       zeta.status=false;
@@ -661,14 +659,13 @@ describe('game test', function() {
       let fusion=new Hotel('Fusion','green',3);
       fusion.occupiedTiles=[];
       fusion.status=false;
-
-      assert.deepEqual(response.status, 'purchaseShares');
+      assert.deepEqual(game.getTurnState().status, 'gameOver');
       assert.deepEqual(response.expectedActions, ['purchaseShares','changeTurn']);
       assert.deepEqual(response.mergingHotels,[zeta,fusion]);
       assert.deepEqual(response.surviourHotels,[sackson]);
-
       let majorityShareHolderPlayerMoney=game.findPlayerById(0).availableMoney;
       assert.equal(majorityShareHolderPlayerMoney,8600);
+
     });
     it('place invalid tile between stable hotels', () => {
       let game = new Game(3);
@@ -682,6 +679,7 @@ describe('game test', function() {
       tiles=['10A','11A','12A','9A','9B','10B','11B','12B','9C','10C','11C','12C'];
       game.market.startHotel('Sackson',tiles);
       game.placeTile(0,'8A');
+      assert.deepEqual(game.getTurnState().status,"gameOver");
       assert.deepEqual(game.getTurnState().expectedActions, ['placeTile']);
     });
   });

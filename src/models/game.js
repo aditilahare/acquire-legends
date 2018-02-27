@@ -3,6 +3,7 @@ const Bank = require('./bank');
 const Market = require('./market.js');
 const Turn = require('./turn');
 const actions = require('../utils/actions.js');
+const isGameOver = require('../utils/endGame.js').isGameOver;
 
 let HOTEL_DATA = require('../../data/hotelsData.json');
 
@@ -158,6 +159,9 @@ class Game {
       this.setState(response);
       this.logActivity(`${player.name} has placed ${playerTile}.`);
     }
+    if(isGameOver(response.activeHotels)){
+      response.status="gameOver";
+    }
     return response;
   }
   setState(response){
@@ -265,7 +269,7 @@ class Game {
       this.market.addMergingHotelToSurviour(mergingHotel,surviourHotel);
       this.logActivity(`${surviourHotel.name} acquired ${mergingHotel.name}`);
     });
-    response.activeHotels=surviourHotel;
+    response.activeHotels=this.market.getActiveHotels();
     response.inactiveHotels.concat(mergingHotels);
   }
   tieBreaker(surviourHotel){
