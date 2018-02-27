@@ -9,13 +9,13 @@ let HOTEL_DATA = require('../../data/hotelsData.json');
 const INITIAL_SHARES = 25;
 const INITIAL_MONEY = 100000;
 const STARTING_BALANCE = 6000;
-
+let tilebox = new TileBox(12,9);
 class Game {
-  constructor(maxPlayers,bank=new Bank(INITIAL_MONEY)) {
+  constructor(maxPlayers,tileBox=tilebox,bank=new Bank(INITIAL_MONEY)) {
     this.maxPlayers=maxPlayers;
     this.minPlayers=3;
     this.players=[];
-    this.tileBox = new TileBox(12,9);
+    this.tileBox = tileBox;
     this.bank=bank;
     this.MODE='wait';
     this.activityLog=[];
@@ -238,14 +238,15 @@ class Game {
     let player = this.findPlayerById(playerId);
     let sharePrice = this.market.getSharePriceOfHotel(hotelName);
     let cartValue = sharePrice * noOfShares;
-    if(this.bank.doesHotelhaveEnoughShares(hotelName,noOfShares)){
+    let hotelStatus = this.bank.doesHotelhaveEnoughShares(hotelName,noOfShares);
+    let playerStatus = player.doesPlayerHasEnoughMoney(cartValue);
+    if(hotelStatus && playerStatus){
       player.deductMoney(cartValue);
       this.addSharesToPlayer(playerId, hotelName, noOfShares);
       this.bank.sellSharesToPlayer(hotelName,noOfShares,playerId,cartValue);
+      this.logActivity(`${player.name} has bought ${noOfShares}\
+        shares of ${hotelName}.`);
     }
-    this.logActivity(`${player.name} has bought ${noOfShares}\
-       shares of ${hotelName}.`);
-    // this.changeCurrentPlayer();
     return;
   }
   getAvailableCashOfPlayer(playerId){

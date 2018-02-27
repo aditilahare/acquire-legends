@@ -31,7 +31,6 @@ const doesGameExisted = function(){
 
 const verfifyUserName =function(){
   let form = event.target;
-  console.log(event);
 };
 
 window.onload = function () {

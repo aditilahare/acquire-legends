@@ -4,15 +4,21 @@
 const chai = require('chai');
 const assert = chai.assert;
 const app = require('../../app.js');
-const Game = require('../../src/models/game.js');
+let Game = require('../../src/models/game.js');
+let TileBox = require('../../src/models/tileBox.js');
 const Player = require('../../src/models/player.js');
 const request = require('supertest');
 const shouldHaveIdCookie = require('../helpers/rh.js').shouldHaveIdCookie;
 const MockFs = require('../helpers/fsSimulator.js');
+const mockRandomTiles = require('../helpers/mockRandomTiles.js').getTiles;
 
 describe('App Test', () => {
+  let tileBox;
+  beforeEach(() => {
+    tileBox = new TileBox(12,9,mockRandomTiles);
+  });
   describe('/join', () => {
-    let game = new Game(3);
+    let game = new Game(3,tileBox);
     app.game = game;
     it('should add player and redirect to waiting page', (done) => {
       request(app)
@@ -24,7 +30,7 @@ describe('App Test', () => {
         .end(done);
     });
     it('should not allow players to join if  maximum players joined', (done) => {
-      game = new Game(1);
+      game = new Game(1,tileBox);
       game.addPlayer(new Player(1, 'veera'));
       app.game = game;
       request(app)
@@ -56,7 +62,7 @@ describe('App Test', () => {
   });
   describe('/haveAllPlayersJoined', function() {
     it('should respond with true if all players have joined', function(done) {
-      app.game = new Game(0);
+      app.game = new Game(0,tileBox);
       request(app)
         .get('/haveAllPlayersJoined')
         .expect(200)
@@ -65,7 +71,7 @@ describe('App Test', () => {
     });
     it('should respond with false if all players\
        have not joined', function(done) {
-      app.game = new Game(1);
+      app.game = new Game(1,tileBox);
       request(app)
         .get('/haveAllPlayersJoined')
         .expect(200)
@@ -74,7 +80,7 @@ describe('App Test', () => {
     });
     it('should respond with true if all players\
        have not joined', function(done) {
-      app.game = new Game(2);
+      app.game = new Game(2,tileBox);
       let player = new Player(0, 'veera');
       app.game.addPlayer(player);
       app.game.addPlayer(player);
@@ -92,7 +98,7 @@ describe('App Test', () => {
       let content = 'Waiting For Other Players To Join';
       fs.addFile(fileName, content);
       app.fs = fs;
-      app.game = new Game(1);
+      app.game = new Game(1,tileBox);
       let player = new Player(0, 'pragya');
       app.game.addPlayer(player);
       request(app)
@@ -115,7 +121,7 @@ describe('App Test', () => {
   });
   describe('/', function() {
     it('should redirect to /wait when already registered player comes to  ', function(done) {
-      app.game = new Game(2);
+      app.game = new Game(2,tileBox);
       app.game.addPlayer(new Player(0, 'veera'));
       request(app)
         .get('/')
@@ -127,7 +133,7 @@ describe('App Test', () => {
   });
   describe('/getPlayerDetails', function() {
     it('should give tiles of player with given id', function(done) {
-      app.game = new Game(1);
+      app.game = new Game(1,tileBox);
       let veera = new Player(0, 'veera');
       app.game.addPlayer(veera);
       app.game.distributeInitialTiles();
@@ -139,7 +145,7 @@ describe('App Test', () => {
         .end(done);
     });
     it('should give tiles of player with given id', function(done) {
-      app.game = new Game(1);
+      app.game = new Game(1,tileBox);
       let veera = new Player(0, 'veera');
       app.game.addPlayer(veera);
       app.game.distributeInitialTiles();
@@ -151,7 +157,7 @@ describe('App Test', () => {
         .end(done);
     });
     it('should give name of player with given id', function(done) {
-      app.game = new Game(1);
+      app.game = new Game(1,tileBox);
       let veera = new Player(0, 'veera');
       app.game.addPlayer(veera);
       app.game.distributeInitialTiles();
@@ -165,7 +171,7 @@ describe('App Test', () => {
   });
   describe('/game.html', function() {
     it('should start game if game exists but not started', function(done) {
-      app.game = new Game(1);
+      app.game = new Game(1,tileBox);
       let veera = new Player(0, 'veera');
       app.game.addPlayer(veera);
       request(app)
@@ -178,7 +184,7 @@ describe('App Test', () => {
   });
   describe('/getAllPlayerNames', function() {
     it('can give all player names who have joined the game', function(done) {
-      app.game = new Game(1);
+      app.game = new Game(1,tileBox);
       let player = new Player(0, 'pragya');
       app.game.addPlayer(player);
       request(app)
@@ -191,7 +197,7 @@ describe('App Test', () => {
   });
   describe('/isGameExisted', function() {
     it('should respond with true if game existed', function(done) {
-      app.game = new Game(0);
+      app.game = new Game(0,tileBox);
       request(app)
         .get('/isGameExisted')
         .expect(200)
@@ -209,7 +215,7 @@ describe('App Test', () => {
   });
   describe('/placeTile', function() {
     it('can place a tile on market', function(done) {
-      app.game = new Game(1);
+      app.game = new Game(1,tileBox);
       let player = new Player(0, 'pragya');
       app.game.addPlayer(player);
       app.game.start();
@@ -223,7 +229,7 @@ describe('App Test', () => {
   });
   describe('/changeTurn', function() {
     it('change turn to next player', function(done) {
-      let game = new Game(3);
+      let game = new Game(3,tileBox);
       game.addPlayer(new Player(0, 'veera'));
       game.addPlayer(new Player(1, 'gupta'));
       game.addPlayer(new Player(2, 'raj'));
@@ -237,7 +243,7 @@ describe('App Test', () => {
         .end(done);
     });
     it('should respond withn 401 for unauthorized player for changing turn', function(done) {
-      let game = new Game(3);
+      let game = new Game(3,tileBox);
       game.addPlayer(new Player(0, 'veera'));
       game.addPlayer(new Player(1, 'gupta'));
       game.addPlayer(new Player(2, 'raj'));
@@ -251,7 +257,7 @@ describe('App Test', () => {
   });
   describe('/placeTile', function() {
     it('should restrict invalid player to place tile', function(done) {
-      let game = new Game(3);
+      let game = new Game(3,tileBox);
       game.addPlayer(new Player(0, 'veera'));
       game.addPlayer(new Player(1, 'gupta'));
       game.start();
@@ -265,7 +271,7 @@ describe('App Test', () => {
   });
   describe('/gameStatus', function() {
     it('should respond with current game status', function(done) {
-      let game = new Game(3);
+      let game = new Game(3,tileBox);
       game.addPlayer(new Player(0, 'veera'));
       game.addPlayer(new Player(1, 'gupta'));
       game.start();
@@ -282,7 +288,7 @@ describe('App Test', () => {
   });
   describe('/turnState', function() {
     it('should respond with current turn state', function(done) {
-      let game = new Game(2);
+      let game = new Game(2,tileBox);
       game.addPlayer(new Player(0, 'veera'));
       game.addPlayer(new Player(1, 'gupta'));
       game.start();
@@ -297,7 +303,7 @@ describe('App Test', () => {
   });
   describe('/chooseHotel', function() {
     it('should respond with inactive hotels', function(done) {
-      let game = new Game(3);
+      let game = new Game(3,tileBox);
       game.addPlayer(new Player(0, 'veera'));
       game.addPlayer(new Player(1, 'gupta'));
       game.addPlayer(new Player(2, 'sachin'));
@@ -317,7 +323,7 @@ describe('App Test', () => {
   });
   describe('/purchaseShares', function() {
     it('should allow current player to purchase shares', function(done) {
-      let game = new Game(3);
+      let game = new Game(3,tileBox);
       let cart={
         Zeta:3
       }
@@ -349,6 +355,12 @@ describe('App Test', () => {
       game.addPlayer(player1);
       game.addPlayer(player2);
       game.addPlayer(player3);
+      player1.addTile('5A');
+      player2.addTile('7A');
+      player3.addTile('5B');
+      player1.addTile('7B');
+      player2.addTile('9A');
+      player3.addTile('6B');
       game.start();
       game.placeTile(0, '5A');
       game.changeCurrentPlayer();

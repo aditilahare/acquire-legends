@@ -1,30 +1,36 @@
 //eslint max-len: ["error", { "ignoreStrings": true }]
 const assert = require('chai').assert;
-const Game = require('../../src/models/game.js');
+let Game = require('../../src/models/game.js');
+let TileBox = require('../../src/models/tileBox.js')
 const Player = require('../../src/models/player.js');
 const Hotel = require('../../src/models/hotel.js');
 const Market = require('../../src/models/market.js');
 const Turn = require('../../src/models/turn.js');
 const Bank = require('../../src/models/bank.js');
+const mockRandomTiles = require('../helpers/mockRandomTiles.js').getTiles;
 
 describe('game test', function() {
+  let tileBox;
+  beforeEach(() => {
+    tileBox = new TileBox(12,9,mockRandomTiles);
+  });
   describe('getPlayerCount', () => {
     it('should return the number of players', () => {
-      let game = new Game(3);
+      let game = new Game(3,tileBox);
       let actual = game.getPlayerCount();
       assert.equal(actual, 0);
     });
   });
   describe('addPlayer', () => {
     it('should add given player to game when maximum players are not there', () => {
-      let game = new Game(3);
+      let game = new Game(3,tileBox);
       let player = new Player(0, 'pragya');
       let actual = game.addPlayer(player);
       assert.isOk(actual);
     });
     it('should not  add given player to game when maximum \
     players reached', () => {
-      let game = new Game(0);
+      let game = new Game(0,tileBox);
       let player = {
         name: 'pragya',
         id: 0
@@ -35,27 +41,27 @@ describe('game test', function() {
   });
   describe('isVacant', () => {
     it('should return false if maximum players are  reached', () => {
-      let game = new Game(0);
+      let game = new Game(0,tileBox);
       assert.isNotOk(game.isVacant());
     });
     it('should return true if maximum players are not reached', () => {
-      let game = new Game(1);
+      let game = new Game(1,tileBox);
       assert.isOk(game.isVacant());
     });
   });
   describe('haveAllPlayersJoined', () => {
     it('should return true if all players have joined', () => {
-      let game = new Game(0);
+      let game = new Game(0,tileBox);
       assert.isOk(game.haveAllPlayersJoined());
     });
     it('should return false if all players have not joined', () => {
-      let game = new Game(1);
+      let game = new Game(1,tileBox);
       assert.isNotOk(game.haveAllPlayersJoined());
     });
   });
   describe('getPlayerNameById', () => {
     it('should return player name of given id', () => {
-      let game = new Game(3);
+      let game = new Game(3,tileBox);
       let player1 = new Player(0, 'pragya');
       let player2 = new Player(1, 'gupta');
       game.addPlayer(player1);
@@ -67,7 +73,7 @@ describe('game test', function() {
   });
   describe('distributeInitialTiles', () => {
     it('should give 6 tiles to all players', () => {
-      let game = new Game(2);
+      let game = new Game(2,tileBox);
       let veera = new Player(0, 'veera');
       let aditi = new Player(0, 'aditi');
       game.addPlayer(veera);
@@ -79,7 +85,7 @@ describe('game test', function() {
   });
   describe('findPlayerByIdId', () => {
     it('should return player of given id', () => {
-      let game = new Game(3);
+      let game = new Game(3,tileBox);
       let player1 = new Player(0, 'pragya');
       let player2 = new Player(1, 'gupta');
       game.addPlayer(player1);
@@ -91,7 +97,7 @@ describe('game test', function() {
   });
   describe('distributeMoneyToPlayer', () => {
     it('should give money to player of given id', () => {
-      let game = new Game(3);
+      let game = new Game(3,tileBox);
       let player1 = new Player(0, 'pragya');
       game.addPlayer(player1);
       assert.equal(game.getAvailableCashOfPlayer(0), 0);
@@ -101,7 +107,7 @@ describe('game test', function() {
   });
   describe('distributeInitialMoney', () => {
     it('should disribute money to all players', () => {
-      let game = new Game(3);
+      let game = new Game(3,tileBox);
       let player1 = new Player(0, 'pragya');
       let player2 = new Player(1, 'sree');
       game.addPlayer(player1);
@@ -115,7 +121,7 @@ describe('game test', function() {
   });
   describe('start', () => {
     it('should disribute money and tiles to all players and create hotels', () => {
-      let game = new Game(2);
+      let game = new Game(2,tileBox);
       let player1 = new Player(0, 'veera');
       let player2 = new Player(1, 'pragya');
       let hydraHotel = {
@@ -139,7 +145,7 @@ describe('game test', function() {
   });
   describe('createHotels', () => {
     it('should create hotels for the given names and colors', () => {
-      let game = new Game(2);
+      let game = new Game(2,tileBox);
       let hotelsData = [{
         name: 'zeta',
         color: 'yellow',
@@ -157,7 +163,7 @@ describe('game test', function() {
   });
   describe('getPlayerDetails', () => {
     it('should return an object containig player details', () => {
-      let game = new Game(2);
+      let game = new Game(2,tileBox);
       let expected = ['1A', '2A', '3A', '4A', '5A', '6A'];
       let player1 = new Player(0, 'veera');
       let player2 = new Player(1, 'pragya');
@@ -168,7 +174,7 @@ describe('game test', function() {
       assert.deepEqual(game.getPlayerDetails(0), player1);
     });
     it('should return an object containing share details of player', () => {
-      let game = new Game(2);
+      let game = new Game(2,tileBox);
       let aditi = new Player(0, 'aditi');
       let harvar = new Player(1, 'harvar');
       let expected = {
@@ -189,7 +195,7 @@ describe('game test', function() {
   });
   describe('isInPlayMode', () => {
     it('should return false when game is not in play mode ', () => {
-      let game = new Game(2);
+      let game = new Game(2,tileBox);
       let player1 = new Player(0, 'veera');
       let player2 = new Player(1, 'pragya');
       game.addPlayer(player1);
@@ -197,7 +203,7 @@ describe('game test', function() {
       assert.isNotOk(game.isInPlayMode());
     });
     it('should return true if game is in play mode ', () => {
-      let game = new Game(2);
+      let game = new Game(2,tileBox);
       let player1 = new Player(0, 'veera');
       let player2 = new Player(1, 'pragya');
       game.addPlayer(player1);
@@ -208,7 +214,7 @@ describe('game test', function() {
   });
   describe('getAllHotelsDetails', function() {
     it('can tell all the hotel details in game', function() {
-      let game = new Game(2);
+      let game = new Game(2,tileBox);
       let hotelsData = [{
         name: 'zeta',
         color: 'yellow',
@@ -228,11 +234,11 @@ describe('game test', function() {
   });
   describe('getAllPlayerNames', () => {
     it('can give empty list if no player is present', () => {
-      let game = new Game(2);
+      let game = new Game(2,tileBox);
       assert.deepEqual(game.getAllPlayerNames(), []);
     });
     it('can give all player names', () => {
-      let game = new Game(2);
+      let game = new Game(2,tileBox);
       let player1 = new Player(0, 'veera');
       let player2 = new Player(1, 'pragya');
       game.addPlayer(player1);
@@ -242,7 +248,7 @@ describe('game test', function() {
   });
   describe('addSharesToPlayer', () => {
     it('should add shares to player by given id', () => {
-      let game = new Game(2);
+      let game = new Game(2,tileBox);
       let player1 = new Player(0, 'aditi');
       let player2 = new Player(1, 'harvar');
       game.addPlayer(player1);
@@ -259,7 +265,7 @@ describe('game test', function() {
   });
   describe('placeTile', () => {
     it('can place a independent Tile for the player whose id is given', () => {
-      let game = new Game(1);
+      let game = new Game(1,tileBox);
       let player1 = new Player(1, 'pragya');
       let market = new Market();
       player1.addTile('2A');
@@ -273,7 +279,7 @@ describe('game test', function() {
   });
   describe('getCurrentPlayer', () => {
     it('should give current player details', () => {
-      let game = new Game(1);
+      let game = new Game(1,tileBox);
       let player1 = new Player(0, 'pragya');
       game.addPlayer(player1);
       game.addPlayer(new Player(1, 'veera'));
@@ -284,7 +290,7 @@ describe('game test', function() {
   });
   describe('changeCurrentPlayer', () => {
     it('should change current player and give tile for current player', () => {
-      let game = new Game(2);
+      let game = new Game(2,tileBox);
       let player1 = new Player(0, 'pragya');
       game.addPlayer(player1);
       game.addPlayer(new Player(1, 'veera'));
@@ -297,7 +303,7 @@ describe('game test', function() {
   });
   describe('isCurrentPlayer', () => {
     it('should return true if player is current player', () => {
-      let game = new Game(2);
+      let game = new Game(2,tileBox);
       let player1 = new Player(0, 'pragya');
       let player2 = new Player(1, 'aditi');
       let turn = new Turn([0, 1]);
@@ -338,7 +344,7 @@ describe('game test', function() {
           "Zeta": 0
         }
       }]
-      let game = new Game(2);
+      let game = new Game(2,tileBox);
       let player1 = new Player(0, 'veera');
       let player2 = new Player(1, 'pragya');
       game.addPlayer(player1);
@@ -356,7 +362,7 @@ describe('game test', function() {
           isMyTurn: true
         }
       };
-      let game = new Game(2);
+      let game = new Game(2,tileBox);
       let player1 = new Player(0, 'pragya');
       let player2 = new Player(1, 'aditi');
       game.addPlayer(player1);
@@ -368,7 +374,7 @@ describe('game test', function() {
   });
   describe('deductMoneyFromPlayer', () => {
     it('should deduct money from player account', () => {
-      let game = new Game(2);
+      let game = new Game(2,tileBox);
       let player1 = new Player(0, 'pragya');
       player1.addMoney(5000);
       game.addPlayer(player1);
@@ -381,7 +387,7 @@ describe('game test', function() {
   describe('purchaseShares', () => {
     it('should purchase shares to given players', () => {
       //setup
-      let game = new Game(3);
+      let game = new Game(3,tileBox);
       let player1 = new Player(0,'pragya');
       let player2 = new Player(1,'wulfa');
       let player3 = new Player(2,'harvar');
@@ -434,7 +440,7 @@ describe('game test', function() {
   describe('actions', () => {
     it('should add tile to an existing hotel', () => {
       let expected = {};
-      let game = new Game(2);
+      let game = new Game(2,tileBox);
       let player1 = new Player(0, 'pragya');
       let player2 = new Player(1, 'aditi');
       game.addPlayer(player1);
@@ -448,7 +454,7 @@ describe('game test', function() {
       assert.deepEqual(game.placeTile(0, '5A').status, 'purchaseShares');
     });
     it('merge', () => {
-      let game = new Game(3);
+      let game = new Game(3,tileBox);
       let player1 = new Player(0, 'pragya');
       let player2 = new Player(1, 'aditi');
       let player3 = new Player(2, 'praveen');
@@ -489,7 +495,7 @@ describe('game test', function() {
       assert.equal(majorityShareHolderPlayerMoney,8600);
     });
     it('merge', () => {
-      let game = new Game(4);
+      let game = new Game(4,tileBox);
       let player1 = new Player(0, 'pragya');
       let player2 = new Player(1, 'aditi');
       let player3 = new Player(2, 'praveen');
@@ -556,6 +562,12 @@ describe('game test', function() {
       game.addPlayer(player1);
       game.addPlayer(player2);
       game.addPlayer(player3);
+      player1.addTile('5A');
+      player2.addTile('7A');
+      player3.addTile('5B');
+      player1.addTile('7B');
+      player2.addTile('9A');
+      player3.addTile('6B');
       game.start();
       game.placeTile(0, '5A');
       game.changeCurrentPlayer();
@@ -597,36 +609,47 @@ describe('game test', function() {
       game.addPlayer(player2);
       game.addPlayer(player3);
       game.addPlayer(player4);
+      player1.addTile('5A');
       game.start();
       game.placeTile(0, '5A');
       game.changeCurrentPlayer();
+      player2.addTile('7A');
       game.placeTile(1, '7A');
       game.changeCurrentPlayer();
+      player3.addTile('6B');
       game.placeTile(2, '6B');
       game.changeCurrentPlayer();
+      player4.addTile('8B');
       game.placeTile(3, '8B');
       game.changeCurrentPlayer();
+      player1.addTile('4A');
       game.placeTile(0, '4A');
       game.startHotel('Zeta',0);
       game.purchaseShares('Zeta',2,0)
       game.changeCurrentPlayer();
+      player2.addTile('8A');
       game.placeTile(1, '8A');
       game.startHotel('Sackson',1);
       game.purchaseShares('Zeta',1,1)
       game.purchaseShares('Sackson',1,1)
       game.changeCurrentPlayer();
+      player3.addTile('4B');
       game.placeTile(2, '4B');
       game.changeCurrentPlayer();
+      player4.addTile('9B');
       game.placeTile(3, '9B');
-
+      player1.addTile('1A');
       game.placeTile(0, '1A');
       game.changeCurrentPlayer();
+      player2.addTile('6C');
       game.placeTile(1, '6C');
       game.startHotel('Fusion',2)
       game.changeCurrentPlayer();
-      game.placeTile(3, '10B');
+      player3.addTile('10B');
+      game.placeTile(2, '10B');
       game.changeCurrentPlayer();
-      let response=game.placeTile(0, '6A');
+      player4.addTile('6A');
+      let response=game.placeTile(3, '6A');
 
       let zeta=new Hotel('Zeta','rgb(236, 222, 34)',2);
       zeta.occupiedTiles=[];
@@ -666,7 +689,7 @@ describe('game test', function() {
     it('it should give majority and minority bonus to single player when only \
           one player has shares of given hotel',()=>{
       let expected = {};
-      let game = new Game(3);
+      let game = new Game(3,tileBox);
       let player1 = new Player(0, 'pragya');
       let player2 = new Player(1, 'aditi');
       let player3 = new Player(2, 'praveen');
@@ -696,7 +719,7 @@ describe('game test', function() {
           and majority to player who has second highest shares of \
           given hotel',()=>{
       let expected = {};
-      let game = new Game(3);
+      let game = new Game(3,tileBox);
       let player1 = new Player(0, 'pragya');
       let player2 = new Player(1, 'aditi');
       let player3 = new Player(2, 'praveen');
@@ -728,7 +751,7 @@ describe('game test', function() {
     it('it should give combined majority and minority to more than one players \
      who has most shares given hotel',()=>{
       let expected = {};
-      let game = new Game(3);
+      let game = new Game(3,tileBox);
       let player1 = new Player(0, 'pragya');
       let player2 = new Player(1, 'aditi');
       let player3 = new Player(2, 'praveen');
@@ -764,7 +787,7 @@ describe('game test', function() {
           and combined minority to more than one players who has second most\
            shares of given hotel',()=>{
       let expected = {};
-      let game = new Game(3);
+      let game = new Game(3,tileBox);
       let player1 = new Player(0, 'pragya');
       let player2 = new Player(1, 'aditi');
       let player3 = new Player(2, 'praveen');
@@ -799,7 +822,7 @@ describe('game test', function() {
   });
   describe('getActivityLog', () => {
     it('should give activity log', () => {
-      let game = new Game(3);
+      let game = new Game(3,tileBox);
       let player1 = new Player(0, 'pragya');
       let player2 = new Player(1, 'aditi');
       let player3 = new Player(2, 'praveen');
