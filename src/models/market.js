@@ -230,7 +230,7 @@ class Market{
     }
     return sharePrice;
   }
-  addMergingsHotelsToSurvivor(mergingHotels,survivorHotel){
+  addMergingHotelsToSurvivor(mergingHotels,survivorHotel){
     mergingHotels.forEach((mergingHotel)=>{
       let hotelToBeMerged=this.getHotel(mergingHotel.name);
       let hotelGoingToSurvive=this.getHotel(survivorHotel.name);

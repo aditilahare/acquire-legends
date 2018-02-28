@@ -9,6 +9,7 @@ const isAnyAboveFourty=function(hotels){
   });
 };
 const isGameOver=function(activeHotels){
+  console.log(12341.5);
   if (activeHotels.length>0) {
     return hasEveryHotelStable(activeHotels)||isAnyAboveFourty(activeHotels);
   }

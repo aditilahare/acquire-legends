@@ -69,8 +69,7 @@ app.post('/merge/deployShares',(req,res)=>{
   let playerId=req.cookies.playerId;
   let sharesToDeploy=req.body;
   game.deployShares(playerId,sharesToDeploy);
-  // console.log(game.getStatus());
-  res.send(game.getStatus());
+  res.send(game.getStatus(playerId));
 });
 app.use(express.static('public'));
 module.exports=app;

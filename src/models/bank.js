@@ -86,6 +86,8 @@ class Bank {
     });
   }
   addShareHolder(hotelName,playerId,noOfShares){
+    playerId=Number(playerId);
+    noOfShares=Number(noOfShares);
     let desiredHotel = this.findHotelBy(hotelName);
     let shareHolder=this.findShareHolderBy(playerId,desiredHotel);
     if (shareHolder) {

@@ -25,20 +25,16 @@ class Game {
   }
   createMergingTurn(hotelName){
     let deployers=this.bank.getAllShareHolderIds(hotelName);
-    console.log("this is deployers",deployers);
     let playerSequence=this.turn.getPlayerIdSequence();
     let currentPlayerIndex=this.turn.getCurrentPlayerIndex();
     let playersBeforeCurrentPlayer=playerSequence.slice(0,currentPlayerIndex);
     let playersFromCurrentPlayer=playerSequence.slice(currentPlayerIndex);
     let sequence=playersFromCurrentPlayer.concat(playersBeforeCurrentPlayer);
-    console.log("this is sequence",sequence);
     let deployersSequence=sequence.filter((id)=>{
       return deployers.includes(Number(id));
     });
-    console.log("this is deployersSequence",deployersSequence);
     let mergingTurn=new Turn(deployersSequence);
     this.mergingTurn=mergingTurn;
-    console.log(this.mergingTurn);
     return mergingTurn;
   }
   deployShares(playerId,sharesToDeploy){
@@ -77,7 +73,7 @@ class Game {
     let currentGameState=this.turn.getState();
     let survivorHotel=currentGameState.survivorHotel;
     let mergingHotels=currentGameState.mergingHotels;
-    this.market.addMergingsHotelsToSurvivor(mergingHotels,survivorHotel);
+    this.market.addMergingHotelsToSurvivor(mergingHotels,survivorHotel);
     this.market.placeMergingTile(currentGameState.mergingTile);
     let inactiveHotels=currentGameState.inactiveHotels.concat(mergingHotels);
     mergingHotels.forEach((mergingHotel)=>{

@@ -24,12 +24,13 @@ class Turn {
     return this.state;
   }
   isTurnOf(playerId){
-    return (this.getCurrentPlayerID()==playerId);
+    let currentPlayerID=this.getCurrentPlayerID();
+    return currentPlayerID==playerId;
   }
   clearTurn(){
-    this.playerIdSequence=[];
+    this.getPlayerIdSequence=[];
     this.currentPlayerIndex=null;
-    return this.playerIDSequence;
+    return ;
   }
 }
 

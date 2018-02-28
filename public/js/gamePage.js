@@ -25,6 +25,7 @@ const mergerForTieCase = function(){
   showEndTurn();
 };
 const chooseForMergerSurvivour = function(hotels){
+  console.log(hotels);
   let html=`<select name="hotelName">`;
   html +=hotels.map((hotel)=>{
     return `<option value="${hotel.name}">${hotel.name}</option>`;
@@ -46,7 +47,7 @@ actions['chooseHotel']=function(res){
 actions["merge"]=function(res){
   console.log(res);
   if (res.state.expectedActions.includes('chooseHotelForMerge')) {
-    let form=chooseForMergerSurvivour(res.surviourHotels);
+    let form=chooseForMergerSurvivour(res.state.survivorHotels);
     getElement('#choose-hotel').innerHTML=form;
     document.getElementById('choose-hotel').style.display = "block";
   }
@@ -278,6 +279,7 @@ const assignTileIndependentClass = function(tile){
 };
 const renderGameStatus = function(){
   let gameStatus = JSON.parse(this.responseText);
+  console.log(gameStatus);
   displayHotelDetails(gameStatus.hotelsData);
   displayIndependentTiles(gameStatus.independentTiles);
   displayTurnDetails(gameStatus.turnDetails);
