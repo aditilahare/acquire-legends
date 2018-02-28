@@ -101,7 +101,6 @@ class Bank {
       desiredHotel.availableShares -= noOfShares;
       desiredHotel.shareHolders.push(shareHolder);
     }
-    console.log('added sharesOf',playerId);
   }
   sellSharesToPlayer(hotelName,noOfShares,playerId){
     playerId=Number(playerId);

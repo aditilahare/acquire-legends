@@ -25,7 +25,6 @@ const mergerForTieCase = function(){
   showEndTurn();
 };
 const chooseForMergerSurvivour = function(hotels){
-  console.log(hotels);
   let html=`<select name="hotelName">`;
   html +=hotels.map((hotel)=>{
     return `<option value="${hotel.name}">${hotel.name}</option>`;
@@ -45,7 +44,6 @@ actions['chooseHotel']=function(res){
   document.getElementById('choose-hotel').style.display = "block";
 };
 actions["merge"]=function(res){
-  console.log(res);
   if (res.state.expectedActions.includes('chooseHotelForMerge')) {
     let form=chooseForMergerSurvivour(res.state.survivorHotels);
     getElement('#choose-hotel').innerHTML=form;
@@ -68,8 +66,8 @@ let letPlayerDeployShares=function(res){
   if (res.turnDetails.shouldIDeploy) {
     let deploySharesOption=getElement('#deployShares');
     deploySharesOption.classList.remove('hidden');
-    hotelName=("#hotelNameOfwhichSharesToSell").value;
-    hotelName=res.state.currentMergingHotel.name;
+    let hotelName=res.state.currentMergingHotel.name;
+    getElement("#hotelNameOfwhichSharesToSell").value=hotelName;
   }
 };
 
@@ -163,8 +161,7 @@ const displayMoney = function(money){
   return;
 };
 const displayPlayerName = function (name) {
-  document.getElementById('playerName').innerHTML = `<p>${name}\
-  </p>`;
+  document.getElementById('playerName').innerHTML = `<p>${name}</p>`;
 };
 const getPlayerDetails = function () {
   sendAjaxRequest('GET','/playerDetails','',displayPlayerDetails);
@@ -257,9 +254,19 @@ const displayIndependentTiles = function(independentTiles) {
 };
 const displayTurnDetails = function(turnDetails) {
   let currentPlayer=turnDetails.currentPlayer;
-  currentPlayer = `<div id='currentPlayer'>${currentPlayer}</div>`;
-  let otherPlayers=listToHTML(turnDetails.otherPlayers,'other-player','div');
-  document.getElementById('turns').innerHTML =`${currentPlayer}${otherPlayers}`;
+  let turnDisplay=document.getElementById('turns');
+  turnDisplay.innerHTML='';
+  turnDetails.otherPlayers.reduce(function(turnDisplay,player){
+    let playerDiv = document.createElement('div');
+    if(player == currentPlayer ){
+      playerDiv.id = 'currentPlayer';
+    }else{
+      playerDiv.className = 'other-player';
+    }
+    playerDiv.appendChild(document.createTextNode(`${player}`));
+    turnDisplay.appendChild(playerDiv);
+    return turnDisplay;
+  },turnDisplay);
   let isMyTurn=turnDetails.isMyTurn;
   if(eval(isMyTurn)){
     if(!IGNORE_MY_TURN){
@@ -279,7 +286,6 @@ const assignTileIndependentClass = function(tile){
 };
 const renderGameStatus = function(){
   let gameStatus = JSON.parse(this.responseText);
-  console.log(gameStatus);
   displayHotelDetails(gameStatus.hotelsData);
   displayIndependentTiles(gameStatus.independentTiles);
   displayTurnDetails(gameStatus.turnDetails);

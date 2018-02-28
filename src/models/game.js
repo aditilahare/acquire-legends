@@ -4,6 +4,8 @@ const Market = require('./market.js');
 const Turn = require('./turn');
 const actions = require('../utils/actions.js');
 const isGameOver = require('../utils/endGame.js').isGameOver;
+const orderPlayers = require('../utils/orderPlayers.js').orderPlayers;
+
 
 let HOTEL_DATA = require('../../data/hotelsData.json');
 
@@ -46,6 +48,10 @@ class Game {
     let isSameHotel=(hotelName==mergingHotelName);//validate player turn
     if (isSameHotel&&this.canSharesBeDeployed(playerId,sharesToDeploy)) {
       this.letPlayerDeployShares(playerId,sharesToDeploy,state);
+      let player=this.findPlayerById(playerId);
+      let noOfShares=sharesToDeploy.noOfSharesToSell;
+      let hotelName=sharesToDeploy.hotelName;
+      this.logActivity(`${player.name} deployed ${noOfShares} of ${hotelName}`);
     }
   }
   letPlayerDeployShares(playerId,sharesToDeploy,state){
@@ -162,11 +168,19 @@ class Game {
       player.addTiles(tileBox.getTiles(6));
     });
   }
+  distributeTilesForOrdering() {
+    let tileBox = this.tileBox;
+    this.players.forEach(function(player) {
+      player.addTiles(tileBox.getTiles(1));
+    });
+  }
   start() {
+    this.distributeTilesForOrdering();
+    this.turn = new Turn(this.getPlayersOrder());
+    this.placeInitialTiles();
     this.distributeInitialTiles();
     this.distributeInitialMoney(STARTING_BALANCE);
     this.createHotels(HOTEL_DATA);
-    this.turn = new Turn(this.getPlayersOrder());
     this.MODE = 'play';
     this.turn.setState({
       expectedActions:['placeTile']
@@ -180,7 +194,6 @@ class Game {
     });
   }
   giveMajorityMinorityBonus(hotelName){
-    // this part is forcing us to think about our data_structure again
     let shareHolders=this.bank.getShareHoldersForBonus(hotelName);
     let bonusAmounts=this.market.getBonusAmountsOf(hotelName);
     if (shareHolders.minority.length==0) {
@@ -205,7 +218,6 @@ class Game {
   }
   getPlayerDetails(id) {
     let player = this.findPlayerById(id);
-    console.log(id);
     return player.getDetails();
   }
   isInPlayMode() {
@@ -238,7 +250,6 @@ class Game {
     let response=this.market.placeTile(playerTile);
     if(response.status){
       player.removeTile(tile);
-      // response.player=player;
       this.setState(response);
       this.logActivity(`${player.name} has placed ${playerTile}.`);
     }
@@ -255,9 +266,7 @@ class Game {
     return this.market.giveIndependentTiles();
   }
   getPlayersOrder() {
-    return this.players.map((player) => {
-      return player.id;
-    });
+    return orderPlayers(this.players);
   }
   getAllPlayerDetails() {
     return this.players.map((player) => {
@@ -284,15 +293,11 @@ class Game {
   getTurnDetails(id){
     let turnDetails={};
     let currentPlayer=this.getCurrentPlayer();
-    let otherPlayers=this.getAllPlayerDetails().filter((player)=>{
-      return currentPlayer.id!=player.id;
-    });
     let state=this.turn.getState();
     if (state.status=="merge"&&state.expectedActions.includes("deployShares")) {
-      console.log(id,this.mergingTurn);
-      console.log(this.mergingTurn.isTurnOf(id));
       turnDetails.shouldIDeploy=this.mergingTurn.isTurnOf(id);
     }
+    let otherPlayers = this.getAllPlayerDetails();
     turnDetails.currentPlayer = currentPlayer.name;
     turnDetails.otherPlayers = otherPlayers.map((player)=>{
       return player.name;
@@ -301,6 +306,7 @@ class Game {
     if(currentPlayer.id==id) {
       turnDetails.isMyTurn=true;
     }
+
     return turnDetails;
   }
   getStatus(playerId){
@@ -309,6 +315,7 @@ class Game {
       hotelsData:this.getAllHotelsDetails(),
       turnDetails:this.getTurnDetails(playerId),
       gameActivityLog:this.activityLog,
+      inactiveHotels:this.market.getInactiveHotels(),
       state:this.turn.getState()
     };
     return status;
@@ -378,6 +385,15 @@ class Game {
      choosen ${survivorHotel} to stay`);
     this.actions['merge'].call(this,oldResponse);
     return 200;
+  }
+  placeInitialTiles(){
+    this.players.forEach((player)=>{
+      let playerTile = player.getTiles()[0];
+      let response=this.market.placeTile(playerTile);
+      player.removeTile(playerTile);
+      this.logActivity(`${player.name} has placed ${playerTile}.`);
+    });
+    return;
   }
 }
 module.exports = Game;

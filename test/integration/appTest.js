@@ -222,7 +222,7 @@ describe('App Test', () => {
       request(app)
         .post('/actions/placeTile')
         .set('Cookie', 'playerId=0')
-        .send("tile=1A")
+        .send("tile=2A")
         .expect(200)
         .end(done);
     });
@@ -238,34 +238,36 @@ describe('App Test', () => {
       game.addPlayer(player4);
       game.start();
       game.placeTile(0, '5A');
-      game.changeCurrentPlayer();
-      game.placeTile(1, '7A');
-      game.changeCurrentPlayer();
-      game.placeTile(2, '6B');
-      game.changeCurrentPlayer();
-      game.placeTile(3, '8B');
-      game.changeCurrentPlayer();
-      game.placeTile(0, '4A');
       game.startHotel('Zeta', 0);
       game.purchaseShares('Zeta', 2, 0)
       game.changeCurrentPlayer();
-      game.placeTile(1, '8A');
+      game.placeTile(0, '7A');
+      game.changeCurrentPlayer();
+      game.placeTile(2, '6B');
+      game.changeCurrentPlayer();
+      game.placeTile(2, '8B');
+      game.changeCurrentPlayer();
+      // game.placeTile(0, '4A');
+      //game.changeCurrentPlayer();
+      game.placeTile(0, '8A');
       game.startHotel('Sackson', 1);
       game.purchaseShares('Zeta', 1, 1)
       game.purchaseShares('Sackson', 1, 1)
       game.changeCurrentPlayer();
-      game.placeTile(2, '4B');
+      game.placeTile(1, '4B');
       game.changeCurrentPlayer();
-      game.placeTile(3, '9B');
+      game.placeTile(2, '9B');
       game.changeCurrentPlayer();
-      game.placeTile(0, '1A');
-      game.changeCurrentPlayer();
+      // game.placeTile(0, '1A');
+      // game.changeCurrentPlayer();
       game.placeTile(1, '6C');
       game.startHotel('Fusion', 1);
       game.changeCurrentPlayer();
-      game.placeTile(2, '1B');
+      game.placeTile(1, '1B');
       game.changeCurrentPlayer();
-      game.placeTile(3, '10B');
+      game.placeTile(2, '10B');
+      game.changeCurrentPlayer();
+      game.changeCurrentPlayer();
       game.changeCurrentPlayer();
       app.game = game;
       request(app)
@@ -362,7 +364,7 @@ describe('App Test', () => {
       game.start();
       game.placeTile(0, '6A');
       game.changeCurrentPlayer();
-      game.placeTile(1, '7A');
+      game.placeTile(0,'7A');
       app.game = game;
       request(app)
         .post('/actions/chooseHotel')
@@ -385,8 +387,8 @@ describe('App Test', () => {
       game.start();
       game.placeTile(0, '6A');
       game.changeCurrentPlayer();
-      game.placeTile(1, '7A');
-      game.startHotel('Zeta', 1);
+      game.placeTile(0,'7A');
+      game.startHotel('Zeta',1);
       app.game = game;
       request(app)
         .post('/actions/purchaseShares')
@@ -400,6 +402,7 @@ describe('App Test', () => {
   describe('merge', function() {
     it('merge for two equal hotels', (done) => {
       let game = new Game(3,tileBox);
+      app.game=game;
       let player1 = new Player(0, 'pragya');
       let player2 = new Player(1, 'aditi');
       let player3 = new Player(2, 'praveen');
@@ -407,17 +410,18 @@ describe('App Test', () => {
       game.addPlayer(player2);
       game.addPlayer(player3);
       game.start();
-      game.placeTile(0,'5A')
+
+      game.placeTile(0, '5A');
       game.changeCurrentPlayer();
-      game.placeTile(1,'7A')
+      game.placeTile(0, '7A');
       game.changeCurrentPlayer();
       game.placeTile(2, '5B');
       game.startHotel('Zeta', 2);
       game.changeCurrentPlayer();
-      game.placeTile(0, '7B');
-      game.startHotel('Sackson', 0);
+      game.placeTile(2, '7B');
+      game.startHotel('Sackson',0);
       game.changeCurrentPlayer();
-      game.placeTile(1, '9A');
+      game.placeTile(0, '9A');
       game.changeCurrentPlayer();
       game.placeTile(2, '6B');
       app.game = game;
@@ -442,35 +446,35 @@ describe('App Test', () => {
       game.addPlayer(player4);
       game.start();
       game.placeTile(0, '5A');
-      game.changeCurrentPlayer();
-      game.placeTile(1, '7A');
-      game.changeCurrentPlayer();
-      game.placeTile(2, '6B');
-      game.changeCurrentPlayer();
-      game.placeTile(3, '8B');
-      game.changeCurrentPlayer();
-      game.placeTile(0, '4A');
       game.startHotel('Zeta', 0);
       game.purchaseShares('Zeta', 2, 0)
       game.changeCurrentPlayer();
-      game.placeTile(1, '8A');
+      game.placeTile(0, '7A');
+      game.changeCurrentPlayer();
+      game.placeTile(2, '6B');
+      game.changeCurrentPlayer();
+      game.placeTile(2, '8B');
+      game.changeCurrentPlayer();
+      //game.placeTile(0, '4A');
+      //game.changeCurrentPlayer();
+      game.placeTile(0, '8A');
       game.startHotel('Sackson', 1);
       game.purchaseShares('Zeta', 1, 1)
       game.purchaseShares('Sackson', 1, 1)
       game.changeCurrentPlayer();
-      game.placeTile(2, '4B');
+      game.placeTile(1, '4B');
       game.changeCurrentPlayer();
-      game.placeTile(3, '9B');
+      game.placeTile(2, '9B');
       game.changeCurrentPlayer();
 
-      game.placeTile(0, '1A');
+      //game.placeTile(0, '1A');
       game.changeCurrentPlayer();
       game.placeTile(1, '6C');
       game.startHotel('Fusion', 1)
       game.changeCurrentPlayer();
-      game.placeTile(2, '1B');
+      game.placeTile(1, '1B');
       game.changeCurrentPlayer();
-      game.placeTile(3, '10B');
+      game.placeTile(2, '10B');
       game.changeCurrentPlayer();
       let response = game.placeTile(0, '6A');
       app.game = game;
