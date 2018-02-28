@@ -72,8 +72,8 @@ let letPlayerDeployShares=function(res){
   if (res.turnDetails.shouldIDeploy) {
     let deploySharesOption=getElement('#deployShares');
     deploySharesOption.classList.remove('hidden');
-    hotelName=("#hotelNameOfwhichSharesToSell").value;
-    hotelName=res.state.currentMergingHotel.name;
+    let hotelName=res.state.currentMergingHotel.name;
+    getElement("#hotelNameOfwhichSharesToSell").value=hotelName;
   }
 };
 let requestDeployShares=function(){
@@ -165,8 +165,7 @@ const displayMoney = function(money){
   return;
 };
 const displayPlayerName = function (name) {
-  document.getElementById('playerName').innerHTML = `<p>${name}\
-  </p>`;
+  document.getElementById('playerName').innerHTML = `<p>${name}</p>`;
 };
 const getPlayerDetails = function () {
   sendAjaxRequest('GET','/playerDetails','',displayPlayerDetails);
@@ -259,9 +258,19 @@ const displayIndependentTiles = function(independentTiles) {
 };
 const displayTurnDetails = function(turnDetails) {
   let currentPlayer=turnDetails.currentPlayer;
-  currentPlayer = `<div id='currentPlayer'>${currentPlayer}</div>`;
-  let otherPlayers=listToHTML(turnDetails.otherPlayers,'other-player','div');
-  document.getElementById('turns').innerHTML =`${currentPlayer}${otherPlayers}`;
+  let turnDisplay=document.getElementById('turns');
+  turnDisplay.innerHTML='';
+  turnDetails.otherPlayers.reduce(function(turnDisplay,player){
+    let playerDiv = document.createElement('div');
+    if(player == currentPlayer ){
+      playerDiv.id = 'currentPlayer';
+    }else{
+      playerDiv.className = 'other-player';
+    }
+    playerDiv.appendChild(document.createTextNode(`${player}`));
+    turnDisplay.appendChild(playerDiv);
+    return turnDisplay;
+  },turnDisplay);
   let isMyTurn=turnDetails.isMyTurn;
   if(eval(isMyTurn)){
     if(!IGNORE_MY_TURN){
