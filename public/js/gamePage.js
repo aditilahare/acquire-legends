@@ -3,7 +3,8 @@ let cart =[];
 let getGameStatusFn,getPlayerStatusFn;
 let tileId;
 const chooseHotel = function(){
-  let hotelName=getElement('#inactiveHotelsDiv select[name="hotelName"]').value;
+  let hotelName=getElement('#inactiveHotelsForm \
+  select[name="hotelName"]').value;
   let data = `hotelName=${hotelName}`;
   sendAjaxRequest('POST','/actions/chooseHotel',data,placeTileHandler);
   document.getElementById('inactiveHotelsFormDiv').style.display = "none";
@@ -41,13 +42,13 @@ actions['changeTurn']=function(){
 };
 actions['chooseHotel']=function(res){
   let form=createInactiveHotelsForm(res.inactiveHotels);
-  getElement('#inactiveHotelsDiv').innerHTML=form;
+  getElement('#inactiveHotelsForm').innerHTML=form;
   document.getElementById('inactiveHotelsFormDiv').style.display = "block";
 };
 actions["merge"]=function(res){
   if (res.state.expectedActions.includes('chooseHotelForMerge')) {
     let form=chooseForMergerSurvivour(res.state.survivorHotels);
-    getElement('#choose-hotel').innerHTML=form;
+    getElement('#tieBreakForm').innerHTML=form;
     document.getElementById('choose-hotel').style.display = "block";
   }
   if (res.state.expectedActions.includes('deployShares')) {
@@ -143,7 +144,6 @@ const generateTiles = function (tiles){
   return tiles.reduce(generateTilesAsButton,'');
 };
 const selectTile=function (event) {
-  console.log(event.target.id);
   if (tileId==event.target.id) {
     placeTile(event.target.id);
     return ;
