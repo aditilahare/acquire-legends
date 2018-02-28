@@ -43,4 +43,38 @@ describe('Hotel test', function(){
       assert.equal(zeta.getSize(),2);
     });
   });
+  describe('doesOccupiedTilesInclude()',()=>{
+    it('should give ture when hotel has given share',()=>{
+      let zeta = new Hotel('zeta','yellow');
+      zeta.occupyTile('1A');
+      zeta.occupyTile('2A');
+      assert.isTrue(zeta.doesOccupiedTilesInclude('2A'));
+    })
+  })
+  describe('getAllOccupiedTiles()',()=>{
+    it('should give all occupiedTiles hotel has',()=>{
+      let zeta = new Hotel('zeta','yellow');
+      zeta.occupyTile('1A');
+      zeta.occupyTile('2A');
+      assert.deepEqual(zeta.getAllOccupiedTiles(),['1A','2A']);
+    })
+  })
+  describe('removeAllOccupiedTiles()',()=>{
+    it('should remove all occupiedTiles hotel has',()=>{
+      let zeta = new Hotel('zeta','yellow');
+      zeta.occupyTile('1A');
+      zeta.occupyTile('2A');
+      zeta.removeAllOccupiedTiles();
+      assert.deepEqual(zeta.getAllOccupiedTiles(),[]);
+    })
+  })
+  describe('addTilesToOccupiedTiles()',()=>{
+    it('should add all given tiles to occupiedTiles hotel has',()=>{
+      let zeta = new Hotel('zeta','yellow');
+      zeta.occupyTile('1A');
+      zeta.occupyTile('2A');
+      zeta.addTilesToOccupiedTiles(['3A','4A','5A']);
+      assert.deepEqual(zeta.getAllOccupiedTiles(),['1A','2A','3A','4A','5A']);
+    })
+  })
 });

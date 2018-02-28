@@ -98,4 +98,14 @@ describe('Player', () => {
       assert.equal(harvar.getAvailableCash(),1000);
     });
   });
+  describe('removeShares',()=>{
+    it('it should remove given noOf shares of given hotel',()=>{
+      let harvar = new Player(0,'Harvar');
+      harvar.addMoney(2500);
+      harvar.addShares('Zeta',3);
+      assert.equal(harvar.shares.Zeta,3)
+      harvar.removeShares('Zeta',2);
+      assert.equal(harvar.shares.Zeta,1);
+    })
+  })
 });

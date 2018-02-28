@@ -104,4 +104,19 @@ describe('Bank test', () => {
       assert.isNotOk(actual);
     });
   });
+  describe('removeSharesOfPlayer',()=>{
+    it('it should remove shares of player',()=>{
+      let kotakMahindra=new Bank(100000);
+      kotakMahindra.createSharesOfHotel('Zeta',6);
+      let hotelName = 'Zeta';
+      let noOfShares = 3;
+      let playerId = 1;
+      kotakMahindra.sellSharesToPlayer(hotelName,noOfShares,playerId);
+      let noOfSharesToSell=2;
+      kotakMahindra.removeSharesOfPlayer(playerId,noOfSharesToSell,hotelName);
+      let expectedAvailableSharesOfHotel={"Zeta":5}
+      let actualHotelShares=kotakMahindra.getAvailableSharesOfHotels('Zeta');
+      assert.deepEqual(expectedAvailableSharesOfHotel,actualHotelShares);
+    })
+  })
 });

@@ -15,10 +15,10 @@ const mockRandomTiles = require('../helpers/mockRandomTiles.js').getTiles;
 describe('App Test', () => {
   let tileBox;
   beforeEach(() => {
-    tileBox = new TileBox(12,9,mockRandomTiles);
+    tileBox = new TileBox(12, 9, mockRandomTiles);
   });
   describe('/join', () => {
-    let game = new Game(3,tileBox);
+    let game = new Game(3, tileBox);
     app.game = game;
     it('should add player and redirect to waiting page', (done) => {
       request(app)
@@ -30,7 +30,7 @@ describe('App Test', () => {
         .end(done);
     });
     it('should not allow players to join if  maximum players joined', (done) => {
-      game = new Game(1,tileBox);
+      game = new Game(1, tileBox);
       game.addPlayer(new Player(1, 'veera'));
       app.game = game;
       request(app)
@@ -62,7 +62,7 @@ describe('App Test', () => {
   });
   describe('/haveAllPlayersJoined', function() {
     it('should respond with true if all players have joined', function(done) {
-      app.game = new Game(0,tileBox);
+      app.game = new Game(0, tileBox);
       request(app)
         .get('/haveAllPlayersJoined')
         .expect(200)
@@ -71,7 +71,7 @@ describe('App Test', () => {
     });
     it('should respond with false if all players\
        have not joined', function(done) {
-      app.game = new Game(1,tileBox);
+      app.game = new Game(1, tileBox);
       request(app)
         .get('/haveAllPlayersJoined')
         .expect(200)
@@ -80,7 +80,7 @@ describe('App Test', () => {
     });
     it('should respond with true if all players\
        have not joined', function(done) {
-      app.game = new Game(2,tileBox);
+      app.game = new Game(2, tileBox);
       let player = new Player(0, 'veera');
       app.game.addPlayer(player);
       app.game.addPlayer(player);
@@ -98,7 +98,7 @@ describe('App Test', () => {
       let content = 'Waiting For Other Players To Join';
       fs.addFile(fileName, content);
       app.fs = fs;
-      app.game = new Game(1,tileBox);
+      app.game = new Game(1, tileBox);
       let player = new Player(0, 'pragya');
       app.game.addPlayer(player);
       request(app)
@@ -121,7 +121,7 @@ describe('App Test', () => {
   });
   describe('/', function() {
     it('should redirect to /wait when already registered player comes to  ', function(done) {
-      app.game = new Game(2,tileBox);
+      app.game = new Game(2, tileBox);
       app.game.addPlayer(new Player(0, 'veera'));
       request(app)
         .get('/')
@@ -133,7 +133,7 @@ describe('App Test', () => {
   });
   describe('/getPlayerDetails', function() {
     it('should give tiles of player with given id', function(done) {
-      app.game = new Game(1,tileBox);
+      app.game = new Game(1, tileBox);
       let veera = new Player(0, 'veera');
       app.game.addPlayer(veera);
       app.game.distributeInitialTiles();
@@ -145,7 +145,7 @@ describe('App Test', () => {
         .end(done);
     });
     it('should give tiles of player with given id', function(done) {
-      app.game = new Game(1,tileBox);
+      app.game = new Game(1, tileBox);
       let veera = new Player(0, 'veera');
       app.game.addPlayer(veera);
       app.game.distributeInitialTiles();
@@ -157,7 +157,7 @@ describe('App Test', () => {
         .end(done);
     });
     it('should give name of player with given id', function(done) {
-      app.game = new Game(1,tileBox);
+      app.game = new Game(1, tileBox);
       let veera = new Player(0, 'veera');
       app.game.addPlayer(veera);
       app.game.distributeInitialTiles();
@@ -171,7 +171,7 @@ describe('App Test', () => {
   });
   describe('/game.html', function() {
     it('should start game if game exists but not started', function(done) {
-      app.game = new Game(1,tileBox);
+      app.game = new Game(1, tileBox);
       let veera = new Player(0, 'veera');
       app.game.addPlayer(veera);
       request(app)
@@ -184,7 +184,7 @@ describe('App Test', () => {
   });
   describe('/getAllPlayerNames', function() {
     it('can give all player names who have joined the game', function(done) {
-      app.game = new Game(1,tileBox);
+      app.game = new Game(1, tileBox);
       let player = new Player(0, 'pragya');
       app.game.addPlayer(player);
       request(app)
@@ -197,7 +197,7 @@ describe('App Test', () => {
   });
   describe('/isGameExisted', function() {
     it('should respond with true if game existed', function(done) {
-      app.game = new Game(0,tileBox);
+      app.game = new Game(0, tileBox);
       request(app)
         .get('/isGameExisted')
         .expect(200)
@@ -215,35 +215,89 @@ describe('App Test', () => {
   });
   describe('/placeTile', function() {
     it('can place a tile on market', function(done) {
-      app.game = new Game(1,tileBox);
+      app.game = new Game(1, tileBox);
       let player = new Player(0, 'pragya');
       app.game.addPlayer(player);
       app.game.start();
       request(app)
         .post('/actions/placeTile')
         .set('Cookie', 'playerId=0')
-        .send("tile=1A")
+        .send("tile=2A")
+        .expect(200)
+        .end(done);
+    });
+    it('should respond with deployShares status when merger tile is placed', function(done) {
+      let game = new Game(4,tileBox);
+      let player1 = new Player(0, 'pragya');
+      let player2 = new Player(1, 'aditi');
+      let player3 = new Player(2, 'praveen');
+      let player4 = new Player(3, 'specailPlayer');
+      game.addPlayer(player1);
+      game.addPlayer(player2);
+      game.addPlayer(player3);
+      game.addPlayer(player4);
+      game.start();
+      game.placeTile(0, '5A');
+      game.startHotel('Zeta', 0);
+      game.purchaseShares('Zeta', 2, 0)
+      game.changeCurrentPlayer();
+      game.placeTile(0, '7A');
+      game.changeCurrentPlayer();
+      game.placeTile(2, '6B');
+      game.changeCurrentPlayer();
+      game.placeTile(2, '8B');
+      game.changeCurrentPlayer();
+      // game.placeTile(0, '4A');
+      //game.changeCurrentPlayer();
+      game.placeTile(0, '8A');
+      game.startHotel('Sackson', 1);
+      game.purchaseShares('Zeta', 1, 1)
+      game.purchaseShares('Sackson', 1, 1)
+      game.changeCurrentPlayer();
+      game.placeTile(1, '4B');
+      game.changeCurrentPlayer();
+      game.placeTile(2, '9B');
+      game.changeCurrentPlayer();
+      // game.placeTile(0, '1A');
+      // game.changeCurrentPlayer();
+      game.placeTile(1, '6C');
+      game.startHotel('Fusion', 1);
+      game.changeCurrentPlayer();
+      game.placeTile(1, '1B');
+      game.changeCurrentPlayer();
+      game.placeTile(2, '10B');
+      game.changeCurrentPlayer();
+      game.changeCurrentPlayer();
+      game.changeCurrentPlayer();
+      app.game = game;
+      request(app)
+        .post('/actions/placeTile')
+        .set('Cookie', 'playerId=0')
+        .send(`tile=6A`)
+        .expect(/deployShares/i)
         .expect(200)
         .end(done);
     });
   });
   describe('/changeTurn', function() {
     it('change turn to next player', function(done) {
-      let game = new Game(3,tileBox);
+      let game = new Game(3, tileBox);
       game.addPlayer(new Player(0, 'veera'));
       game.addPlayer(new Player(1, 'gupta'));
       game.addPlayer(new Player(2, 'raj'));
       game.start();
-      game.turn.setState({expectedActions:['changeTurn']})
+      game.turn.setState({
+        expectedActions: ['changeTurn']
+      })
       app.game = game;
       request(app)
         .get('/actions/changeTurn')
-        .set('Cookie','playerId=0')
+        .set('Cookie', 'playerId=0')
         .expect(200)
         .end(done);
     });
     it('should respond withn 401 for unauthorized player for changing turn', function(done) {
-      let game = new Game(3,tileBox);
+      let game = new Game(3, tileBox);
       game.addPlayer(new Player(0, 'veera'));
       game.addPlayer(new Player(1, 'gupta'));
       game.addPlayer(new Player(2, 'raj'));
@@ -257,7 +311,7 @@ describe('App Test', () => {
   });
   describe('/placeTile', function() {
     it('should restrict invalid player to place tile', function(done) {
-      let game = new Game(3,tileBox);
+      let game = new Game(3, tileBox);
       game.addPlayer(new Player(0, 'veera'));
       game.addPlayer(new Player(1, 'gupta'));
       game.start();
@@ -271,7 +325,7 @@ describe('App Test', () => {
   });
   describe('/gameStatus', function() {
     it('should respond with current game status', function(done) {
-      let game = new Game(3,tileBox);
+      let game = new Game(3, tileBox);
       game.addPlayer(new Player(0, 'veera'));
       game.addPlayer(new Player(1, 'gupta'));
       game.start();
@@ -288,14 +342,14 @@ describe('App Test', () => {
   });
   describe('/turnState', function() {
     it('should respond with current turn state', function(done) {
-      let game = new Game(2,tileBox);
+      let game = new Game(2, tileBox);
       game.addPlayer(new Player(0, 'veera'));
       game.addPlayer(new Player(1, 'gupta'));
       game.start();
       app.game = game;
       request(app)
         .get('/actions/turnState')
-        .set('Cookie','playerId=0')
+        .set('Cookie', 'playerId=0')
         .expect(/placeTile/i)
         .expect(200)
         .end(done);
@@ -303,18 +357,18 @@ describe('App Test', () => {
   });
   describe('/chooseHotel', function() {
     it('should respond with inactive hotels', function(done) {
-      let game = new Game(3,tileBox);
+      let game = new Game(3, tileBox);
       game.addPlayer(new Player(0, 'veera'));
       game.addPlayer(new Player(1, 'gupta'));
       game.addPlayer(new Player(2, 'sachin'));
       game.start();
-      game.placeTile(0,'6A');
+      game.placeTile(0, '6A');
       game.changeCurrentPlayer();
-      game.placeTile(1,'7A');
+      game.placeTile(0,'7A');
       app.game = game;
       request(app)
         .post('/actions/chooseHotel')
-        .set('Cookie','playerId=1')
+        .set('Cookie', 'playerId=1')
         .send('hotelName=Zeta')
         .expect(/purchaseShares/i)
         .expect(200)
@@ -323,22 +377,22 @@ describe('App Test', () => {
   });
   describe('/purchaseShares', function() {
     it('should allow current player to purchase shares', function(done) {
-      let game = new Game(3,tileBox);
-      let cart={
-        Zeta:3
+      let game = new Game(3, tileBox);
+      let cart = {
+        Zeta: 3
       }
       game.addPlayer(new Player(0, 'veera'));
       game.addPlayer(new Player(1, 'gupta'));
       game.addPlayer(new Player(2, 'sachin'));
       game.start();
-      game.placeTile(0,'6A');
+      game.placeTile(0, '6A');
       game.changeCurrentPlayer();
-      game.placeTile(1,'7A');
+      game.placeTile(0,'7A');
       game.startHotel('Zeta',1);
       app.game = game;
       request(app)
         .post('/actions/purchaseShares')
-        .set('Cookie','playerId=1')
+        .set('Cookie', 'playerId=1')
         .send(`cart=${JSON.stringify(cart)}`)
         .expect(/placeTile/i)
         .expect(200)
@@ -347,7 +401,7 @@ describe('App Test', () => {
   });
   describe('merge', function() {
     it('merge for two equal hotels', (done) => {
-      let game = new Game(3);
+      let game = new Game(3,tileBox);
       app.game=game;
       let player1 = new Player(0, 'pragya');
       let player2 = new Player(1, 'aditi');
@@ -355,32 +409,86 @@ describe('App Test', () => {
       game.addPlayer(player1);
       game.addPlayer(player2);
       game.addPlayer(player3);
-      player1.addTile('5A');
-      player2.addTile('7A');
-      player3.addTile('5B');
-      player1.addTile('7B');
-      player2.addTile('9A');
-      player3.addTile('6B');
       game.start();
+
       game.placeTile(0, '5A');
       game.changeCurrentPlayer();
-      game.placeTile(1, '7A');
+      game.placeTile(0, '7A');
       game.changeCurrentPlayer();
       game.placeTile(2, '5B');
-      game.startHotel('Zeta',2);
+      game.startHotel('Zeta', 2);
       game.changeCurrentPlayer();
-      game.placeTile(0, '7B');
+      game.placeTile(2, '7B');
       game.startHotel('Sackson',0);
       game.changeCurrentPlayer();
-      game.placeTile(1, '9A');
+      game.placeTile(0, '9A');
       game.changeCurrentPlayer();
       game.placeTile(2, '6B');
+      app.game = game;
       request(app)
         .post('/actions/chooseHotelForMerge')
-        .set('Cookie','playerId=2')
+        .set('Cookie', 'playerId=2')
         .send('hotelName=Sackson')
         .expect(200)
         .end(done)
-    });
+    })
+  })
+  describe('/deployShares', function() {
+    it('should allow current player to purchase shares', function(done) {
+      let game = new Game(4,tileBox);
+      let player1 = new Player(0, 'pragya');
+      let player2 = new Player(1, 'aditi');
+      let player3 = new Player(2, 'praveen');
+      let player4 = new Player(3, 'specailPlayer');
+      game.addPlayer(player1);
+      game.addPlayer(player2);
+      game.addPlayer(player3);
+      game.addPlayer(player4);
+      game.start();
+      game.placeTile(0, '5A');
+      game.startHotel('Zeta', 0);
+      game.purchaseShares('Zeta', 2, 0)
+      game.changeCurrentPlayer();
+      game.placeTile(0, '7A');
+      game.changeCurrentPlayer();
+      game.placeTile(2, '6B');
+      game.changeCurrentPlayer();
+      game.placeTile(2, '8B');
+      game.changeCurrentPlayer();
+      //game.placeTile(0, '4A');
+      //game.changeCurrentPlayer();
+      game.placeTile(0, '8A');
+      game.startHotel('Sackson', 1);
+      game.purchaseShares('Zeta', 1, 1)
+      game.purchaseShares('Sackson', 1, 1)
+      game.changeCurrentPlayer();
+      game.placeTile(1, '4B');
+      game.changeCurrentPlayer();
+      game.placeTile(2, '9B');
+      game.changeCurrentPlayer();
+
+      //game.placeTile(0, '1A');
+      game.changeCurrentPlayer();
+      game.placeTile(1, '6C');
+      game.startHotel('Fusion', 1)
+      game.changeCurrentPlayer();
+      game.placeTile(1, '1B');
+      game.changeCurrentPlayer();
+      game.placeTile(2, '10B');
+      game.changeCurrentPlayer();
+      let response = game.placeTile(0, '6A');
+      app.game = game;
+      request(app)
+        .post('/merge/deployShares')
+        .set('Cookie', 'playerId=0')
+        .send(`hotelName=Zeta&noOfSharesToSell=2`)
+        .expect(/"currentMergingHotel":{"name":"Zeta"/i)
+        .expect(/"activeHotels":\[{"name":"Sackson"/i)
+        .expect(/"survivorHotel":{"name":"Sackson/i)
+        .expect(/"expectedActions":\["deployShares"]/i)
+        .expect(/"status":"merge"/i)
+        .expect(200)
+        .end(done);
+    })
   });
 });
