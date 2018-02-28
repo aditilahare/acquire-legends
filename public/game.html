@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <title>ACQUIRE</title>
+
 <head>
   <link href="https://fonts.googleapis.com/css?family=Montserrat:100,200,300,400,500,700" rel="stylesheet">
   <link href='https://fonts.googleapis.com/css?family=Aclonica' rel='stylesheet'>
@@ -14,8 +15,8 @@
 
 <body>
   <div class="header">
-  <span class="heading">ACQUIRE</span>
-  <span id="playerName">
+    <span class="heading">ACQUIRE</span>
+    <span id="playerName">
   </div>
   <div class="actionPane">
     <div class='actions'>
@@ -25,6 +26,12 @@
         <div id="cart"></div>
         <button type="button" id="buyButton">Buy</button>
       </div>
+    </div>
+    <div id="deployShares" class="hidden">
+      please deploy your shares
+      <input type="text" id="hotelNameOfwhichSharesToSell" name="hotelName" value="">
+      <input type="text" id="noOfSharesToSell" name="noOfSharesToSell" value="">
+      <button type="submit" name="button" onclick="requestDeployShares()">done</button>
     </div>
     <div class='currentActivity'>
     </div>
@@ -48,12 +55,12 @@
         </div>
       </div>
       <div id="centercolumn">
-        <div >
-          <div id='board'  style="height:540px;width:720px;">
+        <div>
+          <div id='board' style="height:540px;width:720px;">
           </div>
         </div>
       </div>
-  </div>
+    </div>
     <div class="rightcolumn">
       <div class="region activity-log">
         <h2>Activity Log</h2>
@@ -67,9 +74,10 @@
     <div id='wallet' class="cash">
     </div>
     <div class="tiles">
-      <div id='tileBox' >
+      <div id='tileBox'>
       </div>
     </div>
   </div>
 </body>
+
 </html>

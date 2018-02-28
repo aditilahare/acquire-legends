@@ -34,11 +34,18 @@ class Bank {
     });
   }
   giveOneFreeShare(startedHotelName,playerId){
+    playerId=Number(playerId);
     this.addShareHolder(startedHotelName,playerId,1);
   }
   getShareholdersOfHotel(hotelName){
     let hotel=this.findHotelBy(hotelName);
     return hotel.shareHolders;
+  }
+  getAllShareHolderIds(hotelName){
+    let shareHolders=this.getShareholdersOfHotel(hotelName);
+    return shareHolders.map((shareHolder)=>{
+      return shareHolder.id;
+    });
   }
   doesHotelhaveEnoughShares(hotelName,noOfShares){
     let hotel = this.findHotelBy(hotelName);
@@ -79,6 +86,8 @@ class Bank {
     });
   }
   addShareHolder(hotelName,playerId,noOfShares){
+    playerId=Number(playerId);
+    noOfShares=Number(noOfShares);
     let desiredHotel = this.findHotelBy(hotelName);
     let shareHolder=this.findShareHolderBy(playerId,desiredHotel);
     if (shareHolder) {
@@ -86,6 +95,7 @@ class Bank {
       desiredHotel.availableShares -= noOfShares;
     }else {
       shareHolder={};
+      Number(playerId);
       shareHolder.id=playerId;
       shareHolder.noOfShares=noOfShares;
       desiredHotel.availableShares -= noOfShares;
@@ -93,12 +103,22 @@ class Bank {
     }
   }
   sellSharesToPlayer(hotelName,noOfShares,playerId){
+    playerId=Number(playerId);
+    noOfShares=Number(noOfShares);
     if(this.doesHotelhaveEnoughShares(hotelName,noOfShares)){
       let desiredHotel = this.findHotelBy(hotelName);
       this.addShareHolder(hotelName,playerId,noOfShares);
       return true;
     }
     return false;
+  }
+  removeSharesOfPlayer(playerId,noOfSharesToSell,hotelName){
+    noOfSharesToSell=Number(noOfSharesToSell);
+    playerId=Number(playerId);
+    let desiredHotel = this.findHotelBy(hotelName);
+    let shareHolder=this.findShareHolderBy(playerId,desiredHotel);
+    shareHolder.noOfShares-=noOfSharesToSell;
+    desiredHotel.availableShares += noOfSharesToSell;
   }
 }
 module.exports = Bank;

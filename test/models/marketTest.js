@@ -194,4 +194,44 @@ describe('Market', () => {
       assert.deepEqual(market.getLargeHotels(market.hotels),[zeta]);
     });
   });
+  describe('addMergingHotelsToSurvivor(mergingHotels,surviourHotel)', () => {
+    it('should add given merging hotels tiles into given surviourHotel', () => {
+      let market = new Market();
+      let zeta = new Hotel('Zeta', 'yellow',2);
+      zeta.occupiedTiles = ['1A', '2A', '1B', '2B'];
+      zeta.level = 2;
+      zeta.status=true;
+      market.hotels.push(zeta);
+      let sackson = new Hotel('Sackson', 'red',2);
+      sackson.occupiedTiles = ['1C', '2C', '1D'];
+      sackson.level = 2;
+      sackson.status=true;
+      market.hotels.push(sackson);
+      let expectdZeta = new Hotel('Zeta', 'yellow',2);
+      expectdZeta.occupiedTiles = ['1A', '2A', '1B', '2B', '1C', '2C', '1D'];
+      expectdZeta.status=true;
+      market.addMergingHotelsToSurvivor([sackson],zeta);
+      let actualZetaAfterAddingSackson=market.getHotel('Zeta');
+      assert.deepEqual(actualZetaAfterAddingSackson,expectdZeta);
+    });
+  });
+  describe('place merging tile', () => {
+    it('should place tile after merger to existing hotel', () => {
+      let market = new Market();
+      let zeta = new Hotel('Zeta', 'yellow',2);
+      zeta.occupiedTiles = ['1A', '1B', "2A"];
+      zeta.level = 2;
+      zeta.status = true;
+      let sackson = new Hotel('Sackson', 'yellow',2);
+      sackson.occupiedTiles = ['3B', '4B'];
+      sackson.level = 2;
+      sackson.status = true;
+      market.hotels.push(zeta);
+      market.hotels.push(sackson);
+      market.addMergingHotelsToSurvivor([sackson],zeta);
+      market.placeMergingTile('2B');
+      let occupiedTilesOfZeta=market.getHotel('Zeta').occupiedTiles;
+      assert.deepEqual(occupiedTilesOfZeta,[ '1A', '1B', '2A', '3B', '4B', '2B' ]);
+    });
+  });
 });
