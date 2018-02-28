@@ -163,7 +163,7 @@ class Game {
     if(isGameOver(response.activeHotels)){
       response.rankList=decidePlayerRank.call(this);
       response.status = 'gameOver';
-      this.logActivity("WellDone..Game has Over..You Played well.");
+      this.logActivity("Game has ended");
     }
     return response;
   }

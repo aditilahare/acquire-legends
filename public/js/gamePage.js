@@ -1,6 +1,6 @@
 /*eslint no-implicit-globals: "off"*/
 let cart =[];
-
+let getGameStatusFn,getPlayerStatusFn;
 const chooseHotel = function(){
   let hotelName=getElement('#choose-hotel select[name="hotelName"]').value;
   let data = `hotelName=${hotelName}`;
@@ -53,8 +53,11 @@ actions['purchaseShares']=function(res){
   showEndTurn();
 };
 actions['gameOver'] = function (res) {
+  clearInterval(getGameStatusFn);
+  clearInterval(getPlayerStatusFn);
   let rankListHtml = rankListHtmlGenerator(res.rankList);
-  getElement('#rankListDiplay').innerHTML = rankListHtml;
+  getElement('#rankListContent').innerHTML = rankListHtml;
+  document.getElementById('rankListDisplay').style.display = 'flex';
 };
 let getElement = function(selector){
   return document.querySelector(selector);
@@ -292,8 +295,8 @@ const actionsPerformed = function () {
   generateTable();
   getGameStatus();
   getPlayerDetails();
-  setInterval(getGameStatus,1000);
-  setInterval(getPlayerDetails,1000);
+  getGameStatusFn = setInterval(getGameStatus,1000);
+  getPlayerStatusFn = setInterval(getPlayerDetails,1000);
   getTurnState();
   IGNORE_MY_TURN=false;
 };

@@ -24,7 +24,7 @@ const displayHotelNames = function(allHotelsDetails){
 
 const rankListHtmlGenerator = function (rankList) {
   let rank = 1;
-  let htmlText = '<table class="rankList"><tr><th>Rank</th>\
+  let htmlText = '<h1>Game Over</h1><table class="rankList"><tr><th>Rank</th>\
   <th>Name</th><th>Cash</th></tr>';
   rankList.forEach(player=>{
     htmlText+=`<tr><td>${rank++}</td>\
