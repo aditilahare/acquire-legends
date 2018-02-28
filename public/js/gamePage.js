@@ -1,11 +1,12 @@
 /*eslint no-implicit-globals: "off"*/
 let cart =[];
 let getGameStatusFn,getPlayerStatusFn;
+let tileId;
 const chooseHotel = function(){
-  let hotelName=getElement('#choose-hotel select[name="hotelName"]').value;
+  let hotelName=getElement('#inactiveHotelsDiv select[name="hotelName"]').value;
   let data = `hotelName=${hotelName}`;
   sendAjaxRequest('POST','/actions/chooseHotel',data,placeTileHandler);
-  document.getElementById('choose-hotel').style.display = "none";
+  document.getElementById('inactiveHotelsFormDiv').style.display = "none";
   showEndTurn();
 };
 const createInactiveHotelsForm = function(hotels){
@@ -40,8 +41,8 @@ actions['changeTurn']=function(){
 };
 actions['chooseHotel']=function(res){
   let form=createInactiveHotelsForm(res.inactiveHotels);
-  getElement('#choose-hotel').innerHTML=form;
-  document.getElementById('choose-hotel').style.display = "block";
+  getElement('#inactiveHotelsDiv').innerHTML=form;
+  document.getElementById('inactiveHotelsFormDiv').style.display = "block";
 };
 actions["merge"]=function(res){
   if (res.state.expectedActions.includes('chooseHotelForMerge')) {
@@ -141,23 +142,31 @@ const generateTable = function () {
 const generateTiles = function (tiles){
   return tiles.reduce(generateTilesAsButton,'');
 };
-const selectTile=function (tile) {
-  tile.focus();
-  tile.onclick=function (event) {
-    placeTile(event.target.value);
-  };
+const selectTile=function (event) {
+  console.log(event.target.id);
+  if (tileId==event.target.id) {
+    placeTile(event.target.id);
+    return ;
+  }
+
+  tileId=event.target.id;
+  event.target.focus();
 };
 const generateTilesAsButton = function(tiles,tile){
-  tiles+=`<button class='tile' value=${tile}\
-   onclick="placeTile(this.value)">\
- <span>${tile}</span></button>`;
+  tiles+=`<button class='tile' id=${tile}\
+   onclick="selectTile(event)">\
+ <span id=${tile}>${tile}</span></button>`;
   return tiles;
 };
 const getCashInRupee = function (money) {
   return `<center><h2 class='myCash'> &#8377; ${money}<h2></center>`;
 };
 const displayTiles = function(tiles){
-  document.getElementById('tileBox').innerHTML = generateTiles(tiles);
+  let html = generateTiles(tiles);
+  let oldHtml = document.getElementById('tileBox').innerHTML;
+  if (html!=oldHtml) {
+    document.getElementById('tileBox').innerHTML = html;
+  }
   return;
 };
 const displayMoney = function(money){
