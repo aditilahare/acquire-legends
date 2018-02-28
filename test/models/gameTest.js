@@ -959,17 +959,15 @@ describe('game test', function() {
       game.addPlayer(player2);
       game.addPlayer(player3);
       game.start();
-      let expected=["Game has started."
-      ,  "praveen has placed 3A."
-      ,  "aditi has placed 2A."
-      ,  "pragya has placed 1A."
-      ,  "praveen has joined the game."
-      ,  "aditi has joined the game."
-      ,  "pragya has joined the game."];
-      let actual = game.getActivityLog().map((logItem)=>{
-        return logItem.substr(12)
-      })
-      assert.deepEqual(actual,expected);
+      let expected="Game has started.";
+      let actual = game.getActivityLog().join('');
+      assert.include(actual,expected);
+      expected="pragya has joined the game.";
+      assert.include(actual,expected);
+      expected="aditi has joined the game.";
+      assert.include(actual,expected);
+      expected="praveen has joined the game.";
+      assert.include(actual,expected);
     });
   });
   describe('deployShares', () => {
