@@ -1,5 +1,6 @@
 /*eslint no-implicit-globals: "off"*/
 let cart =[];
+let me;
 let getGameStatusFn,getPlayerStatusFn;
 let tileId;
 const chooseHotel = function(){
@@ -89,8 +90,7 @@ const purchaseShares = function(){
 };
 
 actions['gameOver'] = function (res) {
-  let rankListHtml = rankListHtmlGenerator(res.state.rankList);
-  getElement('#rankListContent').innerHTML = rankListHtml;
+  rankListHtmlGenerator(res.state.rankList,me);
   document.getElementById('rankListDisplay').style.display = 'flex';
   clearInterval(getGameStatusFn);
   clearInterval(getPlayerStatusFn);
@@ -217,6 +217,7 @@ const displayMoney = function(money){
   return;
 };
 const displayPlayerName = function (name) {
+  me=name;
   document.getElementById('playerName').innerHTML = `<p>${name}</p>`;
 };
 const getPlayerDetails = function () {
@@ -342,7 +343,6 @@ const assignTileIndependentClass = function(tile){
 };
 const renderGameStatus = function(){
   let gameStatus = JSON.parse(this.responseText);
-  console.log(gameStatus);
   displayHotelDetails(gameStatus.hotelsData);
   displayIndependentTiles(gameStatus.independentTiles);
   displayTurnDetails(gameStatus.turnDetails);
@@ -352,6 +352,7 @@ const renderGameStatus = function(){
   }
   if (gameStatus.state.status=="gameOver") {
     actions["gameOver"](gameStatus);
+    return ;
   }
   if (gameStatus.state.status&&gameStatus.turnDetails.isMyTurn) {
     actions[gameStatus.state.status](gameStatus);
@@ -389,10 +390,10 @@ const updateGameStatus=function(gameStatus){
 };
 const actionsPerformed = function () {
   generateTable();
-  getGameStatus();
   getPlayerDetails();
-  getGameStatusFn = setInterval(getGameStatus,1000);
+  getGameStatus();
   getPlayerStatusFn = setInterval(getPlayerDetails,1000);
+  getGameStatusFn = setInterval(getGameStatus,1000);
   // getTurnState();
   IGNORE_MY_TURN=false;
 };
