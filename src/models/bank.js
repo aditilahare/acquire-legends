@@ -44,7 +44,9 @@ class Bank {
   getAllShareHolderIds(hotelName){
     let shareHolders=this.getShareholdersOfHotel(hotelName);
     return shareHolders.map((shareHolder)=>{
-      return shareHolder.id;
+      if (shareHolder.noOfShares>0) {
+        return shareHolder.id;
+      }
     });
   }
   doesHotelhaveEnoughShares(hotelName,noOfShares){

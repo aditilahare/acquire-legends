@@ -8,6 +8,7 @@ const chooseHotel = function(){
   let data = `hotelName=${hotelName}`;
   sendAjaxRequest('POST','/actions/chooseHotel',data,placeTileHandler);
   document.getElementById('inactiveHotelsFormDiv').style.display = "none";
+  setInterval(getGameStatus,1000);
   showEndTurn();
 };
 const createInactiveHotelsForm = function(hotels){
@@ -20,10 +21,11 @@ const createInactiveHotelsForm = function(hotels){
   return html;
 };
 const mergerForTieCase = function(){
-  let hotelName=getElement('#choose-hotel select[name="hotelName"]').value;
+  let hotelName=getElement('#choose-surv-hotel select[name="hotelName"]').value;
   let data=`hotelName=${hotelName}`;
   sendAjaxRequest('POST','/actions/chooseHotelForMerge',data,placeTileHandler);
-  document.getElementById('choose-hotel').style.display = "none";
+  document.getElementById('choose-surv-hotel').style.display = "none";
+  getGameStatusFn = setInterval(getGameStatus,1000);
   showEndTurn();
 };
 const chooseForMergerSurvivour = function(hotels){
@@ -41,34 +43,74 @@ actions['changeTurn']=function(){
   changeTurn();
 };
 actions['chooseHotel']=function(res){
-  let form=createInactiveHotelsForm(res.inactiveHotels);
-  getElement('#inactiveHotelsForm').innerHTML=form;
-  document.getElementById('inactiveHotelsFormDiv').style.display = "block";
+  sendAjaxRequest('GET','/gameStatus','',function(){
+    let res=JSON.parse(this.responseText);
+    let isMyTurn=res.turnDetails.isMyTurn;
+    if (res.state.expectedActions.includes('chooseHotel')&&isMyTurn) {
+      letPlayerChooseHotelToStart(res);
+    }
+  });
 };
+
 actions["merge"]=function(res){
-  if (res.state.expectedActions.includes('chooseHotelForMerge')) {
-    let form=chooseForMergerSurvivour(res.state.survivorHotels);
-    getElement('#tieBreakForm').innerHTML=form;
-    document.getElementById('choose-hotel').style.display = "block";
-  }
-  if (res.state.expectedActions.includes('deployShares')) {
-    sendAjaxRequest('GET','/gameStatus','',function(){
+  sendAjaxRequest('GET','/gameStatus','',function(){
+    let res=JSON.parse(this.responseText);
+    if (res.state.expectedActions.includes('chooseHotelForMerge')) {
       let res=JSON.parse(this.responseText);
+      letPlayerChooseHotelForMerge(res);
+    }
+  });
+  sendAjaxRequest('GET','/gameStatus','',function(){
+    let res=JSON.parse(this.responseText);
+    if (res.state.expectedActions.includes('deployShares')) {
       letPlayerDeployShares(res);
-    });
-  }
+    }
+  });
 
 };
 actions['purchaseShares']=function(res){
-  getElement('#listed-hotels').classList.remove('hidden');
-  showEndTurn();
+  sendAjaxRequest('GET','/gameStatus','',function(){
+    let res=JSON.parse(this.responseText);
+    if(res.turnDetails.isMyTurn){
+      clearInterval(getGameStatusFn);
+      getElement('#listed-hotels').classList.remove('hidden');
+      showEndTurn();
+    }
+  });
 };
+const purchaseShares = function(){
+  let cartDetails = JSON.stringify(prepareCart());
+  sendAjaxRequest('POST','/actions/purchaseShares',`cart=${cartDetails}`);
+  cart=[];
+  getElement('#cart').innerText='';
+  getElement('#listed-hotels').classList.add('hidden');
+  getGameStatusFn = setInterval(getGameStatus,1000);
+  hideEndTurn();
+};
+
 actions['gameOver'] = function (res) {
-  clearInterval(getGameStatusFn);
-  clearInterval(getPlayerStatusFn);
-  let rankListHtml = rankListHtmlGenerator(res.rankList);
+  let rankListHtml = rankListHtmlGenerator(res.state.rankList);
   getElement('#rankListContent').innerHTML = rankListHtml;
   document.getElementById('rankListDisplay').style.display = 'flex';
+  clearInterval(getGameStatusFn);
+  clearInterval(getPlayerStatusFn);
+};
+
+let letPlayerChooseHotelForMerge=function(res){
+  if (res.turnDetails.isMyTurn){
+    clearInterval(getGameStatusFn);
+    let form=chooseForMergerSurvivour(res.state.survivorHotels);
+    getElement('#tieBreakForm').innerHTML=form;
+    document.getElementById('choose-surv-hotel').style.display = "block";
+  }
+};
+let letPlayerChooseHotelToStart=function(res){
+  if (res.turnDetails.isMyTurn){
+    clearInterval(getGameStatusFn);
+    let form=createInactiveHotelsForm(res.inactiveHotels);
+    getElement('#inactiveHotelsForm').innerHTML=form;
+    document.getElementById('inactiveHotelsFormDiv').style.display = "block";
+  }
 };
 let letPlayerDeployShares=function(res){
   if (res.turnDetails.shouldIDeploy) {
@@ -84,6 +126,7 @@ let requestDeployShares=function(){
   let dataToSend=`hotelName=${hotelName}&noOfSharesToSell=${noOfSharesToSell}`;
   sendAjaxRequest('POST','/merge/deployShares',dataToSend,renderGameStatus);
   let deploySharesOption=getElement('#deployShares');
+  getGameStatusFn = setInterval(getGameStatus,1000);
   deploySharesOption.classList.add('hidden');
 };
 let getElement = function(selector){
@@ -98,14 +141,14 @@ let listToHTML = function(list,className,elementName='p') {
 const changeTurn = function () {
   sendAjaxRequest('GET','/actions/changeTurn','',getPlayerDetails);
 };
-const purchaseShares = function(){
-  let cartDetails = JSON.stringify(prepareCart());
-  sendAjaxRequest('POST','/actions/purchaseShares',`cart=${cartDetails}`);
-  cart=[];
-  getElement('#cart').innerText='';
-  getElement('#listed-hotels').classList.add('hidden');
-  hideEndTurn();
-};
+// const purchaseShares = function(){
+//   let cartDetails = JSON.stringify(prepareCart());
+//   sendAjaxRequest('POST','/actions/purchaseShares',`cart=${cartDetails}`);
+//   cart=[];
+//   getElement('#cart').innerText='';
+//   getElement('#listed-hotels').classList.add('hidden');
+//   hideEndTurn();
+// };
 const prepareCart = function(){
   return cart.reduce((previous,current)=>{
     if(!previous[current]) {
@@ -299,12 +342,16 @@ const assignTileIndependentClass = function(tile){
 };
 const renderGameStatus = function(){
   let gameStatus = JSON.parse(this.responseText);
+  console.log(gameStatus);
   displayHotelDetails(gameStatus.hotelsData);
   displayIndependentTiles(gameStatus.independentTiles);
   displayTurnDetails(gameStatus.turnDetails);
   updateActivityLog(gameStatus.gameActivityLog);
   if (gameStatus.state.status=="merge") {
     actions["merge"](gameStatus);
+  }
+  if (gameStatus.state.status=="gameOver") {
+    actions["gameOver"](gameStatus);
   }
   if (gameStatus.state.status&&gameStatus.turnDetails.isMyTurn) {
     actions[gameStatus.state.status](gameStatus);
@@ -346,7 +393,7 @@ const actionsPerformed = function () {
   getPlayerDetails();
   getGameStatusFn = setInterval(getGameStatus,1000);
   getPlayerStatusFn = setInterval(getPlayerDetails,1000);
-  getTurnState();
+  // getTurnState();
   IGNORE_MY_TURN=false;
 };
 window.onload = actionsPerformed;
