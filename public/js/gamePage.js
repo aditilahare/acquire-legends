@@ -62,8 +62,8 @@ actions["merge"]=function(res){
   });
   sendAjaxRequest('GET','/gameStatus','',function(){
     let res=JSON.parse(this.responseText);
-    if (res.state.expectedActions.includes('deployShares')) {
-      letPlayerDeployShares(res);
+    if (res.state.expectedActions.includes('disposeShares')) {
+      letPlayerDisposeShares(res);
     }
   });
 
@@ -112,22 +112,22 @@ let letPlayerChooseHotelToStart=function(res){
     document.getElementById('inactiveHotelsFormDiv').style.display = "block";
   }
 };
-let letPlayerDeployShares=function(res){
+let letPlayerDisposeShares=function(res){
   if (res.turnDetails.shouldIDeploy) {
-    let deploySharesOption=getElement('#deployShares');
-    deploySharesOption.classList.remove('hidden');
+    let disposeSharesOption=getElement('#disposeShares');
+    disposeSharesOption.classList.remove('hidden');
     let hotelName=res.state.currentMergingHotel.name;
     getElement("#hotelNameOfwhichSharesToSell").value=hotelName;
   }
 };
-let requestDeployShares=function(){
+let requestdisposeShares=function(){
   let noOfSharesToSell=getElement("#noOfSharesToSell").value;
   let hotelName=getElement("#hotelNameOfwhichSharesToSell").value;
   let dataToSend=`hotelName=${hotelName}&noOfSharesToSell=${noOfSharesToSell}`;
-  sendAjaxRequest('POST','/merge/deployShares',dataToSend,renderGameStatus);
-  let deploySharesOption=getElement('#deployShares');
+  sendAjaxRequest('POST','/merge/disposeShares',dataToSend,renderGameStatus);
+  let disposeSharesOption=getElement('#disposeShares');
   getGameStatusFn = setInterval(getGameStatus,1000);
-  deploySharesOption.classList.add('hidden');
+  disposeSharesOption.classList.add('hidden');
 };
 let getElement = function(selector){
   return document.querySelector(selector);

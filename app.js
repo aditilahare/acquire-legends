@@ -64,11 +64,11 @@ app.post('/join',joinGame);
 app.post('/create',createGame);
 app.get('/playerDetails',playerDetails);
 app.get('/gameStatus',gameStatus);
-app.post('/merge/deployShares',(req,res)=>{
+app.post('/merge/disposeShares',(req,res)=>{
   let game=req.app.game;
   let playerId=req.cookies.playerId;
   let sharesToDeploy=req.body;
-  game.deployShares(playerId,sharesToDeploy);
+  game.disposeShares(playerId,sharesToDeploy);
   res.send(game.getStatus(playerId));
 });
 app.use(express.static('public'));

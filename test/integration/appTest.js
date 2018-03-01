@@ -226,7 +226,7 @@ describe('App Test', () => {
         .expect(200)
         .end(done);
     });
-    it('should respond with deployShares status when merger tile is placed', function(done) {
+    it('should respond with disposeShares status when merger tile is placed', function(done) {
       let game = new Game(4,tileBox);
       let player1 = new Player(0, 'pragya');
       let player2 = new Player(1, 'aditi');
@@ -274,7 +274,7 @@ describe('App Test', () => {
         .post('/actions/placeTile')
         .set('Cookie', 'playerId=0')
         .send(`tile=6A`)
-        .expect(/deployShares/i)
+        .expect(/disposeShares/i)
         .expect(200)
         .end(done);
     });
@@ -433,7 +433,7 @@ describe('App Test', () => {
         .end(done)
     })
   })
-  describe('/deployShares', function() {
+  describe('/disposeShares', function() {
     it('should allow current player to purchase shares', function(done) {
       let game = new Game(4,tileBox);
       let player1 = new Player(0, 'pragya');
@@ -479,13 +479,13 @@ describe('App Test', () => {
       let response = game.placeTile(0, '6A');
       app.game = game;
       request(app)
-        .post('/merge/deployShares')
+        .post('/merge/disposeShares')
         .set('Cookie', 'playerId=0')
         .send(`hotelName=Zeta&noOfSharesToSell=2`)
         .expect(/"currentMergingHotel":{"name":"Zeta"/i)
         .expect(/"activeHotels":\[{"name":"Sackson"/i)
         .expect(/"survivorHotel":{"name":"Sackson/i)
-        .expect(/"expectedActions":\["deployShares"]/i)
+        .expect(/"expectedActions":\["disposeShares"]/i)
         .expect(/"status":"merge"/i)
         .expect(200)
         .end(done);

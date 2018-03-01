@@ -13,7 +13,7 @@ let actions = {
     return response;
   },
   'merge':function (response) {
-    response.expectedActions=['deployShares'];
+    response.expectedActions=['disposeShares'];
     response.status='merge';
     let mergingHotels=response.mergingHotels;
     let survivorHotels=response.survivorHotels;
