@@ -330,7 +330,6 @@ const displayTurnDetails = function(turnDetails) {
       IGNORE_MY_TURN=true;
     }
   }else{
-    document.tile=`${turnDetails.currentPlayer} it's your turn`;
     IGNORE_MY_TURN=false;
     hideEndTurn();
   }

@@ -1,6 +1,6 @@
 const hasEveryHotelStable=function(hotels){
   return hotels.every(hotel=>{
-    return hotel.getSize()>1;
+    return hotel.getSize()>10;
   });
 };
 const isAnyAboveFourty=function(hotels){
