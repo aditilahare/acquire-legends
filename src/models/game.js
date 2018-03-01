@@ -102,7 +102,7 @@ class Game {
   }
   canSharesBeDeployed(playerId,sharesToDeploy){
     let hotelName=sharesToDeploy.hotelName;
-    let playerShares=this.getPlayerSharesDetails(playerId);
+    let playerShares=this.findPlayerById(playerId).getShareDetails();
     return playerShares[hotelName]>=sharesToDeploy.noOfSharesToSell;
   }
   playerSellsShares(playerId,noOfSharesToSell,hotelName){
@@ -176,9 +176,9 @@ class Game {
       player.addTiles(tileBox.getTiles(1));
     });
   }
-  start() {
+  start(sequencePlayers=orderPlayers) {
     this.distributeTilesForOrdering();
-    this.turn = new Turn(this.getPlayersOrder());
+    this.turn = new Turn(sequencePlayers(this.players));
     this.placeInitialTiles();
     this.distributeInitialTiles();
     this.distributeInitialMoney(STARTING_BALANCE);
@@ -233,7 +233,13 @@ class Game {
     });
     return hotelsData;
   }
-  getAllPlayerNames() {
+  getAllPlayerNames(sequence) {
+    if(sequence){
+      return sequence.map((id)=>{
+        let player = this.findPlayerById(id);
+        return player.getName();
+      });
+    }
     return this.players.map((player) => {
       return player.name;
     });
@@ -241,10 +247,6 @@ class Game {
   addSharesToPlayer(id, hotelName, noOfShares) {
     let player = this.findPlayerById(id);
     player.addShares(hotelName, noOfShares);
-  }
-  getPlayerSharesDetails(id) {
-    let player = this.findPlayerById(id);
-    return player.getShareDetails();
   }
   placeTile(id, tile) {
     let player = this.findPlayerById(id);
@@ -269,14 +271,6 @@ class Game {
   giveIndependentTiles() {
     return this.market.giveIndependentTiles();
   }
-  getPlayersOrder() {
-    return orderPlayers(this.players);
-  }
-  getAllPlayerDetails() {
-    return this.players.map((player) => {
-      return player.getDetails();
-    });
-  }
   getCurrentPlayer() {
     let currentPlayerID = this.turn.getCurrentPlayerID();
     return this.getPlayerDetails(currentPlayerID);
@@ -296,21 +290,18 @@ class Game {
   }
   getTurnDetails(id){
     let turnDetails={};
-    let currentPlayer=this.getCurrentPlayer();
+    let currentPlayerDetails=this.getCurrentPlayer();
     let state=this.turn.getState();
     if (state.status=="merge"&&state.expectedActions.includes("deployShares")) {
       turnDetails.shouldIDeploy=this.mergingTurn.isTurnOf(id);
     }
-    let otherPlayers = this.getAllPlayerDetails();
-    turnDetails.currentPlayer = currentPlayer.name;
-    turnDetails.otherPlayers = otherPlayers.map((player)=>{
-      return player.name;
-    });
+    let otherPlayers = this.getAllPlayerNames(this.turn.getPlayerIdSequence());
+    turnDetails.currentPlayer = currentPlayerDetails.name;
+    turnDetails.otherPlayers = otherPlayers;
     turnDetails.isMyTurn=false;
-    if(currentPlayer.id==id) {
+    if(currentPlayerDetails.id==id) {
       turnDetails.isMyTurn=true;
     }
-
     return turnDetails;
   }
   getStatus(playerId){

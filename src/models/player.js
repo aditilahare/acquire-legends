@@ -6,6 +6,9 @@ class Player {
     this.availableMoney = 0;
     this.shares= {};
   }
+  getName(){
+    return this.name;
+  }
   addTile(tile){
     this.tiles.push(tile);
   }

@@ -185,10 +185,10 @@ describe('game test', function() {
       game.addPlayer(harvar);
       aditi.addShares('Phoenix', 5);
       harvar.addShares('Hydra', 2);
-      assert.include(game.getPlayerSharesDetails(0), {
+      assert.include(game.findPlayerById(0).getShareDetails(), {
         Phoenix: 5
       });
-      assert.include(game.getPlayerSharesDetails(1), {
+      assert.include(game.findPlayerById(1).getShareDetails(), {
         Hydra: 2
       });
     });
@@ -255,10 +255,10 @@ describe('game test', function() {
       game.addPlayer(player2);
       game.addSharesToPlayer(0, 'Phoenix', 2);
       game.addSharesToPlayer(1, 'Hydra', 5);
-      assert.include(game.getPlayerSharesDetails(0), {
+      assert.include(game.findPlayerById(0).getShareDetails(), {
         Phoenix: 2
       });
-      assert.include(game.getPlayerSharesDetails(1), {
+      assert.include(game.findPlayerById(1).getShareDetails(), {
         Hydra: 5
       });
     });
@@ -310,45 +310,6 @@ describe('game test', function() {
       game.start();
       let playerId = turn.getCurrentPlayerID();
       assert.isOk(game.isCurrentPlayer(playerId));
-    });
-  });
-  describe('getAllPlayerDetails', () => {
-    it('should return an object containig all player details', () => {
-      let expected = [{
-        tiles: [],
-        availableMoney: 0,
-        name: 'veera',
-        id: 0,
-        shares: {
-          "America": 0,
-          "Fusion": 0,
-          "Hydra": 0,
-          "Phoenix": 0,
-          "Quantum": 0,
-          "Sackson": 0,
-          "Zeta": 0
-        }
-      }, {
-        tiles: [],
-        availableMoney: 0,
-        name: 'pragya',
-        id: 1,
-        shares: {
-          "America": 0,
-          "Fusion": 0,
-          "Hydra": 0,
-          "Phoenix": 0,
-          "Quantum": 0,
-          "Sackson": 0,
-          "Zeta": 0
-        }
-      }]
-      let game = new Game(2, tileBox);
-      let player1 = new Player(0, 'veera');
-      let player2 = new Player(1, 'pragya');
-      game.addPlayer(player1);
-      game.addPlayer(player2);
-      assert.deepEqual(game.getAllPlayerDetails(), expected);
     });
   });
   describe('getStatus', () => {
@@ -604,7 +565,7 @@ describe('game test', function() {
       let player1 = new Player(0, 'pragya');
       player1.addTile('8A');
       game.addPlayer(player1);
-      game.turn = new Turn(game.getPlayersOrder());
+      game.turn = new Turn([0]);
       game.market.hotels = [new Hotel('Zeta'), new Hotel('Sackson'), new Hotel('a')];
       let tiles = ['2A', '3A', '4A', '5A', '6A', '7A', '4B', '5B', '6B', '7B', '5C'];
       game.market.startHotel('Zeta', tiles);
