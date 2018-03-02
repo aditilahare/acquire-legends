@@ -96,6 +96,16 @@ actions['gameOver'] = function (res) {
   clearInterval(getPlayerStatusFn);
 };
 
+actions['Invalid Tile'] = function (res) {
+  let messageBar = document.getElementById("messageBar")
+  messageBar.innerText = res.state.message
+  messageBar.className = "show";
+  setTimeout(function(){
+    messageBar.className = messageBar.className.replace("show", "");
+  },3500);
+};
+
+
 let letPlayerChooseHotelForMerge=function(res){
   if (res.turnDetails.isMyTurn){
     clearInterval(getGameStatusFn);
@@ -141,14 +151,7 @@ let listToHTML = function(list,className,elementName='p') {
 const changeTurn = function () {
   sendAjaxRequest('GET','/actions/changeTurn','',getPlayerDetails);
 };
-// const purchaseShares = function(){
-//   let cartDetails = JSON.stringify(prepareCart());
-//   sendAjaxRequest('POST','/actions/purchaseShares',`cart=${cartDetails}`);
-//   cart=[];
-//   getElement('#cart').innerText='';
-//   getElement('#listed-hotels').classList.add('hidden');
-//   hideEndTurn();
-// };
+
 const prepareCart = function(){
   return cart.reduce((previous,current)=>{
     if(!previous[current]) {
@@ -260,7 +263,8 @@ const addToCart = function(hotelName){
     removeFromCart(hotelName);
   };
 };
-const addShare = function(hotelName){
+const addShare = function(event){
+  let hotelName=event.target.innerText;
   cart.length<3 && addToCart(hotelName);
 };
 const removeFromCart = function(hotelName){
@@ -393,7 +397,6 @@ const actionsPerformed = function () {
   getGameStatus();
   getPlayerStatusFn = setInterval(getPlayerDetails,1000);
   getGameStatusFn = setInterval(getGameStatus,1000);
-  // getTurnState();
   IGNORE_MY_TURN=false;
 };
 window.onload = actionsPerformed;

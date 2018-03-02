@@ -41,12 +41,15 @@ let actions = {
     return response;
   },
   'Invalid Tile':function (response) {
-    let tiles = this.tileBox.getTiles(1);
+    let tile = this.tileBox.getTiles(1)[0];
     let currentPlayerID = this.turn.getCurrentPlayerID();
     let currentPlayer = this.findPlayerById(currentPlayerID);
-    currentPlayer.addTile(tiles[0]);
+    currentPlayer.addTile(tile);
     this.logActivity(`${currentPlayer.name} placed an Invalid tile`);
     response.expectedActions=['placeTile'];
+    let message = `You have placed an invalid tile\n
+    Please place a valid tile`;
+    response.message = message;
     return response;
   }
 };
