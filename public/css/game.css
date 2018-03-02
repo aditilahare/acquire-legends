@@ -269,12 +269,21 @@ padding: 14px;
   display: inline-flex;
 }
 
+@keyframes spin {
+  0% { transform: scale(1.2);}
+  50%{transform: scale(1);}
+  100% { transform: scale(1.2);}
+}
+
  #currentPlayer{
    border-radius: 35%;
    background-color: rgba(222, 28, 28, 0.47);
    color: black;
-   transition: all 2s;
+   transition: all 2s ease;
+   animation: spin 2s;
+  box-shadow: 0 3px 25px #000;
  }
+
 
 .hidden{
   display: none;
@@ -491,7 +500,7 @@ button[name="Start hotel"], select{
   border-collapse: collapse;
   margin: auto;
 }
-#rankListContent h1{
+#rankListContent h1,h2{
   font-weight: 300;
   color: #ffffff;
 }

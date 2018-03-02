@@ -6,6 +6,9 @@ class Player {
     this.availableMoney = 0;
     this.shares= {};
   }
+  getName(){
+    return this.name;
+  }
   addTile(tile){
     this.tiles.push(tile);
   }
@@ -58,6 +61,9 @@ class Player {
   }
   doesPlayerHasEnoughMoney(amount){
     return this.availableMoney>=amount;
+  }
+  doesPlayerHasEnoughShares(hotelName,noOfShares){
+    return this.shares[hotelName]>=noOfShares;
   }
 }
 

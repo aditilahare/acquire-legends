@@ -6,10 +6,7 @@ const actions = require('../utils/actions.js');
 const isGameOver = require('../utils/endGame.js').isGameOver;
 const decidePlayerRank = require('../utils/endGame.js').decidePlayerRank;
 const orderPlayers = require('../utils/orderPlayers.js').orderPlayers;
-
-
-let HOTEL_DATA = require('../../data/hotelsData.json');
-
+const HOTEL_DATA = require('../../data/hotelsData.json');
 const INITIAL_SHARES = 25;
 const INITIAL_MONEY = 100000;
 const STARTING_BALANCE = 6000;
@@ -43,21 +40,19 @@ class Game {
     player.addShares(hotelName, noOfShares);
   }
   canSharesBeDeployed(playerId,sharesToDeploy){
-    console.log('canSharesBeDeployed has been called.\n\n');
     let hotelName=sharesToDeploy.hotelName;
-    console.log('hotelName passed as argument is ',hotelName,'\n\n');
     let state=this.turn.getState();
     let mergingHotels=state.mergingHotels;
-    console.log('mergingHotels:',mergingHotels,'\n\n');
     let currentMergingHotel=state.currentMergingHotel;
-    console.log('currentMergingHotel ==>  ',currentMergingHotel,'\n\n');
     let mergingHotelName=currentMergingHotel.name;
     let survivorHotelName=state.survivorHotel.name;
-    console.log('survivor ==>',survivorHotelName,'\n\n');
     let isSameHotel=(hotelName==mergingHotelName);
-    console.log('isSameHotel ==>',isSameHotel,'\n\n');
     let playerShares=this.getPlayerSharesDetails(playerId);
-    return isSameHotel&&playerShares[hotelName]>=sharesToDeploy.noOfSharesToSell;
+    let player = this.findPlayerById(playerId);
+    let noOfSharesToSell = sharesToDeploy.noOfSharesToSell;
+    let bool = player.doesPlayerHasEnoughShares(hotelName,noOfSharesToSell);
+    // playerShares[hotelName]>=sharesToDeploy.noOfSharesToSell;
+    return isSameHotel && bool;
   }
   changeCurrentPlayer() {
     let tiles = this.tileBox.getTiles(1);
@@ -99,9 +94,6 @@ class Game {
     let state=this.turn.getState();
     if (this.canSharesBeDeployed(playerId,sharesToDeploy)) {
       this.letPlayerDisposeShares(playerId,sharesToDeploy,state);
-      let noOfShares=sharesToDeploy.noOfSharesToSell;
-      let hotelName=sharesToDeploy.hotelName;
-      this.logActivity(`${player.name} deployed ${noOfShares} of ${hotelName}`);
     }
   }
   distributeInitialMoney(initialMoney) {
@@ -167,12 +159,13 @@ class Game {
     });
     return hotelsData;
   }
-  getAllPlayerDetails() {
-    return this.players.map((player) => {
-      return player.getDetails();
-    });
-  }
-  getAllPlayerNames() {
+  getAllPlayerNames(sequence) {
+    if(sequence){
+      return sequence.map((id)=>{
+        let player = this.findPlayerById(id);
+        return player.getName();
+      });
+    }
     return this.players.map((player) => {
       return player.name;
     });
@@ -220,21 +213,18 @@ class Game {
   }
   getTurnDetails(id){
     let turnDetails={};
-    let currentPlayer=this.getCurrentPlayer();
+    let currentPlayerDetails=this.getCurrentPlayer();
     let state=this.turn.getState();
-    if (state.status=="merge"&&state.expectedActions.includes("disposeShares")) {
+    if (state.status=="merge"&&state.expectedActions.includes("deployShares")) {
       turnDetails.shouldIDeploy=this.mergingTurn.isTurnOf(id);
     }
-    let otherPlayers = this.getAllPlayerDetails();
-    turnDetails.currentPlayer = currentPlayer.name;
-    turnDetails.otherPlayers = otherPlayers.map((player)=>{
-      return player.name;
-    });
+    let otherPlayers = this.getAllPlayerNames(this.turn.getPlayerIdSequence());
+    turnDetails.currentPlayer = currentPlayerDetails.name;
+    turnDetails.otherPlayers = otherPlayers;
     turnDetails.isMyTurn=false;
-    if(currentPlayer.id==id) {
+    if(currentPlayerDetails.id==id) {
       turnDetails.isMyTurn=true;
     }
-
     return turnDetails;
   }
   getTurnState(){
@@ -286,16 +276,13 @@ class Game {
   letPlayerDisposeShares(playerId,sharesToDeploy,state){
     let mergingHotels=state.mergingHotels;
     let currentMergingHotel=state.currentMergingHotel;
-    let survivorHotelName = state.survivorHotel.name;
-    let mergingHotelName=currentMergingHotel.name;
     let hotelName=sharesToDeploy.hotelName;
     let noOfSharesToSell=sharesToDeploy.noOfSharesToSell;
-    let noOfSharesToExchange=sharesToDeploy.noOfSharesToExchange;
     this.playerSellsShares(playerId,noOfSharesToSell,hotelName);
-    this.playerExchangesShare(playerId,noOfSharesToExchange,survivorHotelName,mergingHotelName);
+    this.playerExchangesShare(playerId,sharesToDeploy,state);
     this.mergingTurn.updateTurn();
-    let haveAllPlayersDeployed=(this.mergingTurn.getCurrentPlayerIndex()==0);
     let indexOfMergingHotel=mergingHotels.indexOf(currentMergingHotel);
+    let haveAllPlayersDeployed=(this.mergingTurn.getCurrentPlayerIndex()==0);
     if (haveAllPlayersDeployed) {
       let haveAllHotelsMerged=((indexOfMergingHotel+1)==mergingHotels.length);
       if (haveAllHotelsMerged) {
@@ -345,23 +332,30 @@ class Game {
     return response;
   }
   playerSellsShares(playerId,noOfSharesToSell,hotelName){
-    this.bank.removeSharesOfPlayer(playerId,noOfSharesToSell,hotelName);
     let player=this.findPlayerById(playerId);
-    player.removeShares(hotelName,noOfSharesToSell);
     let currentSharePrice=this.market.getSharePriceOfHotel(hotelName);
     let totalMoney=currentSharePrice*noOfSharesToSell;
+    this.bank.removeSharesOfPlayer(playerId,noOfSharesToSell,hotelName);
+    player.removeShares(hotelName,noOfSharesToSell);
     this.distributeMoneyToPlayer(playerId,totalMoney);
-    this.logActivity(`${player.name} has sold ${noOfSharesToSell} shares of ${hotelName}.`)
+    this.logActivity(`${player.name} has sold ${noOfSharesToSell} shares of \
+      ${hotelName}.`);
   }
-  playerExchangesShare(playerId,noOfSharesToExchange,survivorHotelName,mergingHotelName){
-    let bool = this.bank.doesHotelhaveEnoughShares(survivorHotelName,noOfSharesToExchange/2);
+  playerExchangesShare(playerId,sharesToDeploy,state){
+    let currentMergingHotel=state.currentMergingHotel;
+    let noOfShares=sharesToDeploy.noOfSharesToExchange;
+    let mergingHotelName=currentMergingHotel.name;
+    let survivorHotelName = state.survivorHotel.name;
+    let reqShares = noOfShares/2;
+    let bool=this.bank.doesHotelhaveEnoughShares(survivorHotelName,reqShares);
     let player=this.findPlayerById(playerId);
     if(bool){
-      this.bank.removeSharesOfPlayer(playerId,noOfSharesToExchange,mergingHotelName);
-      this.bank.addShareHolder(survivorHotelName,playerId,noOfSharesToExchange/2);
-      player.removeShares(mergingHotelName,noOfSharesToExchange);
-      player.addShares(survivorHotelName,noOfSharesToExchange/2);
-      this.logActivity(`${player.name} has exchanged ${noOfSharesToExchange} shares of ${mergingHotelName} with ${survivorHotelName}.`);
+      this.bank.removeSharesOfPlayer(playerId,noOfShares,mergingHotelName);
+      this.bank.addShareHolder(survivorHotelName,playerId,reqShares);
+      player.removeShares(mergingHotelName,noOfShares);
+      player.addShares(survivorHotelName,noOfShares/2);
+      this.logActivity(`${player.name} has exchanged ${noOfShares} \
+        shares of ${mergingHotelName} with ${survivorHotelName}.`);
     }
   }
   purchaseShares(hotelName,noOfShares,playerId){
@@ -383,9 +377,9 @@ class Game {
     let state=this.actions[response.status].call(this,response);
     this.turn.setState(state);
   }
-  start() {
+  start(sequencePlayers=orderPlayers) {
     this.distributeTilesForOrdering();
-    this.turn = new Turn(this.getPlayersOrder());
+    this.turn = new Turn(sequencePlayers(this.players));
     this.placeInitialTiles();
     this.distributeInitialTiles();
     this.distributeInitialMoney(STARTING_BALANCE);
