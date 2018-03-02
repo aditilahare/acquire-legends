@@ -52,7 +52,6 @@ actions['chooseHotel']=function(res){
     }
   });
 };
-
 actions["merge"]=function(res){
   sendAjaxRequest('GET','/gameStatus','',function(){
     let res=JSON.parse(this.responseText);
@@ -88,14 +87,12 @@ const purchaseShares = function(){
   getGameStatusFn = setInterval(getGameStatus,1000);
   hideEndTurn();
 };
-
 actions['gameOver'] = function (res) {
   rankListHtmlGenerator(res.state.rankList,me);
   document.getElementById('rankListDisplay').style.display = 'flex';
   clearInterval(getGameStatusFn);
   clearInterval(getPlayerStatusFn);
 };
-
 let letPlayerChooseHotelForMerge=function(res){
   if (res.turnDetails.isMyTurn){
     clearInterval(getGameStatusFn);
@@ -117,7 +114,11 @@ let letPlayerDisposeShares=function(res){
     let disposeSharesOption=getElement('#disposeShares');
     disposeSharesOption.classList.remove('hidden');
     let hotelName=res.state.currentMergingHotel.name;
+    displayFlashMessage(`Please deploy your shares of ${hotelName}`);
     getElement("#hotelNameOfwhichSharesToSell").value=hotelName;
+  } else {
+    let message = 'Waiting for other players to deploy shares';
+    displayFlashMessage(message);
   }
 };
 let requestdisposeShares=function(){
@@ -141,14 +142,6 @@ let listToHTML = function(list,className,elementName='p') {
 const changeTurn = function () {
   sendAjaxRequest('GET','/actions/changeTurn','',getPlayerDetails);
 };
-// const purchaseShares = function(){
-//   let cartDetails = JSON.stringify(prepareCart());
-//   sendAjaxRequest('POST','/actions/purchaseShares',`cart=${cartDetails}`);
-//   cart=[];
-//   getElement('#cart').innerText='';
-//   getElement('#listed-hotels').classList.add('hidden');
-//   hideEndTurn();
-// };
 const prepareCart = function(){
   return cart.reduce((previous,current)=>{
     if(!previous[current]) {
@@ -191,7 +184,6 @@ const selectTile=function (event) {
     placeTile(event.target.id);
     return ;
   }
-
   tileId=event.target.id;
   event.target.focus();
 };
@@ -211,14 +203,6 @@ const displayTiles = function(tiles){
     document.getElementById('tileBox').innerHTML = html;
   }
   return;
-};
-const displayMoney = function(money){
-  document.getElementById('wallet').innerHTML = getCashInRupee(money);
-  return;
-};
-const displayPlayerName = function (name) {
-  me=name;
-  document.getElementById('playerName').innerHTML = `<p>${name}</p>`;
 };
 const getPlayerDetails = function () {
   sendAjaxRequest('GET','/playerDetails','',displayPlayerDetails);
@@ -342,6 +326,8 @@ const assignTileIndependentClass = function(tile){
 };
 const renderGameStatus = function(){
   let gameStatus = JSON.parse(this.responseText);
+  let currentAction = gameStatus.state.expectedActions[0];
+  displayCurrentAction(gameStatus.turnDetails,currentAction);
   displayHotelDetails(gameStatus.hotelsData);
   displayIndependentTiles(gameStatus.independentTiles);
   displayTurnDetails(gameStatus.turnDetails);
@@ -351,6 +337,7 @@ const renderGameStatus = function(){
   }
   if (gameStatus.state.status=="gameOver") {
     actions["gameOver"](gameStatus);
+    displayFlashMessage('Game over');
     return ;
   }
   if (gameStatus.state.status&&gameStatus.turnDetails.isMyTurn) {
@@ -381,6 +368,10 @@ const updateActivityLog = function(gameActivityLog){
   }else {
     prependLog(newLogs);
   }
+};
+const displayPlayerName = function (name) {
+  me=name;
+  document.getElementById('playerName').innerHTML = `<p>${name}</p>`;
 };
 const updateGameStatus=function(gameStatus){
   let currentPlayer = gameStatus.currentPlayer;
