@@ -52,7 +52,6 @@ actions['chooseHotel']=function(res){
     }
   });
 };
-
 actions["merge"]=function(res){
   sendAjaxRequest('GET','/gameStatus','',function(){
     let res=JSON.parse(this.responseText);
@@ -63,8 +62,8 @@ actions["merge"]=function(res){
   });
   sendAjaxRequest('GET','/gameStatus','',function(){
     let res=JSON.parse(this.responseText);
-    if (res.state.expectedActions.includes('deployShares')) {
-      letPlayerDeployShares(res);
+    if (res.state.expectedActions.includes('disposeShares')) {
+      letPlayerDisposeShares(res);
     }
   });
 
@@ -88,7 +87,6 @@ const purchaseShares = function(){
   getGameStatusFn = setInterval(getGameStatus,1000);
   hideEndTurn();
 };
-
 actions['gameOver'] = function (res) {
   rankListHtmlGenerator(res.state.rankList,me);
   document.getElementById('rankListDisplay').style.display = 'flex';
@@ -97,14 +95,13 @@ actions['gameOver'] = function (res) {
 };
 
 actions['Invalid Tile'] = function (res) {
-  let messageBar = document.getElementById("messageBar")
-  messageBar.innerText = res.state.message
+  let messageBar = document.getElementById("messageBar");
+  messageBar.innerText = res.state.message;
   messageBar.className = "show";
   setTimeout(function(){
     messageBar.className = messageBar.className.replace("show", "");
   },3500);
 };
-
 
 let letPlayerChooseHotelForMerge=function(res){
   if (res.turnDetails.isMyTurn){
@@ -122,22 +119,26 @@ let letPlayerChooseHotelToStart=function(res){
     document.getElementById('inactiveHotelsFormDiv').style.display = "block";
   }
 };
-let letPlayerDeployShares=function(res){
+let letPlayerDisposeShares=function(res){
   if (res.turnDetails.shouldIDeploy) {
-    let deploySharesOption=getElement('#deployShares');
-    deploySharesOption.classList.remove('hidden');
+    let disposeSharesOption=getElement('#disposeShares');
+    disposeSharesOption.classList.remove('hidden');
     let hotelName=res.state.currentMergingHotel.name;
+    displayFlashMessage(`Please deploy your shares of ${hotelName}`);
     getElement("#hotelNameOfwhichSharesToSell").value=hotelName;
+  } else {
+    let message = 'Waiting for other players to deploy shares';
+    displayFlashMessage(message);
   }
 };
-let requestDeployShares=function(){
+let requestdisposeShares=function(){
   let noOfSharesToSell=getElement("#noOfSharesToSell").value;
   let hotelName=getElement("#hotelNameOfwhichSharesToSell").value;
   let dataToSend=`hotelName=${hotelName}&noOfSharesToSell=${noOfSharesToSell}`;
-  sendAjaxRequest('POST','/merge/deployShares',dataToSend,renderGameStatus);
-  let deploySharesOption=getElement('#deployShares');
+  sendAjaxRequest('POST','/merge/disposeShares',dataToSend,renderGameStatus);
+  let disposeSharesOption=getElement('#disposeShares');
   getGameStatusFn = setInterval(getGameStatus,1000);
-  deploySharesOption.classList.add('hidden');
+  disposeSharesOption.classList.add('hidden');
 };
 let getElement = function(selector){
   return document.querySelector(selector);
@@ -194,7 +195,6 @@ const selectTile=function (event) {
     placeTile(event.target.id);
     return ;
   }
-
   tileId=event.target.id;
   event.target.focus();
 };
@@ -214,14 +214,6 @@ const displayTiles = function(tiles){
     document.getElementById('tileBox').innerHTML = html;
   }
   return;
-};
-const displayMoney = function(money){
-  document.getElementById('wallet').innerHTML = getCashInRupee(money);
-  return;
-};
-const displayPlayerName = function (name) {
-  me=name;
-  document.getElementById('playerName').innerHTML = `<p>${name}</p>`;
 };
 const getPlayerDetails = function () {
   sendAjaxRequest('GET','/playerDetails','',displayPlayerDetails);
@@ -346,6 +338,8 @@ const assignTileIndependentClass = function(tile){
 };
 const renderGameStatus = function(){
   let gameStatus = JSON.parse(this.responseText);
+  let currentAction = gameStatus.state.expectedActions[0];
+  displayCurrentAction(gameStatus.turnDetails,currentAction);
   displayHotelDetails(gameStatus.hotelsData);
   displayIndependentTiles(gameStatus.independentTiles);
   displayTurnDetails(gameStatus.turnDetails);
@@ -355,6 +349,7 @@ const renderGameStatus = function(){
   }
   if (gameStatus.state.status=="gameOver") {
     actions["gameOver"](gameStatus);
+    displayFlashMessage('Game over');
     return ;
   }
   if (gameStatus.state.status&&gameStatus.turnDetails.isMyTurn) {
@@ -385,6 +380,10 @@ const updateActivityLog = function(gameActivityLog){
   }else {
     prependLog(newLogs);
   }
+};
+const displayPlayerName = function (name) {
+  me=name;
+  document.getElementById('playerName').innerHTML = `<p>${name}</p>`;
 };
 const updateGameStatus=function(gameStatus){
   let currentPlayer = gameStatus.currentPlayer;

@@ -9,7 +9,8 @@ class Bank {
   reduceMoney(money){
     this.availableCash -= money;
   }
-  createSharesOfHotel(nameOfHotel,noOfShares){ //we can extract model of shares
+  createSharesOfHotel(nameOfHotel,noOfShares){
+    //we can extract model of shares
     let sharesOf = {};
     sharesOf = {
       hotelName:nameOfHotel,

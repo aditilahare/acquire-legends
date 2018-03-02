@@ -62,6 +62,9 @@ class Player {
   doesPlayerHasEnoughMoney(amount){
     return this.availableMoney>=amount;
   }
+  doesPlayerHasEnoughShares(hotelName,noOfShares){
+    return this.shares[hotelName]>=noOfShares;
+  }
 }
 
 module.exports = Player;
