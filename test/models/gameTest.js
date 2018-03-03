@@ -495,6 +495,14 @@ describe('game test', function() {
       game.changeCurrentPlayer();
       let response = game.placeTile(0, '6A');
 
+      console.log('****************************************');
+      console.log('response for playerid: 0 placing 6A on board');
+      console.log('\n\n');
+      console.log(response);
+      console.log('****************************************');
+      console.log('\n\n\n\n\n');
+      // console.log(game.getStatus(0));
+
       let zeta = new Hotel('Zeta', 'rgb(236, 222, 34)', 2);
       zeta.occupiedTiles = ['4A', '5A', '4B'];
       zeta.status = true;
@@ -690,9 +698,9 @@ describe('game test', function() {
       sackson.sharePrice = 700;
       sackson.shares = 23;
       sackson.status = true;
-      let fusion = new Hotel('Fusion', 'green', 3);
-      fusion.occupiedTiles = [];
-      fusion.status = false;
+      // let fusion = new Hotel('Fusion', 'green', 3);
+      // fusion.occupiedTiles = [];
+      // fusion.status = false;
       let status = game.getStatus(0);
       assert.deepEqual(game.getTurnState().status, 'gameOver');
       assert.deepEqual(status.state.expectedActions, ['purchaseShares']);
@@ -788,7 +796,7 @@ describe('game test', function() {
         "cash": 6000,
         "name": "specailPlayer"
       }
-    ]
+      ]
 
     assert.deepEqual(game.getTurnState().rankList, rankList)
   });
@@ -1010,7 +1018,7 @@ describe('disposeShares', () => {
     let majorityShareHolderPlayerMoney = game.findPlayerById(0).availableMoney;
     assert.equal(majorityShareHolderPlayerMoney, 8600);
   });
-  it('should decrease the no of shares to trade in players share details & update details of merging hotels in bank.', () => {
+  it('should decrease the no of shares to exchange in players share details & update details of merging hotels in bank.', () => {
     let game = new Game(4, tileBox);
     let player1 = new Player(0, 'pragya');
     let player2 = new Player(1, 'aditi');

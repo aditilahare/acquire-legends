@@ -447,7 +447,7 @@ describe('App Test', () => {
       game.start();
       game.placeTile(0, '5A');
       game.startHotel('Zeta', 0);
-      game.purchaseShares('Zeta', 2, 0)
+      game.purchaseShares('Zeta', 3, 0)
       game.changeCurrentPlayer();
       game.placeTile(0, '7A');
       game.changeCurrentPlayer();
@@ -481,7 +481,7 @@ describe('App Test', () => {
       request(app)
         .post('/merge/disposeShares')
         .set('Cookie', 'playerId=0')
-        .send(`hotelName=Zeta&noOfSharesToSell=2`)
+        .send(`hotelName=Zeta&noOfSharesToSell=2&noOfSharesToExchange=2`)
         .expect(/"currentMergingHotel":{"name":"Zeta"/i)
         .expect(/"activeHotels":\[{"name":"Sackson"/i)
         .expect(/"survivorHotel":{"name":"Sackson/i)

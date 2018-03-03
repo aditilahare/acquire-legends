@@ -215,8 +215,8 @@ class Game {
     let turnDetails={};
     let currentPlayerDetails=this.getCurrentPlayer();
     let state=this.turn.getState();
-    if (state.status=="merge"&&state.expectedActions.includes("deployShares")) {
-      turnDetails.shouldIDeploy=this.mergingTurn.isTurnOf(id);
+    if (state.status=="merge"&&state.expectedActions.includes("disposeShares")){
+      turnDetails.shouldIDispose=this.mergingTurn.isTurnOf(id);
     }
     let otherPlayers = this.getAllPlayerNames(this.turn.getPlayerIdSequence());
     turnDetails.currentPlayer = currentPlayerDetails.name;
@@ -346,14 +346,14 @@ class Game {
     let noOfShares=sharesToDeploy.noOfSharesToExchange;
     let mergingHotelName=currentMergingHotel.name;
     let survivorHotelName = state.survivorHotel.name;
-    let reqShares = noOfShares/2;
+    let reqShares = (noOfShares/2);
     let bool=this.bank.doesHotelhaveEnoughShares(survivorHotelName,reqShares);
     let player=this.findPlayerById(playerId);
     if(bool){
       this.bank.removeSharesOfPlayer(playerId,noOfShares,mergingHotelName);
       this.bank.addShareHolder(survivorHotelName,playerId,reqShares);
       player.removeShares(mergingHotelName,noOfShares);
-      player.addShares(survivorHotelName,noOfShares/2);
+      player.addShares(survivorHotelName,reqShares);
       this.logActivity(`${player.name} has exchanged ${noOfShares} \
         shares of ${mergingHotelName} with ${survivorHotelName}.`);
     }

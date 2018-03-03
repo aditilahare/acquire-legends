@@ -78,6 +78,12 @@ actions['purchaseShares']=function(res){
     }
   });
 };
+actions['gameOver'] = function (res) {
+  rankListHtmlGenerator(res.state.rankList,me);
+  document.getElementById('rankListDisplay').style.display = 'flex';
+  clearInterval(getGameStatusFn);
+  clearInterval(getPlayerStatusFn);
+};
 const purchaseShares = function(){
   let cartDetails = JSON.stringify(prepareCart());
   sendAjaxRequest('POST','/actions/purchaseShares',`cart=${cartDetails}`);
@@ -120,21 +126,25 @@ let letPlayerChooseHotelToStart=function(res){
   }
 };
 let letPlayerDisposeShares=function(res){
-  if (res.turnDetails.shouldIDeploy) {
+  if (res.turnDetails.shouldIDispose) {
     let disposeSharesOption=getElement('#disposeShares');
     disposeSharesOption.classList.remove('hidden');
     let hotelName=res.state.currentMergingHotel.name;
-    displayFlashMessage(`Please deploy your shares of ${hotelName}`);
+    displayFlashMessage(`Please dispose your shares of ${hotelName}`);
     getElement("#hotelNameOfwhichSharesToSell").value=hotelName;
   } else {
-    let message = 'Waiting for other players to deploy shares';
+    let message = 'Waiting for other players to dispose shares';
     displayFlashMessage(message);
   }
 };
 let requestdisposeShares=function(){
-  let noOfSharesToSell=getElement("#noOfSharesToSell").value;
   let hotelName=getElement("#hotelNameOfwhichSharesToSell").value;
+  let noOfSharesToSell=getElement("#noOfSharesToSell").value;
+  console.log(`${noOfSharesToSell} to sell`);
+  let noOfSharesToExchange=getElement("#noOfSharesToExchange").value;
+  console.log(`${noOfSharesToExchange} to exchange`);
   let dataToSend=`hotelName=${hotelName}&noOfSharesToSell=${noOfSharesToSell}`;
+  dataToSend+=`&noOfSharesToExchange=${noOfSharesToExchange}`;
   sendAjaxRequest('POST','/merge/disposeShares',dataToSend,renderGameStatus);
   let disposeSharesOption=getElement('#disposeShares');
   getGameStatusFn = setInterval(getGameStatus,1000);
@@ -394,8 +404,9 @@ const actionsPerformed = function () {
   generateTable();
   getPlayerDetails();
   getGameStatus();
-  getPlayerStatusFn = setInterval(getPlayerDetails,1000);
-  getGameStatusFn = setInterval(getGameStatus,1000);
+  getPlayerStatusFn = setInterval(getPlayerDetails,3000);
+  getGameStatusFn = setInterval(getGameStatus,3000);
+  // getTurnState();
   IGNORE_MY_TURN=false;
 };
 window.onload = actionsPerformed;
