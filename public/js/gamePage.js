@@ -12,14 +12,14 @@ const chooseHotel = function(){
   setInterval(getGameStatus,1000);
   showEndTurn();
 };
-const createInactiveHotelsForm = function(hotels){
-  let html=`<select name="hotelName">`;
-  html +=hotels.map((hotel)=>{
-    return `<option value="${hotel.name}">${hotel.name}</option>`;
-  }).join('');
-  html += `</select><br><button name="Start hotel" onclick="chooseHotel()">
-  Start hotel</button>`;
-  return html;
+const dropDownList = function(hotels){
+  console.log(hotels);
+  let select = createNode('select');
+  select.setAttribute('name','hotelName');
+  hotels.forEach((hotel)=>{
+    toHtml([hotel.name],'option',select);
+  });
+  return select;
 };
 const mergerForTieCase = function(){
   let hotelName=getElement('#choose-surv-hotel select[name="hotelName"]').value;
@@ -29,15 +29,7 @@ const mergerForTieCase = function(){
   getGameStatusFn = setInterval(getGameStatus,1000);
   showEndTurn();
 };
-const chooseForMergerSurvivour = function(hotels){
-  let html=`<select name="hotelName">`;
-  html +=hotels.map((hotel)=>{
-    return `<option value="${hotel.name}">${hotel.name}</option>`;
-  }).join('');
-  html += `</select><br><button name="SurviourHotel" \
-  onclick="mergerForTieCase()">Keep Hotel</button>`;
-  return html;
-};
+
 const actions={};
 actions['changeTurn']=function(){
   hideEndTurn();
@@ -48,7 +40,10 @@ actions['chooseHotel']=function(res){
     let res=JSON.parse(this.responseText);
     let isMyTurn=res.turnDetails.isMyTurn;
     if (res.state.expectedActions.includes('chooseHotel')&&isMyTurn) {
-      letPlayerChooseHotelToStart(res);
+      let hotels = res.inactiveHotels;
+      let isMyTurn = res.turnDetails.isMyTurn;
+      let actionInfo={isMyTurn,hotels};
+      displayForm(actionInfo,'Start Hotel','#inactiveHotelsForm',chooseHotel);
     }
   });
 };
@@ -57,7 +52,10 @@ actions["merge"]=function(res){
     let res=JSON.parse(this.responseText);
     if (res.state.expectedActions.includes('chooseHotelForMerge')) {
       let res=JSON.parse(this.responseText);
-      letPlayerChooseHotelForMerge(res);
+      let hotels = res.state.survivorHotels;
+      let isMyTurn = res.turnDetails.isMyTurn;
+      let actionInfo={isMyTurn,hotels};
+      displayForm(actionInfo,'Keep Hotel','#tieBreakForm',mergerForTieCase);
     }
   });
   sendAjaxRequest('GET','/gameStatus','',function(){
@@ -72,7 +70,6 @@ actions['purchaseShares']=function(res){
   sendAjaxRequest('GET','/gameStatus','',function(){
     let res=JSON.parse(this.responseText);
     if(res.turnDetails.isMyTurn){
-      clearInterval(getGameStatusFn);
       getElement('#listed-hotels').classList.remove('hidden');
       showEndTurn();
     }
@@ -109,22 +106,20 @@ actions['Invalid Tile'] = function (res) {
   },3500);
 };
 
-let letPlayerChooseHotelForMerge=function(res){
-  if (res.turnDetails.isMyTurn){
+const displayForm = function (res,text,id,action) {
+  if (res.isMyTurn){
     clearInterval(getGameStatusFn);
-    let form=chooseForMergerSurvivour(res.state.survivorHotels);
-    getElement('#tieBreakForm').innerHTML=form;
-    document.getElementById('choose-surv-hotel').style.display = "block";
+    let form=getElement(id);
+    form.innerHTML = null;
+    let select=dropDownList(res.hotels);
+    let button = createNode('button',text);
+    button.addEventListener('click',action);
+    form.appendChild(select);
+    form.appendChild(button);
+    form.parentNode.style.display = "block";
   }
 };
-let letPlayerChooseHotelToStart=function(res){
-  if (res.turnDetails.isMyTurn){
-    clearInterval(getGameStatusFn);
-    let form=createInactiveHotelsForm(res.inactiveHotels);
-    getElement('#inactiveHotelsForm').innerHTML=form;
-    document.getElementById('inactiveHotelsFormDiv').style.display = "block";
-  }
-};
+
 let letPlayerDisposeShares=function(res){
   if (res.turnDetails.shouldIDispose) {
     let disposeSharesOption=getElement('#disposeShares');
@@ -231,19 +226,20 @@ const getPlayerDetails = function () {
 };
 const processShareDetails = function(sharesDiv,sharesDetails){
   let hotelsNames = Object.keys(sharesDetails);
-  let html = ``;
+  sharesDiv.innerHTML=null;
   hotelsNames.forEach(function(hotelName){
     if (sharesDetails[hotelName]!=0) {
-      html += `<div class='shareCard ${hotelName} no-img'>`+
-    `<center><label>${hotelName}</label></br>`+
-    `<label>${sharesDetails[hotelName]}</center><label></div>`;
+      let shareCard=createNode('div','',`shareCard ${hotelName} no-img`);
+      let centerTag = toHtml([''],'center',shareCard);
+      let parent = centerTag.childNodes[1];
+      toHtml([hotelName,sharesDetails[hotelName]],'label',parent);
+      sharesDiv.appendChild(shareCard);
     }
   });
-  return html;
 };
 const displaySharesDetails = function(sharesDetails){
   let sharesDiv = document.getElementById('playerShares');
-  sharesDiv.innerHTML = processShareDetails(sharesDiv,sharesDetails);
+  processShareDetails(sharesDiv,sharesDetails);
   return;
 };
 const displayPlayerDetails = function () {
@@ -374,9 +370,7 @@ let getTurnState = function(){
 };
 const prependLog = function (newLogs) {
   newLogs.forEach(log=>{
-    let node = document.createElement('p');
-    node.innerText = log;
-    node.className = 'log-items';
+    let node = createNode(log,'p','log-items');
     document.getElementById('activity-log').prepend(node);
   });
 };
@@ -385,8 +379,8 @@ const updateActivityLog = function(gameActivityLog){
   let newLogs = gameActivityLog.slice(0,gameActivityLog.length-oldLogs.length);
   let newLogHtml='';
   if (oldLogs.length==0) {
-    newLogHtml = listToHTML(gameActivityLog,'log-items');
-    getElement('#activity-log').innerHTML = newLogHtml;
+    let activityLog=getElement('#activity-log');
+    newLogHtml = toHtml(gameActivityLog,'p',activityLog,'log-items');
   }else {
     prependLog(newLogs);
   }
@@ -406,7 +400,6 @@ const actionsPerformed = function () {
   getGameStatus();
   getPlayerStatusFn = setInterval(getPlayerDetails,3000);
   getGameStatusFn = setInterval(getGameStatus,3000);
-  // getTurnState();
   IGNORE_MY_TURN=false;
 };
 window.onload = actionsPerformed;
