@@ -1,4 +1,7 @@
 # acquire-legends
+
+_[Click here](http://acquire-legends.herokuapp.com) for demo_
+
 # Contributing guidelines
 
 Welcome buddy, We are happy to see you here. We request you to read all guides before contributing.
