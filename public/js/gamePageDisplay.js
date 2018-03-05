@@ -42,7 +42,7 @@ const getMessage = function (rankList,me) {
 const rankListHtmlGenerator=function (rankList,me) {
   let rank = 1;
   let rankListContent = document.getElementById('rankListContent');
-  rankList.remove();
+  rankListContent.innerHTML=null;
   let message = getMessage(rankList,me);
   toHtml(['Game Over'],'h1',rankListContent);
   toHtml([message],'h2',rankListContent);

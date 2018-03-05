@@ -213,6 +213,39 @@ describe('App Test', () => {
         .end(done);
     });
   });
+  describe('/changeDetails', function() {
+    it('should respond with updation id which is set', function(done) {
+      let game = new Game(0, tileBox);
+      game.updateStatus.setUpdationId(2)
+      app.game = game;
+      request(app)
+        .get('/changeDetails')
+        .set('Cookie', 'playerId=0')
+        .expect(200)
+        .expect('2')
+        .end(done)
+    });
+    it('should respond updation id as 0 if already served ', function(done) {
+      let game = new Game(1, tileBox);
+      game.start();
+      game.updateStatus.setUpdationId(2);
+      app.game = game;
+      request(app)
+        .get('/changeDetails')
+        .set('Cookie', 'playerId=0')
+        .expect(200)
+        .expect('2')
+        .end(()=>{
+          request(app)
+            .get('/changeDetails')
+            .set('Cookie', 'playerId=0')
+            .expect(200)
+            .expect('0')
+            .end(done)
+        })
+
+  });
+});
   describe('/placeTile', function() {
     it('can place a tile on market', function(done) {
       app.game = new Game(1, tileBox);

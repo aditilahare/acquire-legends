@@ -1,19 +1,40 @@
 /*eslint no-implicit-globals: "off"*/
 let cart =[];
 let me;
-let getGameStatusFn,getPlayerStatusFn;
 let tileId;
+
+let updateChange = {};
+
+updateChange[0]=function () {
+  //do nothing;
+};
+updateChange[1] = function() {
+  getGameStatus();
+};
+
+updateChange[2] = function() {
+  getPlayerDetails();
+};
+updateChange[3] = function() {
+  getPlayerDetails();
+  getGameStatus();
+};
+
+const getPlayerDetails = function () {
+  sendAjaxRequest('GET','/playerDetails','',displayPlayerDetails);
+  return;
+};
 const chooseHotel = function(){
   let hotelName=getElement('#inactiveHotelsForm \
   select[name="hotelName"]').value;
   let data = `hotelName=${hotelName}`;
   sendAjaxRequest('POST','/actions/chooseHotel',data,placeTileHandler);
   document.getElementById('inactiveHotelsFormDiv').style.display = "none";
-  setInterval(getGameStatus,1000);
+  getPlayerDetails();
+  getGameStatus();
   showEndTurn();
 };
 const dropDownList = function(hotels){
-  console.log(hotels);
   let select = createNode('select');
   select.setAttribute('name','hotelName');
   hotels.forEach((hotel)=>{
@@ -26,8 +47,6 @@ const mergerForTieCase = function(){
   let data=`hotelName=${hotelName}`;
   sendAjaxRequest('POST','/actions/chooseHotelForMerge',data,placeTileHandler);
   document.getElementById('choose-surv-hotel').style.display = "none";
-  getGameStatusFn = setInterval(getGameStatus,1000);
-  showEndTurn();
 };
 
 const actions={};
@@ -56,6 +75,7 @@ actions["merge"]=function(res){
       let isMyTurn = res.turnDetails.isMyTurn;
       let actionInfo={isMyTurn,hotels};
       displayForm(actionInfo,'Keep Hotel','#tieBreakForm',mergerForTieCase);
+      getPlayerDetails();
     }
   });
   sendAjaxRequest('GET','/gameStatus','',function(){
@@ -63,6 +83,7 @@ actions["merge"]=function(res){
     if (res.state.expectedActions.includes('disposeShares')) {
       letPlayerDisposeShares(res);
     }
+    getPlayerDetails();
   });
 
 };
@@ -72,43 +93,38 @@ actions['purchaseShares']=function(res){
     if(res.turnDetails.isMyTurn){
       getElement('#listed-hotels').classList.remove('hidden');
       showEndTurn();
+      getPlayerDetails();
     }
   });
 };
 actions['gameOver'] = function (res) {
   rankListHtmlGenerator(res.state.rankList,me);
   document.getElementById('rankListDisplay').style.display = 'flex';
-  clearInterval(getGameStatusFn);
-  clearInterval(getPlayerStatusFn);
 };
 const purchaseShares = function(){
   let cartDetails = JSON.stringify(prepareCart());
   sendAjaxRequest('POST','/actions/purchaseShares',`cart=${cartDetails}`);
   cart=[];
-  getElement('#cart').innerText='';
+  getElement('#cart').innerHTML=null;
   getElement('#listed-hotels').classList.add('hidden');
-  getGameStatusFn = setInterval(getGameStatus,1000);
   hideEndTurn();
+  getPlayerDetails();
 };
 actions['gameOver'] = function (res) {
   rankListHtmlGenerator(res.state.rankList,me);
   document.getElementById('rankListDisplay').style.display = 'flex';
-  clearInterval(getGameStatusFn);
-  clearInterval(getPlayerStatusFn);
 };
 
 actions['Invalid Tile'] = function (res) {
   let messageBar = document.getElementById("messageBar");
   messageBar.innerText = res.state.message;
   messageBar.className = "show";
-  setTimeout(function(){
-    messageBar.className = messageBar.className.replace("show", "");
-  },3500);
+  messageBar.className = messageBar.className.replace("show", "");
+  getPlayerDetails();
 };
 
 const displayForm = function (res,text,id,action) {
   if (res.isMyTurn){
-    clearInterval(getGameStatusFn);
     let form=getElement(id);
     form.innerHTML = null;
     let select=dropDownList(res.hotels);
@@ -135,14 +151,13 @@ let letPlayerDisposeShares=function(res){
 let requestdisposeShares=function(){
   let hotelName=getElement("#hotelNameOfwhichSharesToSell").value;
   let noOfSharesToSell=getElement("#noOfSharesToSell").value;
-  console.log(`${noOfSharesToSell} to sell`);
   let noOfSharesToExchange=getElement("#noOfSharesToExchange").value;
-  console.log(`${noOfSharesToExchange} to exchange`);
   let dataToSend=`hotelName=${hotelName}&noOfSharesToSell=${noOfSharesToSell}`;
   dataToSend+=`&noOfSharesToExchange=${noOfSharesToExchange}`;
   sendAjaxRequest('POST','/merge/disposeShares',dataToSend,renderGameStatus);
   let disposeSharesOption=getElement('#disposeShares');
-  getGameStatusFn = setInterval(getGameStatus,1000);
+  getGameStatus();
+  getPlayerDetails();
   disposeSharesOption.classList.add('hidden');
 };
 let getElement = function(selector){
@@ -195,6 +210,7 @@ const generateTable = function () {
 const generateTiles = function (tiles){
   return tiles.reduce(generateTilesAsButton,'');
 };
+
 const selectTile=function (event) {
   if (tileId==event.target.id) {
     placeTile(event.target.id);
@@ -218,10 +234,6 @@ const displayTiles = function(tiles){
   if (html!=oldHtml) {
     document.getElementById('tileBox').innerHTML = html;
   }
-  return;
-};
-const getPlayerDetails = function () {
-  sendAjaxRequest('GET','/playerDetails','',displayPlayerDetails);
   return;
 };
 const processShareDetails = function(sharesDiv,sharesDetails){
@@ -287,7 +299,7 @@ const displayHotelDetails = function (allHotelsDetails) {
 const assignTilesWithRespectiveHotel = function(hotel){
   hotel.occupiedTiles.forEach(tile=>{
     let tileOnMarket = document.getElementById(tile);
-    tileOnMarket.className= hotel.name;
+    tileOnMarket.setAttribute('class',`${hotel.name} no-img`);
   });
   return;
 };
@@ -302,9 +314,12 @@ const placeTileHandler = function () {
       actions[response.status](response);
     }
   }
+  currentPlayer='';
 };
 const placeTile = function(tile){
   sendAjaxRequest('POST','/actions/placeTile',`tile=${tile}`,placeTileHandler);
+  getPlayerDetails();
+  getGameStatus();
   return;
 };
 const displayIndependentTiles = function(independentTiles) {
@@ -314,7 +329,7 @@ const displayIndependentTiles = function(independentTiles) {
 const displayTurnDetails = function(turnDetails) {
   let currentPlayer=turnDetails.currentPlayer;
   let turnDisplay=document.getElementById('turns');
-  turnDisplay.innerHTML='';
+  turnDisplay.innerHTML=null;
   turnDetails.otherPlayers.reduce(function(turnDisplay,player){
     let playerDiv = document.createElement('div');
     if(player == currentPlayer ){
@@ -338,18 +353,20 @@ const displayTurnDetails = function(turnDetails) {
 };
 const assignTileIndependentClass = function(tile){
   let tileOnMarket = document.getElementById(tile);
-  tileOnMarket.classList.add('tile');
-  tileOnMarket.classList.add('no-img');
+  //tileOnMarket.classList.add('tile');
+  //tileOnMarket.classList.add('no-img');
+  tileOnMarket.setAttribute('class','tile no-img');
   return;
 };
+
 const renderGameStatus = function(){
   let gameStatus = JSON.parse(this.responseText);
   let currentAction = gameStatus.state.expectedActions[0];
   displayCurrentAction(gameStatus.turnDetails,currentAction);
-  displayHotelDetails(gameStatus.hotelsData);
   displayIndependentTiles(gameStatus.independentTiles);
   displayTurnDetails(gameStatus.turnDetails);
   updateActivityLog(gameStatus.gameActivityLog);
+  displayHotelDetails(gameStatus.hotelsData);
   if (gameStatus.state.status=="merge") {
     actions["merge"](gameStatus);
   }
@@ -361,6 +378,7 @@ const renderGameStatus = function(){
   if (gameStatus.state.status&&gameStatus.turnDetails.isMyTurn) {
     actions[gameStatus.state.status](gameStatus);
   }
+
 };
 let getGameStatus = function(){
   sendAjaxRequest('GET','/gameStatus','',renderGameStatus);
@@ -370,7 +388,7 @@ let getTurnState = function(){
 };
 const prependLog = function (newLogs) {
   newLogs.forEach(log=>{
-    let node = createNode(log,'p','log-items');
+    let node = createNode('p',log,'log-items');
     document.getElementById('activity-log').prepend(node);
   });
 };
@@ -385,21 +403,31 @@ const updateActivityLog = function(gameActivityLog){
     prependLog(newLogs);
   }
 };
+
 const displayPlayerName = function (name) {
   me=name;
   document.getElementById('playerName').innerHTML = `<p>${name}</p>`;
 };
+
 const updateGameStatus=function(gameStatus){
   let currentPlayer = gameStatus.currentPlayer;
   let notification = `Waiting ${currentPlayer} to complete his move.`;
   getElement('#gameStatus').innerText=notification;
 };
+
+const updateGame = function () {
+  updateChange[+this.responseText]();
+};
+
+const askForChange = function () {
+  sendAjaxRequest('GET','/changeDetails','',updateGame);
+};
+
 const actionsPerformed = function () {
   generateTable();
   getPlayerDetails();
   getGameStatus();
-  getPlayerStatusFn = setInterval(getPlayerDetails,3000);
-  getGameStatusFn = setInterval(getGameStatus,3000);
+  setInterval(askForChange,2000);
   IGNORE_MY_TURN=false;
 };
 window.onload = actionsPerformed;

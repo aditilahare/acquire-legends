@@ -12,7 +12,7 @@ const currentPlayerRoute = require('./src/routes/currentPlayerRoute');
 const getAllPlayerNames = require('./src/routes/getAllPlayerNames');
 const isGameExisted = require('./src/routes/isGameExisted');
 const gameStatus = require('./src/routes/gameStatus');
-
+const changeDetails =require('./src/routes/changeDetails');
 const verifyGameReq = function(game,id){
   return game && game.isValidPlayer(id) && !game.isInPlayMode();
 };
@@ -64,15 +64,11 @@ app.post('/join',joinGame);
 app.post('/create',createGame);
 app.get('/playerDetails',playerDetails);
 app.get('/gameStatus',gameStatus);
+app.get('/changeDetails',changeDetails);
 app.post('/merge/disposeShares',(req,res)=>{
   let game=req.app.game;
   let playerId=req.cookies.playerId;
   let sharesToDispose=req.body;
-  console.log('\n\n\n\n');
-  console.log('in app');
-  console.log('\n\n\n\n');
-  console.log(sharesToDispose);
-  console.log('\n\n\n\n');
   game.disposeShares(playerId,sharesToDispose);
   res.send(game.getStatus(playerId));
 });

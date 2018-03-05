@@ -21,6 +21,13 @@ describe('game test', function() {
       assert.equal(actual, 0);
     });
   });
+  describe('getPlayerCount', () => {
+    it('should return the number of players', () => {
+      let game = new Game(3, tileBox);
+      let actual = game.getPlayerCount();
+      assert.equal(actual, 0);
+    });
+  });
   describe('addPlayer', () => {
     it('should add given player to game when maximum players are not there', () => {
       let game = new Game(3, tileBox);
@@ -275,6 +282,32 @@ describe('game test', function() {
       let expected = ['1A', '2A'];
       assert.deepEqual(actual, expected);
     });
+    it('Game should over when all hotels are stable', () => {
+      let game = new Game(3, tileBox);
+      let player1 = new Player(0, 'pragya');
+      let player2 = new Player(1, 'wulfa');
+      let player3 = new Player(2, 'harvar');
+      game.addPlayer(player1);
+      game.addPlayer(player2);
+      game.addPlayer(player3);
+      game.start();
+
+      game.placeTile(0, '4A');
+      game.placeTile(0, '5A');
+      game.startHotel('Zeta', 0);
+      game.placeTile(0, '6A');
+      game.placeTile(0, '7A');
+      game.placeTile(0, '8A');
+      game.placeTile(0, '9A');
+      game.placeTile(1, '10A');
+      game.placeTile(1, '11A');
+      game.placeTile(1, '12A');
+      game.placeTile(2, '4B');
+      game.placeTile(2, '5B');
+      assert.equal(game.getStatus().state.status,'gameOver');
+
+
+    });
   });
   describe('getCurrentPlayer', () => {
     it('should give current player details', () => {
@@ -494,15 +527,6 @@ describe('game test', function() {
       game.placeTile(2, '10B');
       game.changeCurrentPlayer();
       let response = game.placeTile(0, '6A');
-
-      console.log('****************************************');
-      console.log('response for playerid: 0 placing 6A on board');
-      console.log('\n\n');
-      console.log(response);
-      console.log('****************************************');
-      console.log('\n\n\n\n\n');
-      // console.log(game.getStatus(0));
-
       let zeta = new Hotel('Zeta', 'rgb(236, 222, 34)', 2);
       zeta.occupiedTiles = ['4A', '5A', '4B'];
       zeta.status = true;
@@ -559,7 +583,7 @@ describe('game test', function() {
       let expectedTilesOfSackson = ['7A', '7B'];
       sackson.occupiedTiles = expectedTilesOfSackson;
       sackson.status = true;
-
+      assert.equal(game.updateStatus.getUpdationId(1),3);
       assert.deepEqual(game.getTurnState().status, 'merge');
       assert.deepEqual(game.getTurnState().expectedActions, ['disposeShares']);
       assert.deepEqual(game.getTurnState().mergingHotels, [zeta]);
@@ -1185,4 +1209,32 @@ describe('canSharesBeDeployed', () => {
     assert.isFalse(game.canSharesBeDeployed(0, {hotelName: 'Sackson',noOfSharesToSell: 8}));
     })
   });
+  describe('getUpdationId', () => {
+    it('should return updationId', () => {
+      let game = new Game(3, tileBox);
+      let player1 = new Player(0, 'pragya');
+      let player2 = new Player(1, 'aditi');
+      let player3 = new Player(2, 'praveen');
+      game.addPlayer(player1);
+      game.addPlayer(player2);
+      game.addPlayer(player3);
+      game.start();
+      game.updateStatus.setUpdationId(3);
+      assert.equal(game.getUpdationId(1),3);
+    });
+    it('should return updationId as 0 if player is already served', () => {
+      let game = new Game(3, tileBox);
+      let player1 = new Player(0, 'pragya');
+      let player2 = new Player(1, 'aditi');
+      let player3 = new Player(2, 'praveen');
+      game.addPlayer(player1);
+      game.addPlayer(player2);
+      game.addPlayer(player3);
+      game.start();
+      game.updateStatus.setUpdationId(3);
+      game.getUpdationId(1);
+      assert.equal(game.getUpdationId(1),0);
+    });
+  });
+
 });

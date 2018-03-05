@@ -2,6 +2,7 @@ const TileBox = require('./tileBox');
 const Bank = require('./bank');
 const Market = require('./market.js');
 const Turn = require('./turn');
+const UpdateStatus = require('./updateStatus.js');
 const actions = require('../utils/actions.js');
 const isGameOver = require('../utils/endGame.js').isGameOver;
 const decidePlayerRank = require('../utils/endGame.js').decidePlayerRank;
@@ -22,6 +23,7 @@ class Game {
     this.activityLog=[];
     this.market = new Market();
     this.actions = actions;
+    this.updateStatus = new UpdateStatus();
   }
   addPlayer(player) {
     if (this.isVacant()) {
@@ -63,12 +65,14 @@ class Game {
       expectedActions:['placeTile']
     });
     this.turn.updateTurn();
+    this.updateStatus.setUpdationId(3);
   }
   createHotels(hotels){
     hotels.forEach((hotel) => {
       this.market.createHotel(hotel);
       this.bank.createSharesOfHotel(hotel.name,INITIAL_SHARES);
     });
+    this.updateStatus.setUpdationId(3);
   }
   createMergingTurn(hotelName){
     let deployers=this.bank.getAllShareHolderIds(hotelName);
@@ -95,6 +99,7 @@ class Game {
     if (this.canSharesBeDeployed(playerId,sharesToDeploy)) {
       this.letPlayerDisposeShares(playerId,sharesToDeploy,state);
     }
+    this.updateStatus.setUpdationId(3);
   }
   distributeInitialMoney(initialMoney) {
     this.players.forEach(player => {
@@ -197,9 +202,6 @@ class Game {
     let player = this.findPlayerById(id);
     return player.getShareDetails();
   }
-  getPlayersOrder() {
-    return orderPlayers(this.players);
-  }
   getStatus(playerId){
     let status={
       independentTiles:this.giveIndependentTiles(),
@@ -230,6 +232,9 @@ class Game {
   getTurnState(){
     return this.turn.getState();
   }
+  getUpdationId(playerId){
+    return this.updateStatus.getUpdationId(playerId);
+  }
   giveBonus(shareHolders,totalBonus,bonusType){
     let self=this;
     let bonusAmount=totalBonus/(shareHolders.length);
@@ -238,6 +243,7 @@ class Game {
       self.logActivity(`${self.getPlayerNameById(shareHolder.id)}\
        got ${bonusAmount} as ${bonusType} bonus`);
     });
+    this.updateStatus.setUpdationId(3);
   }
   giveIndependentTiles() {
     return this.market.giveIndependentTiles();
@@ -305,6 +311,7 @@ class Game {
     mergingHotels.forEach((mergingHotel)=>{
       this.giveMajorityMinorityBonus(mergingHotel.name);
     });
+    this.updateStatus.setUpdationId(3);
   }
   placeInitialTiles(){
     this.players.forEach((player)=>{
@@ -314,6 +321,7 @@ class Game {
       this.logActivity(`${player.name} has placed ${playerTile}.`);
     });
     return;
+    //this.updateStatus.setUpdationId(3);
   }
   placeTile(id, tile) {
     let player = this.findPlayerById(id);
@@ -329,6 +337,7 @@ class Game {
       response.status = 'gameOver';
       this.logActivity("Game has ended");
     }
+    this.updateStatus.setUpdationId(3);
     return response;
   }
   playerSellsShares(playerId,noOfSharesToSell,hotelName){
@@ -371,11 +380,13 @@ class Game {
       this.logActivity(`${player.name} has bought ${noOfShares}\
         shares of ${hotelName}.`);
     }
+    this.updateStatus.setUpdationId(3);
     return;
   }
   setState(response){
     let state=this.actions[response.status].call(this,response);
     this.turn.setState(state);
+    this.updateStatus.setUpdationId(3);
   }
   start(sequencePlayers=orderPlayers) {
     this.distributeTilesForOrdering();
@@ -389,6 +400,7 @@ class Game {
       expectedActions:['placeTile']
     });
     this.logActivity(`Game has started.`);
+    this.updateStatus.setUpdationId(3);
   }
   startHotel(hotelName,playerId){
     let tiles=this.getTurnState().tiles;
@@ -398,6 +410,7 @@ class Game {
     this.addSharesToPlayer(playerId,hotelName,1);
     this.setState(response);
     this.logActivity(`${playerName} has started ${hotelName} hotel.`);
+    this.updateStatus.setUpdationId(3);
     return response;
   }
   tieBreaker(survivorHotel){
@@ -414,6 +427,7 @@ class Game {
     this.logActivity(`${this.getCurrentPlayer().name} has\
      choosen ${survivorHotel} to stay`);
     this.actions['merge'].call(this,oldResponse);
+    this.updateStatus.setUpdationId(3);
     return 200;
   }
 }
