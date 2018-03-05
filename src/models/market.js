@@ -10,13 +10,16 @@ class Market{
   addTileToExistingHotel(tile){
     let neighbourOccupiedTiles=this.getNeighbourOccupiedTiles(tile);
     let neighbourHotelsOfTile = this.getNeighbourHotelsOfTile(tile);
+    if (neighbourHotelsOfTile[0].getAllOccupiedTiles().includes(tile)) {
+      return;
+    }
     this.removeFromIndependentTiles(neighbourOccupiedTiles);
     let sanitizedNeighbourTiles=neighbourOccupiedTiles.filter((tile)=>{
       return !this.doesHotelContainsTile(neighbourHotelsOfTile[0],tile);
     });
     neighbourHotelsOfTile[0].occupyTile(tile);
     sanitizedNeighbourTiles.forEach((neighbourTile)=>{
-      neighbourHotelsOfTile[0].occupyTile(neighbourTile);
+      this.addTileToExistingHotel(neighbourTile);
     });
   }
   addMergingHotelsToSurvivor(mergingHotels,survivorHotel){
@@ -229,8 +232,9 @@ class Market{
     let response=this.getState();
     let hotel = this.getHotel(hotelName);
     hotel.status=true;
+    hotel.occupyTile(tiles.pop());
     tiles.forEach((tile)=>{
-      hotel.occupyTile(tile);
+      this.addTileToExistingHotel(tile);
     });
     response.status="starting hotel";
     response.hotelName=hotel.name;

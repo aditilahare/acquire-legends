@@ -39,8 +39,8 @@ describe('Market', () => {
       let market = new Market();
       let zeta = new Hotel('Zeta','yellow',2);
       market.hotels.push(zeta);
-      market.startHotel('Zeta',['1A','2A','1B','2B']);
-      market.occupiedTiles=['1A','2A','1B','2B','1D'];
+      market.startHotel('Zeta',['2B','1A','2A','1B']);
+      market.occupiedTiles=['1B','2B','1A','2A','1C','1D'];
       assert.deepEqual(market.placeTile('1C'), {
         status: "Added to hotel",
         inactiveHotels:[],
@@ -50,12 +50,7 @@ describe('Market', () => {
             "level": 2,
             "name": "Zeta",
             "occupiedTiles": [
-              "1A",
-              "2A",
-              "1B",
-              "2B",
-              "1C",
-              "1D"
+              '1B','2B','1A','2A','1C','1D'
             ],
             "status": true
           }
@@ -109,7 +104,7 @@ describe('Market', () => {
       let hotel={name:'Zeta',color:'yellow',level:2}
       jagadamba.createHotel(hotel);
       jagadamba.occupiedTiles=['1A','1B'];
-      jagadamba.startHotel('Zeta',['1A','1B']);
+      jagadamba.startHotel('Zeta',['1B','1A']);
       jagadamba.placeTile('1C');
       let expected ={name:'Zeta',color:'yellow',occupiedTiles:['1A','1B','1C'],level: 2,status:true,sharePrice:300};
       assert.deepInclude(jagadamba.getAllHotelsDetails()[0],expected);

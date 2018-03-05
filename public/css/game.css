@@ -30,6 +30,10 @@
  border: 1px solid black;
  height: inherit;
 }
+.cash h2{
+  color: #000000;
+  font-weight: 400;
+}
 /* Css for tiles  */
 .tiles {
  float: right;
@@ -206,7 +210,7 @@ padding: 14px;
 }
 .tile span:hover{
   outline: 10px;
-  cursor: pointer;
+  cursor:pointer;
 }
 
 .share-button{
@@ -231,9 +235,11 @@ padding: 14px;
  .independent{
   background-color: #2d2016;
  }
+
  .Sackson{
    background-image:url('../images/Sackson.png');
    background-color:#D33744;
+
  }
  .Zeta{
    background-image:url('../images/Zeta.png');
@@ -258,6 +264,34 @@ padding: 14px;
  .Quantum{
    background-image:url('../images/Quantum.png');
    background-color:#2496B0;
+ }
+ #Zeta{
+   padding-left: 0;
+   border-left: 6px solid #D39F18;;
+ }
+ #Sackson{
+   padding-left: 0;
+   border-left: 6px solid #D33744;;
+ }
+ #Hydra{
+   padding-left: 0;
+   border-left: 6px solid #FF7930;;
+ }
+ #Fusion{
+   padding-left: 0;
+   border-left: 6px solid #53B856;;
+ }
+ #America{
+   padding-left: 0;
+   border-left: 6px solid #4364F0;;
+ }
+ #Phoenix{
+   padding-left: 0;
+   border-left: 6px solid #A863E4;;
+ }
+ #Quantum{
+   padding-left: 0;
+   border-left: 6px solid #2496B0;
  }
 
 #turns div{
@@ -537,7 +571,7 @@ button[name="Start hotel"], select{
 #rankListContent{
   background: rgb(28, 26, 26);
   opacity: .9;
-  height:60%;
+  height:70%;
   width: 400px;
 }
 
@@ -581,4 +615,8 @@ button[name="Start hotel"], select{
 @keyframes fadeout {
     from {bottom: 30px; opacity: 1;}
     to {bottom: 0; opacity: 0;}
+}
+
+.region h2{
+  color: #000000;
 }

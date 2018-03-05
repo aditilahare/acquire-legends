@@ -407,7 +407,7 @@ describe('game test', function() {
       game.purchaseShares('Zeta', 2, 0);
 
       //assertion
-      let expected = 4800;
+      let expected = 4400;
       let actual = player1.getAvailableCash();
       assert.deepEqual(actual, expected);
 
@@ -478,10 +478,10 @@ describe('game test', function() {
       game.changeCurrentPlayer();
       let response = game.placeTile(0, '5A');
       let zeta = new Hotel('Zeta', 'rgb(236, 222, 34)', 2);
-      zeta.occupiedTiles = ['3A', '4B', '4A'];
+      zeta.occupiedTiles = ['4A','3A','2A','1A','4B'];
       zeta.status = true;
       let sackson = new Hotel('Sackson', 'rgb(205, 61, 65)', 2);
-      sackson.occupiedTiles = ['6A', '7A'];
+      sackson.occupiedTiles = ['7A','6A'];
       sackson.status = true;
       assert.deepEqual(response.status, 'merge');
       assert.deepEqual(response.expectedActions, ['disposeShares']);
@@ -490,7 +490,7 @@ describe('game test', function() {
       assert.deepEqual(response.survivorHotels, [zeta]);
 
       let majorityShareHolderPlayerMoney = game.findPlayerById(0).availableMoney;
-      assert.equal(majorityShareHolderPlayerMoney, 8400);
+      assert.equal(majorityShareHolderPlayerMoney, 8000);
     });
     it('merge', () => {
       let game = new Game(4, tileBox);
@@ -528,24 +528,24 @@ describe('game test', function() {
       game.changeCurrentPlayer();
       let response = game.placeTile(0, '6A');
       let zeta = new Hotel('Zeta', 'rgb(236, 222, 34)', 2);
-      zeta.occupiedTiles = ['4A', '5A', '4B'];
+      zeta.occupiedTiles = ['5A','4A','3A','2A','1A','4B'];
       zeta.status = true;
       let sackson = new Hotel('Sackson', 'rgb(205, 61, 65)', 2);
-      let expectedTilesOfSackson = ['7A', '8B', '8A', '9B', '10B'];
+      let expectedTilesOfSackson = ['8A','7A', '8B', '9B', '10B'];
       sackson.occupiedTiles = expectedTilesOfSackson;
       sackson.status = true;
       let fusion = new Hotel('Fusion', 'green', 3);
-      fusion.occupiedTiles = ['6B', '6C'];
+      fusion.occupiedTiles = ['6C','6B'];
       fusion.status = true;
 
       assert.deepEqual(response.status, 'merge');
       assert.deepEqual(response.expectedActions, ['disposeShares']);
-      assert.deepEqual(response.mergingHotels, [zeta, fusion]);
-      assert.deepEqual(response.survivorHotels, [sackson]);
-      assert.deepEqual(response.survivorHotel, sackson);
+      assert.deepEqual(response.mergingHotels, [sackson, fusion]);
+      assert.deepEqual(response.survivorHotels, [zeta]);
+      assert.deepEqual(response.survivorHotel, zeta);
 
       let majorityShareHolderPlayerMoney = game.findPlayerById(0).availableMoney;
-      assert.equal(majorityShareHolderPlayerMoney, 8600);
+      assert.equal(majorityShareHolderPlayerMoney, 5000);
     });
     it('merge for two equal hotels', () => {
       let game = new Game(4, tileBox);
@@ -577,10 +577,10 @@ describe('game test', function() {
       game.placeTile(2, '6B');
       game.tieBreaker("Sackson");
       let zeta = new Hotel('Zeta', 'rgb(236, 222, 34)', 2);
-      zeta.occupiedTiles = ['5A', '5B'];
+      zeta.occupiedTiles = ['5B','5A'];
       zeta.status = true;
       let sackson = new Hotel('Sackson', 'rgb(205, 61, 65)', 2);
-      let expectedTilesOfSackson = ['7A', '7B'];
+      let expectedTilesOfSackson = ['7B','7A'];
       sackson.occupiedTiles = expectedTilesOfSackson;
       sackson.status = true;
       assert.equal(game.updateStatus.getUpdationId(1),3);
@@ -595,16 +595,16 @@ describe('game test', function() {
     it('place invalid tile between stable hotels', () => {
       let game = new Game(3);
       let player1 = new Player(0, 'pragya');
-      player1.addTile('8A');
+      player1.addTile('6A');
       game.addPlayer(player1);
       game.turn = new Turn([0]);
       game.market.hotels = [new Hotel('Zeta'), new Hotel('Sackson'), new Hotel('a')];
-      let tiles = ['2A', '3A', '4A', '5A', '6A', '7A', '4B', '5B', '6B', '7B', '5C'];
+      let tiles = ['1A','1C','2A','2B','2C','3A','3B','4A','4B','5A','1B'];
       game.market.startHotel('Zeta', tiles);
-      tiles = ['10A', '11A', '12A', '9A', '9B', '10B', '11B', '12B', '9C', '10C', '11C', '12C'];
+      tiles = ['7A','7C','8A','8B','8C','9A','9B','10A','10B','11A','7B'];
       game.market.startHotel('Sackson', tiles);
-      game.market.startHotel('a', ['1A', '1B']);
-      game.placeTile(0, '8A');
+      game.market.startHotel('a',['12I'])
+      game.placeTile(0, '6A');
       assert.deepEqual(game.getTurnState().status, "Invalid Tile");
       assert.deepEqual(game.getTurnState().expectedActions, ['placeTile']);
     });
@@ -717,7 +717,7 @@ describe('game test', function() {
       zeta.occupiedTiles = [];
       zeta.status = false;
       let sackson = new Hotel('Sackson', 'rgb(205, 61, 65)', 2);
-      let expectedTilesOfSackson = ['7A', '8B', '8A', '9B', '10B', '9C', '9A', '8C', '4A', '5A', '4B', '6B', '6C', '6A']
+      let expectedTilesOfSackson= ["8A","7A","8B","9B","10B","9C","9A","8C","5A","4A","3A","2A","1A","4B","2B","6C","6B","6A"];
       sackson.occupiedTiles = expectedTilesOfSackson;
       sackson.sharePrice = 700;
       sackson.shares = 23;
@@ -801,15 +801,15 @@ describe('game test', function() {
       sackson.status = true;
       let status = game.getStatus(0);
       assert.deepEqual(game.getTurnState().status, 'gameOver');
-      assert.equal(game.findPlayerById(0).getAvailableCash(), 9500);
-      assert.equal(game.findPlayerById(1).getAvailableCash(), 24400);
+      assert.equal(game.findPlayerById(0).getAvailableCash(), 12800);
+      assert.equal(game.findPlayerById(1).getAvailableCash(), 25900);
       assert.equal(game.findPlayerById(2).getAvailableCash(), 6000);
       assert.equal(game.findPlayerById(3).getAvailableCash(), 6000);
       let rankList = [{
-        "cash": 24400,
+        "cash": 25900,
         "name": "aditi"
       }, {
-        "cash": 9500,
+        "cash": 12800,
         "name": "pragya"
       },
       {
@@ -853,7 +853,7 @@ describe('giveMajorityMinorityBonus', () => {
     game.placeTile(1, '1B');
     game.giveMajorityMinorityBonus('Zeta');
     let majorityShareHolderPlayerMoney = game.findPlayerById(0).availableMoney;
-    assert.equal(majorityShareHolderPlayerMoney, 9900);
+    assert.equal(majorityShareHolderPlayerMoney, 14000);
   });
   it('it should give majority to player who has highest shares of \
   and majority to player who has second highest shares of \
@@ -884,9 +884,9 @@ describe('giveMajorityMinorityBonus', () => {
     game.placeTile(1, '1B');
     game.giveMajorityMinorityBonus('Zeta');
     let majorityShareHolderMoney = game.findPlayerById(0).availableMoney;
-    assert.equal(majorityShareHolderMoney, 8400);
+    assert.equal(majorityShareHolderMoney, 11000);
     let minorityShareHolderMoney = game.findPlayerById(1).availableMoney;
-    assert.equal(minorityShareHolderMoney, 7200);
+    assert.equal(minorityShareHolderMoney, 8500);
   });
   it('it should give combined majority and minority to more than one players \
   who has most shares given hotel', () => {
@@ -917,11 +917,11 @@ describe('giveMajorityMinorityBonus', () => {
     game.purchaseShares('Zeta', 3, 2);
     game.giveMajorityMinorityBonus('Zeta');
     let firstMajorityPlayer = game.findPlayerById(0).availableMoney;
-    assert.equal(firstMajorityPlayer, 7650);
+    assert.equal(firstMajorityPlayer, 9500);
     let otherMajorityPlayer = game.findPlayerById(2).availableMoney;
-    assert.equal(otherMajorityPlayer, 7350);
+    assert.equal(otherMajorityPlayer, 8700);
     let minorityShareHolderPlayerMoney = game.findPlayerById(1).availableMoney;
-    assert.equal(minorityShareHolderPlayerMoney, 5700);
+    assert.equal(minorityShareHolderPlayerMoney, 5500);
   });
   it('it should give majority to player who has highest shares of \
   and combined minority to more than one players who has second most\
@@ -953,11 +953,11 @@ describe('giveMajorityMinorityBonus', () => {
     game.purchaseShares('Zeta', 1, 2);
     game.giveMajorityMinorityBonus('Zeta');
     let majorityPlayer = game.findPlayerById(0).availableMoney;
-    assert.equal(majorityPlayer, 8400);
+    assert.equal(majorityPlayer, 11000);
     let firstMinorityPlayer = game.findPlayerById(1).availableMoney;
-    assert.equal(firstMinorityPlayer, 6450);
+    assert.equal(firstMinorityPlayer, 7000);
     let otherMinorityPlayer = game.findPlayerById(2).availableMoney;
-    assert.equal(otherMinorityPlayer, 6450);
+    assert.equal(otherMinorityPlayer, 6900);
   })
 });
 describe('getActivityLog', () => {
@@ -1023,24 +1023,24 @@ describe('disposeShares', () => {
     let response = game.placeTile(0, '6A');
 
     let zeta = new Hotel('Zeta', 'rgb(236, 222, 34)', 2);
-    zeta.occupiedTiles = ['4A', '5A', '4B'];
+    zeta.occupiedTiles = ['5A','4A','3A','2A','1A','4B'];
     zeta.status = true;
     let sackson = new Hotel('Sackson', 'rgb(205, 61, 65)', 2);
-    let expectedTilesOfSackson = ['7A', '8B', '8A', '9B', '10B']
+    let expectedTilesOfSackson = ['8A','7A', '8B', '9B', '10B']
     sackson.occupiedTiles = expectedTilesOfSackson;
     sackson.status = true;
     let fusion = new Hotel('Fusion', 'green', 3);
-    fusion.occupiedTiles = ['6B', '6C'];
+    fusion.occupiedTiles = ['6C','6B'];
     fusion.status = true;
 
     assert.deepEqual(response.status, 'merge');
     assert.deepEqual(response.expectedActions, ['disposeShares']);
-    assert.deepEqual(response.mergingHotels, [zeta, fusion]);
-    assert.deepEqual(response.survivorHotels, [sackson]);
-    assert.deepEqual(response.survivorHotel, sackson);
+    assert.deepEqual(response.mergingHotels, [sackson, fusion]);
+    assert.deepEqual(response.survivorHotels, [zeta]);
+    assert.deepEqual(response.survivorHotel, zeta);
 
     let majorityShareHolderPlayerMoney = game.findPlayerById(0).availableMoney;
-    assert.equal(majorityShareHolderPlayerMoney, 8600);
+    assert.equal(majorityShareHolderPlayerMoney, 5000);
   });
   it('should decrease the no of shares to exchange in players share details & update details of merging hotels in bank.', () => {
     let game = new Game(4, tileBox);
@@ -1143,7 +1143,7 @@ describe('playerSellsShares', () => {
     game.playerSellsShares(0, 1, 'Zeta');
     let playerSellingShares = game.findPlayerById(0);
     assert.equal(playerSellingShares.shares['Zeta'], 2);
-    assert.equal(playerSellingShares.availableMoney, 5700);
+    assert.equal(playerSellingShares.availableMoney, 5500);
     let hotelShares = game.bank.getAvalibleSharesOf('Zeta');
     assert.equal(hotelShares, 23);
   })
