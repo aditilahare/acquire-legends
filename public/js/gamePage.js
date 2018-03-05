@@ -48,6 +48,15 @@ const mergerForTieCase = function(){
   sendAjaxRequest('POST','/actions/chooseHotelForMerge',data,placeTileHandler);
   document.getElementById('choose-surv-hotel').style.display = "none";
 };
+const chooseForMergerSurvivour = function(hotels){
+  let html=`<select name="hotelName">`;
+  html +=hotels.map((hotel)=>{
+    return `<option value="${hotel.name}">${hotel.name}</option>`;
+  }).join('');
+  html += `</select><br><button name="SurviourHotel" \
+  onclick="mergerForTieCase()">Keep Hotel</button>`;
+  return html;
+};
 
 const actions={};
 actions['changeTurn']=function(){
@@ -114,7 +123,6 @@ actions['gameOver'] = function (res) {
   rankListHtmlGenerator(res.state.rankList,me);
   document.getElementById('rankListDisplay').style.display = 'flex';
 };
-
 actions['Invalid Tile'] = function (res) {
   let messageBar = document.getElementById("messageBar");
   messageBar.innerText = res.state.message;
@@ -153,12 +161,13 @@ let requestdisposeShares=function(){
   let noOfSharesToSell=getElement("#noOfSharesToSell").value;
   let noOfSharesToExchange=getElement("#noOfSharesToExchange").value;
   let dataToSend=`hotelName=${hotelName}&noOfSharesToSell=${noOfSharesToSell}`;
-  dataToSend+=`&noOfSharesToExchange=${noOfSharesToExchange}`;
-  sendAjaxRequest('POST','/merge/disposeShares',dataToSend,renderGameStatus);
-  let disposeSharesOption=getElement('#disposeShares');
-  getGameStatus();
-  getPlayerDetails();
-  disposeSharesOption.classList.add('hidden');
+  if (noOfSharesToExchange%2==0) {
+    dataToSend+=`&noOfSharesToExchange=${noOfSharesToExchange}`;
+    sendAjaxRequest('POST','/merge/disposeShares',dataToSend,renderGameStatus);
+    let disposeSharesOption=getElement('#disposeShares');
+    getGameStatus();
+    disposeSharesOption.classList.add('hidden');
+  }
 };
 let getElement = function(selector){
   return document.querySelector(selector);
@@ -169,10 +178,10 @@ let listToHTML = function(list,className,elementName='p') {
   }).join('');
   return html;
 };
+
 const changeTurn = function () {
   sendAjaxRequest('GET','/actions/changeTurn','',getPlayerDetails);
 };
-
 const prepareCart = function(){
   return cart.reduce((previous,current)=>{
     if(!previous[current]) {

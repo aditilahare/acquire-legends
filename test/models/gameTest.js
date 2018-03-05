@@ -1085,18 +1085,18 @@ describe('disposeShares', () => {
     game.placeTile(3, '4C');
     game.changeCurrentPlayer();
     game.placeTile(0, '8A');
+    game.purchaseShares('Zeta', 3, 0);
     game.changeCurrentPlayer();
     game.placeTile(1, '6C');
-    game.purchaseShares('Zeta', 3, 0);
     game.changeCurrentPlayer();
     game.placeTile(2, '7C');
     game.changeCurrentPlayer();
     game.placeTile(3, '3C');
     game.changeCurrentPlayer();
     game.placeTile(0, '9A');
+    game.purchaseShares('Zeta', 3, 0);
     game.changeCurrentPlayer();
     game.placeTile(1, '4B');
-    game.purchaseShares('Zeta', 1, 0);
     game.changeCurrentPlayer();
     game.placeTile(2, '7B');
     game.changeCurrentPlayer();
@@ -1104,21 +1104,19 @@ describe('disposeShares', () => {
     game.changeCurrentPlayer();
     //mergingTile
     let response=game.placeTile(0, '10A');
-
-
+    player1= game.findPlayerById(0);
     let disposeSharesDetails={};
     disposeSharesDetails['hotelName']='Zeta';
     disposeSharesDetails['noOfSharesToSell']=2;
     disposeSharesDetails['noOfSharesToExchange']=4;
     game.disposeShares(0,disposeSharesDetails);
-
     let Zeta = game.bank.sharesDetailsOfHotels[1];
     let Sackson  = game.bank.sharesDetailsOfHotels[0];
 
-    assert.deepEqual(player1.availableMoney, 7500);
-    assert.deepEqual(player1.shares.Zeta, 1);
+    assert.deepEqual(player1.availableMoney, 6900);
+    assert.deepEqual(player1.shares.Zeta, 3);
     assert.deepEqual(player1.shares.Sackson, 3);
-    assert.deepEqual(Zeta.availableShares,23);
+    assert.deepEqual(Zeta.availableShares,21);
     assert.deepEqual(Sackson.availableShares,22);
   });
 })
