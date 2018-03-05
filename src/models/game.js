@@ -335,24 +335,28 @@ class Game {
     let player=this.findPlayerById(playerId);
     let currentSharePrice=this.market.getSharePriceOfHotel(hotelName);
     let totalMoney=currentSharePrice*noOfSharesToSell;
-    this.bank.removeSharesOfPlayer(playerId,noOfSharesToSell,hotelName);
-    player.removeShares(hotelName,noOfSharesToSell);
-    this.distributeMoneyToPlayer(playerId,totalMoney);
-    this.logActivity(`${player.name} has sold ${noOfSharesToSell} shares of \
+    let bool = player.doesPlayerHasEnoughShares(hotelName,noOfSharesToSell);
+    if (bool) {
+      this.bank.removeSharesOfPlayer(playerId,noOfSharesToSell,hotelName);
+      player.removeShares(hotelName,noOfSharesToSell);
+      this.distributeMoneyToPlayer(playerId,totalMoney);
+      this.logActivity(`${player.name} has sold ${noOfSharesToSell} shares of \
       ${hotelName}.`);
+    }
   }
   playerExchangesShare(playerId,sharesToDeploy,state){
     let currentMergingHotel=state.currentMergingHotel;
-    let noOfShares=sharesToDeploy.noOfSharesToExchange;
     let mergingHotelName=currentMergingHotel.name;
     let survivorHotelName = state.survivorHotel.name;
-    let reqShares = (noOfShares/2);
-    let bool=this.bank.doesHotelhaveEnoughShares(survivorHotelName,reqShares);
+    let noOfShares=sharesToDeploy.noOfSharesToExchange;
+    let reqShares = Math.floor(noOfShares/2);
     let player=this.findPlayerById(playerId);
+    let bool=this.bank.doesHotelhaveEnoughShares(survivorHotelName,reqShares);
+    bool = bool&&player.doesPlayerHasEnoughShares(mergingHotelName,reqShares*2);
     if(bool){
-      this.bank.removeSharesOfPlayer(playerId,noOfShares,mergingHotelName);
+      this.bank.removeSharesOfPlayer(playerId,reqShares*2,mergingHotelName);
       this.bank.addShareHolder(survivorHotelName,playerId,reqShares);
-      player.removeShares(mergingHotelName,noOfShares);
+      player.removeShares(mergingHotelName,reqShares*2);
       player.addShares(survivorHotelName,reqShares);
       this.logActivity(`${player.name} has exchanged ${noOfShares} \
         shares of ${mergingHotelName} with ${survivorHotelName}.`);

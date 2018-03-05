@@ -68,11 +68,6 @@ app.post('/merge/disposeShares',(req,res)=>{
   let game=req.app.game;
   let playerId=req.cookies.playerId;
   let sharesToDispose=req.body;
-  console.log('\n\n\n\n');
-  console.log('in app');
-  console.log('\n\n\n\n');
-  console.log(sharesToDispose);
-  console.log('\n\n\n\n');
   game.disposeShares(playerId,sharesToDispose);
   res.send(game.getStatus(playerId));
 });
