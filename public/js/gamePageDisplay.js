@@ -60,9 +60,9 @@ const rankListHtmlGenerator=function (rankList,me) {
   rankListContent.appendChild(table);
 };
 
-const toHtml = function (elementList,tag,parent,className='',id='',action) {
+const toHtml = function (elementList,tag,parent,className='',id='') {
   return elementList.reduce((parent,value)=>{
-    let element = createNode(tag,value,className,id,action);
+    let element = createNode(tag,value,className,id);
     parent.appendChild(element);
     return parent;
   },parent);
@@ -70,8 +70,9 @@ const toHtml = function (elementList,tag,parent,className='',id='',action) {
 
 const createNode = function(tag,value="",className="",id=""){
   let element = document.createElement(tag);
-  element.className = className;
-  element.id=id;
+  element.setAttribute('class',className);
+  element.setAttribute('id',id);
+  element.setAttribute('value',value);
   element.appendChild(document.createTextNode(value));
   return element;
 };
