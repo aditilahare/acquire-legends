@@ -332,6 +332,18 @@ describe('game test', function() {
       assert.equal(actual.id, 1)
       assert.equal(player1.tiles.length, 7)
     });
+    it('should change current player with out adding tile to current player', () => {
+      tileBox = new TileBox(2,7, mockRandomTiles);
+      let game = new Game(2, tileBox);
+      let player1 = new Player(0, 'pragya');
+      game.addPlayer(player1);
+      game.addPlayer(new Player(1, 'veera'));
+      game.start();
+      game.changeCurrentPlayer();
+      let actual = game.getCurrentPlayer();
+      assert.equal(actual.id, 1)
+      assert.equal(player1.tiles.length, 6)
+    });
   });
   describe('isCurrentPlayer', () => {
     it('should return true if player is current player', () => {
