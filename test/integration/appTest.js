@@ -243,9 +243,8 @@ describe('App Test', () => {
             .expect('0')
             .end(done)
         })
-
-  });
-});
+      });
+    });
   describe('/placeTile', function() {
     it('can place a tile on market', function(done) {
       app.game = new Game(1, tileBox);
@@ -515,9 +514,9 @@ describe('App Test', () => {
         .post('/merge/disposeShares')
         .set('Cookie', 'playerId=0')
         .send(`hotelName=Zeta&noOfSharesToSell=2&noOfSharesToExchange=2`)
-        .expect(/"currentMergingHotel":{"name":"Zeta"/i)
+        .expect(/"currentMergingHotel":{"name":"sackson"/i)
         .expect(/"activeHotels":\[{"name":"Sackson"/i)
-        .expect(/"survivorHotel":{"name":"Sackson/i)
+        .expect(/"survivorHotel":{"name":"zeta/i)
         .expect(/"expectedActions":\["disposeShares"]/i)
         .expect(/"status":"merge"/i)
         .expect(200)
