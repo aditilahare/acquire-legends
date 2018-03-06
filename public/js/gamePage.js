@@ -127,7 +127,7 @@ actions['Invalid Tile'] = function (res) {
   let messageBar = document.getElementById("messageBar");
   messageBar.innerText = res.state.message;
   messageBar.className = "show";
-  setTimeOut(()=>{
+  setTimeout(()=>{
     messageBar.className = messageBar.className.replace("show", "");
   },3000);
   getPlayerDetails();
