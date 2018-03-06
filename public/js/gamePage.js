@@ -106,10 +106,7 @@ actions['purchaseShares']=function(res){
     }
   });
 };
-actions['gameOver'] = function (res) {
-  rankListHtmlGenerator(res.state.rankList,me);
-  document.getElementById('rankListDisplay').style.display = 'flex';
-};
+
 const purchaseShares = function(){
   let cartDetails = JSON.stringify(prepareCart());
   sendAjaxRequest('POST','/actions/purchaseShares',`cart=${cartDetails}`);
