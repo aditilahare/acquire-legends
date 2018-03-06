@@ -805,9 +805,6 @@ describe('game test', function() {
         hotelName: "Fusion",
         noOfSharesToSell: 1
       });
-
-
-
       let zeta = new Hotel('Zeta', 'rgb(236, 222, 34)', 2);
       zeta.occupiedTiles = [];
       zeta.status = false;
@@ -817,9 +814,7 @@ describe('game test', function() {
       sackson.sharePrice = 700;
       sackson.shares = 23;
       sackson.status = true;
-      // let fusion = new Hotel('Fusion', 'green', 3);
-      // fusion.occupiedTiles = [];
-      // fusion.status = false;
+      console.log("a");
       let status = game.getStatus(0);
       assert.deepEqual(game.getTurnState().status, 'gameOver');
       assert.deepEqual(status.state.expectedActions, ['purchaseShares']);

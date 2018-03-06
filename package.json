@@ -8,7 +8,8 @@
     "coverage": "nyc --reporter=html _mocha --recursive",
     "lint": "eslint .",
     "start": "node server.js",
-    "nodemon": "nodemon -i public -i logs -i test"
+    "nodemon": "nodemon -i public -i logs -i test",
+    "test-game": "TEST=true node ./testGame"
   },
   "repository": {
     "type": "git",
