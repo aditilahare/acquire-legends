@@ -243,9 +243,8 @@ describe('App Test', () => {
             .expect('0')
             .end(done)
         })
-
-  });
-});
+      });
+    });
   describe('/placeTile', function() {
     it('can place a tile on market', function(done) {
       app.game = new Game(1, tileBox);

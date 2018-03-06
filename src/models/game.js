@@ -60,7 +60,7 @@ class Game {
     let tiles = this.tileBox.getTiles(1);
     let currentPlayerID = this.turn.getCurrentPlayerID();
     let currentPlayer = this.findPlayerById(currentPlayerID);
-    currentPlayer.addTile(tiles[0]);
+    (tiles[0]) && currentPlayer.addTile(tiles[0]);
     this.turn.setState({
       expectedActions:['placeTile']
     });
