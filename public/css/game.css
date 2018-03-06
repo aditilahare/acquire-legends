@@ -209,10 +209,16 @@ padding: 14px;
   height:57px;
 }
 .tile span:hover{
+
   outline: 10px;
   cursor:pointer;
 }
 
+.tile:focus{
+  transform: scale(1.1);
+  outline: none;
+  background-color: rgb(130, 34, 22);
+}
 .share-button{
   border-radius: 10%;
 }
