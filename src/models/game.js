@@ -431,8 +431,10 @@ class Game {
     let tiles=this.getTurnState().tiles;
     let response=this.market.startHotel(hotelName,tiles);
     let playerName= this.getPlayerNameById(playerId);
-    this.bank.giveOneFreeShare(hotelName,playerId);
-    this.addSharesToPlayer(playerId,hotelName,1);
+    if(this.bank.doesHotelhaveEnoughShares(hotelName,1)){
+      this.bank.giveOneFreeShare(hotelName,playerId);
+      this.addSharesToPlayer(playerId,hotelName,1);
+    }
     this.setState(response);
     this.logActivity(`${playerName} has started ${hotelName} hotel.`);
     this.updateStatus.setUpdationId(3);

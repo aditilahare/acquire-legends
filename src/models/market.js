@@ -240,13 +240,13 @@ class Market{
     });
   }
   startHotel(hotelName,tiles){
-    let response=this.getState();
     let hotel = this.getHotel(hotelName);
     hotel.status=true;
     hotel.occupyTile(tiles.pop());
     tiles.forEach((tile)=>{
       this.addTileToExistingHotel(tile);
     });
+    let response=this.getState();
     response.status="starting hotel";
     response.hotelName=hotel.name;
     return response;

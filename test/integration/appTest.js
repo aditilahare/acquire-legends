@@ -402,7 +402,7 @@ describe('App Test', () => {
         .post('/actions/chooseHotel')
         .set('Cookie', 'playerId=1')
         .send('hotelName=Zeta')
-        .expect(/purchaseShares/i)
+        .expect(/purchaseShare/i)
         .expect(200)
         .end(done);
     });

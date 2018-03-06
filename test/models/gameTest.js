@@ -309,6 +309,22 @@ describe('game test', function() {
 
     });
   });
+  describe('startHotel',()=>{
+    it('should start a hotel in market & give a free share to founder',()=>{
+      let game = new Game(1, tileBox);
+      let player1 = new Player(1, 'pragya');
+      let market = new Market();
+      game.addPlayer(player1);
+      game.start();
+      game.placeTile(1,'2A');
+      let zeta = game.bank.sharesDetailsOfHotels.find(hotel=>hotel.hotelName=='Zeta');
+      zeta.availableShares=0;
+      game.startHotel('Zeta',1);
+      let player = game.findPlayerById(1);
+      // console.log(player);
+      assert.deepEqual(player.shares.Zeta,0);
+    });
+  });
   describe('getCurrentPlayer', () => {
     it('should give current player details', () => {
       let game = new Game(1, tileBox);
