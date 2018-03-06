@@ -194,6 +194,39 @@ describe('Market', () => {
       assert.deepEqual(market.getLargeHotels(market.hotels),[zeta]);
     });
   });
+  describe('getLowestCostPerShare()', () => {
+    it('should return lowest cost per share if there is only\
+    \ one active hotel', () => {
+      let market = new Market();
+      let zeta = new Hotel('Zeta', 'yellow',2);
+      zeta.occupiedTiles = ['1A', '2A'];
+      zeta.level = 2;
+      zeta.status=true;
+      market.hotels.push(zeta);
+      let expectedCostPerShare = 200;
+      assert.equal(market.getLowestCostPerShare(),expectedCostPerShare);
+    });
+    it('should return 0 if no hotel is active', () => {
+      let market = new Market();
+      assert.equal(market.getLowestCostPerShare(), 0);
+    });
+    it('should return lowest cost per share among\
+    \ multiple active hotels', () => {
+      let market = new Market();
+      let zeta = new Hotel('Zeta', 'yellow',2);
+      zeta.occupiedTiles = ['1A', '2A', '3A'];
+      zeta.level = 2;
+      zeta.status=true;
+      market.hotels.push(zeta);
+      let sackson = new Hotel('Sackson', 'red',2);
+      sackson.occupiedTiles = ['1C', '2C','3C', '1D'];
+      sackson.level = 2;
+      sackson.status=true;
+      market.hotels.push(sackson);
+      let expectedCostPerShare = 300;
+      assert.equal(market.getLowestCostPerShare(),expectedCostPerShare);
+    })
+  });
   describe('addMergingHotelsToSurvivor(mergingHotels,surviourHotel)', () => {
     it('should add given merging hotels tiles into given surviourHotel', () => {
       let market = new Market();

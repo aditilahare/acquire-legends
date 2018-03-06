@@ -105,6 +105,17 @@ class Market{
       return hotel.getSize()==sizeOfLargerHotel;
     });
   }
+  getLowestCostPerShare() {
+    let costsPerShares = this.getActiveHotels().map(hotel=>{
+      return this.getSharePriceOfHotel(hotel.getName());
+    });
+    if(!costsPerShares.length){
+      return 0;
+    }
+    return costsPerShares.reduce((highestPrice,currentPrice) => {
+      return highestPrice>currentPrice? currentPrice:highestPrice;
+    });
+  }
   getMergingHotels(mergerBetween,survivorHotels){
     return mergerBetween.filter((hotel)=>{
       return !survivorHotels.includes(hotel);

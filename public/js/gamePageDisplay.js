@@ -84,11 +84,11 @@ const displayMoney = function(money){
 const displayCurrentAction = function (turnDetails, expectedAction) {
   let message = '';
   if(turnDetails.isMyTurn){
-    message = 'Please '+flashMessage[expectedAction];
+    message = 'Please ';
   } else {
     message = `Waiting for ${turnDetails.currentPlayer} to `;
-    message+=flashMessage[expectedAction];
   }
+  message += flashMessage[expectedAction];
   displayFlashMessage(message);
   return;
 };

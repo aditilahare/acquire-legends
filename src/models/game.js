@@ -41,6 +41,10 @@ class Game {
     let player = this.findPlayerById(id);
     player.addShares(hotelName, noOfShares);
   }
+  canCurrentPlayerBuyShares(){
+    let lowestPrice = this.market.getLowestCostPerShare();
+    return this.doesCurrentPlayerHasMoney(lowestPrice);
+  }
   canSharesBeDeployed(playerId,sharesToDeploy){
     let hotelName=sharesToDeploy.hotelName;
     let state=this.turn.getState();
@@ -66,6 +70,12 @@ class Game {
     });
     this.turn.updateTurn();
     this.updateStatus.setUpdationId(3);
+  }
+  changeExpectedAction(expectedActions, state) {
+    return {
+      expectedActions:['changeTurn'],
+      status:'changeTurn'
+    };
   }
   createHotels(hotels){
     hotels.forEach((hotel) => {
@@ -123,6 +133,9 @@ class Game {
       player.addTiles(tileBox.getTiles(1));
     });
   }
+  doesCurrentPlayerHasMoney(money){
+    return this.getCurrentPlayer().availableMoney >= money;
+  }
   endMergingProcess(){
     this.mergingTurn.clearTurn();//test
     let currentGameState=this.turn.getState();
@@ -137,13 +150,12 @@ class Game {
       hotelToRemove=currentGameState.activeHotels.indexOf(mergingHotel.name);
       currentGameState.activeHotels.splice(hotelToRemove,1);
     });
-    let state={
-      expectedActions:['purchaseShares'],
-      status:'purchaseShares'
-    };
+    let state = {expectedActions:['purchaseShares'], status:'purchaseShares'};
+    if(!this.canCurrentPlayerBuyShares()){
+      state = this.changeExpectedAction(['changeTurn'], 'changeTurn');
+    }
     if (isGameOver(currentGameState.activeHotels)) {
-      state.rankList=decidePlayerRank.call(this);
-      state.status="gameOver";
+      state = this.setRankList(state);
       expectedActions:[];
     }
     this.turn.setState(state);
@@ -387,8 +399,17 @@ class Game {
     this.updateStatus.setUpdationId(3);
     return;
   }
+  setRankList(state){
+    state.rankList=decidePlayerRank.call(this);
+    state.status="gameOver";
+    return state;
+  }
   setState(response){
-    let state=this.actions[response.status].call(this,response);
+    let action = undefined;
+    if(!this.canCurrentPlayerBuyShares()){
+      action = 'changeTurn';
+    }
+    let state=this.actions[response.status].call(this,response,action);
     this.turn.setState(state);
     this.updateStatus.setUpdationId(3);
   }

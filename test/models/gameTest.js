@@ -456,6 +456,73 @@ describe('game test', function() {
       game.changeCurrentPlayer();
       assert.deepEqual(game.placeTile(0, '5A').status, 'purchaseShares');
     });
+    it('should change turn when player dont have enough money\
+    \ to buy shares ', () => {
+      let expected = {};
+      let game = new Game(2, tileBox);
+      let player1 = new Player(0, 'pragya');
+      game.addPlayer(player1);
+      game.start();
+      game.placeTile(0, '2A');
+      game.changeCurrentPlayer();
+      game.placeTile(0, '3A');
+      game.startHotel('Quantum', 0);
+      game.purchaseShares('Quantum', 3, 0);
+      game.changeCurrentPlayer();
+      game.placeTile(0, '4A');
+      game.purchaseShares('Quantum', 3, 0);
+      game.changeCurrentPlayer();
+      game.placeTile(0, '5A');
+      game.purchaseShares('Quantum', 3, 0);
+      game.changeCurrentPlayer();
+      game.placeTile(0, '6A');
+      game.purchaseShares('Quantum', 2, 0);
+      game.changeCurrentPlayer();
+      game.placeTile(0, '7A');
+      assert.deepEqual(game.turn.state.status, 'changeTurn');
+    });
+    it('should change turn after when player dont have enough money\
+    \ to buy shares ', () => {
+      let expected = {};
+      let game = new Game(2, tileBox);
+      let player1 = new Player(0, 'pragya');
+      let player2 = new Player(1, 'aditi');
+      game.addPlayer(player1);
+      game.addPlayer(player2);
+      game.start();
+      game.placeTile(0, '3A');
+      game.changeCurrentPlayer();
+      game.placeTile(1, '9A');
+      game.changeCurrentPlayer();
+      game.placeTile(0, '4A');
+      game.startHotel('Quantum', 0);
+      game.purchaseShares('Quantum', 3, 0);
+      game.changeCurrentPlayer();
+      game.placeTile(1, '10A');
+      game.startHotel('Zeta', 1);
+      game.changeCurrentPlayer();
+      game.placeTile(0, '5A');
+      game.purchaseShares('Quantum', 3, 0);
+      game.changeCurrentPlayer();
+      game.placeTile(1, '2B');
+      game.changeCurrentPlayer();
+      game.placeTile(0, '6A');
+      game.purchaseShares('Quantum', 3, 0);
+      game.changeCurrentPlayer();
+      game.placeTile(1, '8B');
+      game.changeCurrentPlayer();
+      game.placeTile(0, '7A');
+      game.purchaseShares('Quantum', 2, 0);
+      game.changeCurrentPlayer();
+      game.placeTile(1, '10B');
+      game.changeCurrentPlayer();
+      game.placeTile(0, '8A');
+      game.disposeShares(1, {
+        hotelName: "Zeta",
+        noOfSharesToSell: 1
+      });
+      assert.deepEqual(game.turn.state.status, 'changeTurn');
+    });
     it('merge', () => {
       game = new Game(3, tileBox);
       let player1 = new Player(0, 'pragya');

@@ -1,18 +1,18 @@
 let actions = {
-  'Independent':function(response){
+  'Independent':function(response,action){
     response.expectedActions=['purchaseShares','changeTurn'];
-    response.status="purchaseShares";
-    if(response.activeHotels.length==0) {
-      response.status="changeTurn";
+    response.status="changeTurn";
+    if(response.activeHotels.length) {
+      response.status=action || "purchaseShares";
     }
     return response;
   },
-  'Added to hotel':function(response){
+  'Added to hotel':function(response,action){
     response.expectedActions=['purchaseShares','changeTurn'];
-    response.status="purchaseShares";
+    response.status=action || "purchaseShares";
     return response;
   },
-  'merge':function (response) {
+  'merge':function (response, action = undefined) {
     response.expectedActions=['disposeShares'];
     response.status='merge';
     let mergingHotels=response.mergingHotels;
@@ -26,21 +26,21 @@ let actions = {
     }
     return response;
   },
-  'chooseHotel':function(response){
+  'chooseHotel':function(response,action = undefined){
     response.expectedActions=['purchaseShares','changeTurn'];
-    response.status = 'purchaseShares';
+    response.status=action || "purchaseShares";
     if(response.inactiveHotels.length>0){
       response.expectedActions=['chooseHotel'];
       response.status="chooseHotel";
     }
     return response;
   },
-  'starting hotel':function(response){
+  'starting hotel':function(response,action){
     response.expectedActions=['purchaseShares','changeTurn'];
-    response.status="purchaseShares";
+    response.status=action || "purchaseShares";
     return response;
   },
-  'Invalid Tile':function (response) {
+  'Invalid Tile':function (response,action = undefined) {
     let tile = this.tileBox.getTiles(1)[0];
     let currentPlayerID = this.turn.getCurrentPlayerID();
     let currentPlayer = this.findPlayerById(currentPlayerID);
