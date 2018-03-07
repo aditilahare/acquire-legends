@@ -2,7 +2,6 @@
 let cart =[];
 let me;
 let tileId;
-
 let updateChange = {};
 
 updateChange[0]=function () {
@@ -63,6 +62,7 @@ actions['changeTurn']=function(){
   hideEndTurn();
   changeTurn();
 };
+
 actions['chooseHotel']=function(res){
   sendAjaxRequest('GET','/gameStatus','',function(){
     let res=JSON.parse(this.responseText);
@@ -99,14 +99,18 @@ actions["merge"]=function(res){
 actions['purchaseShares']=function(res){
   sendAjaxRequest('GET','/gameStatus','',function(){
     let res=JSON.parse(this.responseText);
-    if(res.turnDetails.isMyTurn){
+    let areSharesAvailable = res.state.activeHotels.reduce((prevBool,hotel)=>{
+      return prevBool || hotel.shares>0;
+    },false);
+    if(res.turnDetails.isMyTurn&&areSharesAvailable){
       getElement('#listed-hotels').classList.remove('hidden');
       showEndTurn();
       getPlayerDetails();
+    }else{
+      changeTurn();
     }
   });
 };
-
 const purchaseShares = function(){
   let cartDetails = JSON.stringify(prepareCart());
   sendAjaxRequest('POST','/actions/purchaseShares',`cart=${cartDetails}`);
