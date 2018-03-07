@@ -25,7 +25,8 @@
                     <span onclick="document.getElementById('create').style.display='none'" class="close" title="Close Modal">&times;</span>
                   </div>
                   <div class="container">
-                    <input type="text" id="playerName" placeholder="Enter name" name="playerName" required>
+                    <label for='playerName' id="nameLabel">Enter Name</label>
+                    <input type="text" id="playerName" name="playerName" required>
                     <label for='numberOfPlayers'>Number Of Players</label>
                     <select class="sel" id="numberOfPlayers" name="numberOfPlayers">
                       <option value="3">3</option>
@@ -34,8 +35,6 @@
                       <option value="6">6</option>
                     </select>
                     <button type="submit">Create</button>
-                  </div>
-                  <div class="container" style="background-color:#f1f1f1">
                   </div>
                 </form>
               </div>
@@ -48,8 +47,6 @@
                   <div class="container">
                     <input type="text" id="playerName" placeholder="Enter name" name="playerName" required>
                     <button type="submit">Join</button>
-                  </div>
-                  <div class="container" style="background-color:#f1f1f1">
                   </div>
                 </form>
               </div>
