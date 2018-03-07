@@ -251,6 +251,7 @@ class Game {
     let self=this;
     let bonusAmount=totalBonus/(shareHolders.length);
     shareHolders.forEach((shareHolder)=>{
+      bonusAmount=Math.round(bonusAmount/100)*100;
       self.distributeMoneyToPlayer(shareHolder.id,bonusAmount);
       self.logActivity(`${self.getPlayerNameById(shareHolder.id)}\
        got ${bonusAmount} as ${bonusType} bonus`);
