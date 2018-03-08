@@ -1,7 +1,7 @@
 /*eslint no-implicit-globals: "off"*/
 let cart =[];
 let me;
-let tileId;
+let tileId='';
 let updateChange = {};
 
 updateChange[0]=function () {
@@ -239,8 +239,7 @@ const selectTile=function (event) {
 };
 const generateTilesAsButton = function(tiles,tile){
   tiles+=`<button class='tile' id=${tile}\
-   onclick="selectTile(event)">\
- <span id=${tile}>${tile}</span></button>`;
+   onclick="selectTile(event)">${tile}</button>`;
   return tiles;
 };
 const getCashInRupee = function (money) {

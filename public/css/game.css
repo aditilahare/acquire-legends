@@ -207,30 +207,15 @@ padding: 14px;
   background-color: #2d2016;
   width: 57px;
   height:57px;
-}
-.tile span:hover{
 
-  outline: 10px;
-  cursor:pointer;
 }
 
-.tile:focus{
-  transform: scale(1.1);
-  outline: none;
-  background-color: rgb(130, 34, 22);
+.tile:hover{
+  cursor: pointer;
 }
 .share-button{
   border-radius: 10%;
 }
-
-
- .tile span {
-   outline: 1;
-   cursor: pointer;
-   display: inline-block;
-   position: relative;
-   transition: 0.5s;
- }
 
  #grid{
    border: 3px solid black;
@@ -311,18 +296,11 @@ padding: 14px;
   display: inline-flex;
 }
 
-@keyframes spin {
-  0% { transform: scale(1.2);}
-  50%{transform: scale(1);}
-  100% { transform: scale(1.2);}
-}
-
  #currentPlayer{
    border-radius: 35%;
    background-color: rgba(222, 28, 28, 0.47);
    color: black;
    transition: all 2s ease;
-   animation: spin 2s infinite;
   box-shadow: 0 3px 25px #000;
  }
 
@@ -390,11 +368,9 @@ padding: 14px;
 }
 
 .currentActivity{
-  border-radius: 7%;
   background-color: rgba(222, 28, 28, 0.47);
   color: black;
   transition: all 2s ease;
-  animation: spinfor 2S infinite;
   box-shadow: 0 3px 25px #000;
   width: 60%;
   font-size: 18px;
@@ -672,4 +648,10 @@ button[name="Start hotel"], select{
 
 .dispose-shares-form button:hover,.dispose-shares-form button:active{
   opacity: .75;
+}
+
+.tile:focus{
+  transform: scale(1.1);
+  outline: none;
+  background-color: rgb(130, 34, 22);
 }
