@@ -62,18 +62,32 @@ describe('App Test', () => {
   });
   describe('/haveAllPlayersJoined', function() {
     it('should respond with true if all players have joined', function(done) {
-      app.game = new Game(0, tileBox);
+      app.game = new Game(1, tileBox);
+      app.game.addPlayer(new Player(0, 'Frank'));
       request(app)
         .get('/haveAllPlayersJoined')
+        .set('Cookie','playerId=0')
         .expect(200)
         .expect(/true/)
         .end(done);
     });
-    it('should respond with false if all players\
-       have not joined', function(done) {
+    it('should respond with 302 if all players have joined\
+     \and bad cookie', function(done) {
       app.game = new Game(1, tileBox);
+      app.game.addPlayer(new Player(0, 'Frank'));
       request(app)
         .get('/haveAllPlayersJoined')
+        .set('Cookie','playerId=555')
+        .expect(302)
+        .end(done);
+    });
+    it('should respond with false if all players\
+       have not joined', function(done) {
+      app.game = new Game(2, tileBox);
+      app.game.addPlayer(new Player(0, 'Frank'));
+      request(app)
+        .get('/haveAllPlayersJoined')
+        .set('Cookie', 'playerId=0')
         .expect(200)
         .expect(/false/)
         .end(done);
@@ -81,11 +95,11 @@ describe('App Test', () => {
     it('should respond with true if all players\
        have not joined', function(done) {
       app.game = new Game(2, tileBox);
-      let player = new Player(0, 'veera');
-      app.game.addPlayer(player);
-      app.game.addPlayer(player);
+      app.game.addPlayer(new Player(0, 'Frank'));
+      app.game.addPlayer(new Player(1, 'Martin'));
       request(app)
         .get('/haveAllPlayersJoined')
+        .set('Cookie', 'playerId=0')
         .expect(200)
         .expect(/true/)
         .end(done);
@@ -98,7 +112,7 @@ describe('App Test', () => {
       let content = 'Waiting For Other Players To Join';
       fs.addFile(fileName, content);
       app.fs = fs;
-      app.game = new Game(1, tileBox);
+      app.game = new Game(2, tileBox);
       let player = new Player(0, 'pragya');
       app.game.addPlayer(player);
       request(app)
@@ -108,6 +122,50 @@ describe('App Test', () => {
         .expect(/Waiting For Other Players To Join/)
         .end(done);
     });
+    it('should be redirected to /game.html\
+    \ if game has started', function(done) {
+        app.game = new Game(2, tileBox);
+        app.game.addPlayer(new Player(0, 'Frank'));
+        app.game.addPlayer(new Player(1, 'Martin'));
+        app.game.start();
+        request(app)
+          .get('/wait')
+          .set('Cookie', 'playerId=1')
+          .expect(302)
+          .expect('Location', '/game.html')
+          .end(done);
+    })
+    it('should be redirected to /\
+    \ if game is not created', function(done) {
+        app.game = undefined;
+        request(app)
+          .get('/wait')
+          .set('Cookie', 'playerId=1')
+          .expect(302)
+          .expect('Location', '/')
+          .end(done);
+    })
+    it('should be redirected to /\
+    \ if game is not created', function(done) {
+        app.game = new Game(2,tileBox);
+        app.game.addPlayer(new Player(0, 'Frank'));
+        request(app)
+          .get('/wait')
+          .set('Cookie', 'playerId=0')
+          .expect(200)
+          .expect(/Waiting For Other Players To Join/)
+          .end(done);
+    })
+    it('should be redirected to /\
+    \ if game is not created', function(done) {
+        app.game = new Game(2,tileBox);
+        app.game.addPlayer(new Player(0, 'Frank'));
+        request(app)
+          .get('/wait')
+          .set('Cookie', 'playerId=56556')
+          .expect(302)
+          .end(done);
+    })
   });
   describe('/join.html /wait /game', function() {
     it('should redirect to / when game is not created', function(done) {
@@ -120,7 +178,8 @@ describe('App Test', () => {
     });
   });
   describe('/', function() {
-    it('should redirect to /wait when already registered player comes to  ', function(done) {
+    it('should redirect to /wait when\
+    \ already registered player comes to', function(done) {
       app.game = new Game(2, tileBox);
       app.game.addPlayer(new Player(0, 'veera'));
       request(app)
@@ -132,11 +191,12 @@ describe('App Test', () => {
     });
   });
   describe('/getPlayerDetails', function() {
-    it('should give tiles of player with given id', function(done) {
+    it('should give details of player with given valid id\
+     when game has started', function(done) {
       app.game = new Game(1, tileBox);
       let veera = new Player(0, 'veera');
       app.game.addPlayer(veera);
-      app.game.distributeInitialTiles();
+      app.game.start();
       request(app)
         .get('/playerDetails')
         .set('Cookie', 'playerId=0')
@@ -144,11 +204,22 @@ describe('App Test', () => {
         .expect(/tiles/i)
         .end(done);
     });
+    it('should give 403 for player with given id\
+     when game is in wait mode', function(done) {
+      app.game = new Game(2, tileBox);
+      let veera = new Player(0, 'veera');
+      app.game.addPlayer(veera);
+      request(app)
+        .get('/playerDetails')
+        .set('Cookie', 'playerId=0')
+        .expect(403)
+        .end(done);
+    });
     it('should give tiles of player with given id', function(done) {
       app.game = new Game(1, tileBox);
       let veera = new Player(0, 'veera');
       app.game.addPlayer(veera);
-      app.game.distributeInitialTiles();
+      app.game.start();
       request(app)
         .get('/playerDetails')
         .set('Cookie', 'playerId=0')
@@ -160,7 +231,7 @@ describe('App Test', () => {
       app.game = new Game(1, tileBox);
       let veera = new Player(0, 'veera');
       app.game.addPlayer(veera);
-      app.game.distributeInitialTiles();
+      app.game.start();
       request(app)
         .get('/playerDetails')
         .set('Cookie', 'playerId=0')
@@ -170,10 +241,11 @@ describe('App Test', () => {
     });
   });
   describe('/game.html', function() {
-    it('should start game if game exists but not started', function(done) {
+    it('should get game page once all players join', function(done) {
       app.game = new Game(1, tileBox);
       let veera = new Player(0, 'veera');
       app.game.addPlayer(veera);
+      app.game.start();
       request(app)
         .get('/game.html')
         .set('Cookie', 'playerId=0')
@@ -204,7 +276,7 @@ describe('App Test', () => {
         .expect(/true/)
         .end(done);
     });
-    it('should respond with true if game existed', function(done) {
+    it('should respond with false if game not existed', function(done) {
       delete app.game;
       request(app)
         .get('/isGameExisted')
@@ -215,8 +287,10 @@ describe('App Test', () => {
   });
   describe('/changeDetails', function() {
     it('should respond with updation id which is set', function(done) {
-      let game = new Game(0, tileBox);
-      game.updateStatus.setUpdationId(2)
+      let game = new Game(1, tileBox);
+      game.addPlayer(new Player(0, 'veera'));
+      game.start();
+      game.updateStatus.setUpdationId(2);
       app.game = game;
       request(app)
         .get('/changeDetails')
@@ -227,6 +301,7 @@ describe('App Test', () => {
     });
     it('should respond updation id as 0 if already served ', function(done) {
       let game = new Game(1, tileBox);
+      game.addPlayer(new Player(0, 'veera'));
       game.start();
       game.updateStatus.setUpdationId(2);
       app.game = game;
@@ -246,7 +321,7 @@ describe('App Test', () => {
       });
     });
   describe('/placeTile', function() {
-    it('can place a tile on market', function(done) {
+    it('should allow player to place own tile', function(done) {
       app.game = new Game(1, tileBox);
       let player = new Player(0, 'pragya');
       app.game.addPlayer(player);
@@ -328,7 +403,7 @@ describe('App Test', () => {
         .expect(200)
         .end(done);
     });
-    it('should respond withn 401 for unauthorized player for changing turn', function(done) {
+    it('should respond withn 302 for unauthorized player for changing turn', function(done) {
       let game = new Game(3, tileBox);
       game.addPlayer(new Player(0, 'veera'));
       game.addPlayer(new Player(1, 'gupta'));
@@ -337,7 +412,7 @@ describe('App Test', () => {
       app.game = game;
       request(app)
         .get('/actions/changeTurn')
-        .expect(403)
+        .expect(302)
         .end(done);
     });
   });
@@ -351,7 +426,7 @@ describe('App Test', () => {
       request(app)
         .post('/actions/placeTile')
         .set('Cookie', 'playerId=3')
-        .expect(403)
+        .expect(302)
         .end(done);
     });
   });
@@ -371,6 +446,84 @@ describe('App Test', () => {
         .expect(/Zeta/i)
         .end(done);
     });
+    it('should respond 401 when game is running\
+    \ but no cookie is sent ', function(done) {
+      let game = new Game(3, tileBox);
+      game.addPlayer(new Player(0, 'veera'));
+      game.addPlayer(new Player(1, 'gupta'));
+      game.start();
+      app.game = game;
+      request(app)
+        .get('/gameStatus')
+        .expect(302)
+        .end(done);
+    });
+    it('should respond 302 when game is running\
+    \ but invalid cookie is sent', function(done) {
+      let game = new Game(3, tileBox);
+      game.addPlayer(new Player(0, 'veera'));
+      game.addPlayer(new Player(1, 'gupta'));
+      game.start();
+      app.game = game;
+      request(app)
+        .get('/gameStatus')
+        .set('Cookie', 'playerId=555')
+        .expect(302)
+        .end(done);
+    });
+    it('should respond 302 when game is not created\
+    \ and not cookie is sent', function(done) {
+      app.game = undefined;
+      request(app)
+        .get('/gameStatus')
+        .expect(302)
+        .end(done);
+    });
+    it('should respond 302 when game is not created\
+    \ and invalid cookie is sent', function(done) {
+      app.game = undefined;
+      request(app)
+        .get('/gameStatus')
+        .set('Cookie', 'playerId=5555')
+        .expect(302)
+        .end(done);
+    });
+    it('should respond 302 when game is created, not all players joined,\
+    \ no cookie is sent', function(done) {
+      let game = new Game(3, tileBox);
+      game.addPlayer(new Player(0, 'veera'));
+      game.addPlayer(new Player(1, 'gupta'));
+      app.game = game;
+      request(app)
+        .get('/gameStatus')
+        .expect(302)
+        .end(done);
+    });
+    it('should respond 302 when game is created, not all players joined,\
+    \ valid cookie is sent', function(done) {
+      let game = new Game(3, tileBox);
+      game.addPlayer(new Player(0, 'veera'));
+      game.addPlayer(new Player(1, 'gupta'));
+      app.game = game;
+      request(app)
+        .get('/gameStatus')
+        .set('Cookie', 'playerId=0')
+        .expect(403)
+        .end(done);
+    });
+    it('should respond 302 when game is created, not all players joined,\
+    \ invalid cookie is sent', function(done) {
+      let game = new Game(3, tileBox);
+      game.addPlayer(new Player(0, 'veera'));
+      game.addPlayer(new Player(1, 'gupta'));
+      app.game = game;
+      request(app)
+        .get('/gameStatus')
+        .set('Cookie', 'playerId=55555')
+        .expect(302)
+        .end(done);
+    });
+
   });
   describe('/turnState', function() {
     it('should respond with current turn state', function(done) {

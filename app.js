@@ -13,48 +13,86 @@ const getAllPlayerNames = require('./src/routes/getAllPlayerNames');
 const isGameExisted = require('./src/routes/isGameExisted');
 const gameStatus = require('./src/routes/gameStatus');
 const changeDetails =require('./src/routes/changeDetails');
-const verifyGameReq = function(game,id){
-  return game && game.isValidPlayer(id) && !game.isInPlayMode();
-};
 
-const redirectToHomeIfGameNotCreated=function(req,res,next){
-  let urls =['/wait','/game.html','/join'];
-  if(urls.includes(req.url)&&!req.app.game){
-    res.redirect('/');
-    return ;
-  }
-  next();
-};
-
-const redirectToWaitIfPlayerIsValid=function(req,res,next){
+const redirectToIndexForNoGame = function(req, res, next) {
   let game = req.app.game;
-  let id =req.cookies.playerId;
-  let urls = ['/','/game.html'];
-  if(urls.includes(req.url) && verifyGameReq(game,id) &&
-  !game.haveAllPlayersJoined()){
-    res.redirect('/wait');
-    return ;
+  let urls=['/create','/isGameExisted','/','/index.html','/favicon.ico'];
+  if(!game && !urls.includes(req.url)){
+
+    console.log(req.url);
+    res.redirect('/');
+    return;
   }
   next();
 };
+
+const redirectInvalidPlayer= function(req, res, next) {
+  let game = req.app.game;
+  let playerId = req.cookies.playerId;
+  let urls=['/create','/isGameExisted','/','/index.html','/join'];
+  if(game && !game.isValidPlayer(playerId) && !urls.includes(req.url)){
+    res.redirect('/');
+    return;
+  }
+  next();
+};
+
 
 const startGame = function(req,res,next){
   let game=req.app.game;
-  let id=req.cookies.playerId;
-  if(req.url=='/game.html' && verifyGameReq(game,id)&&
-  game.haveAllPlayersJoined()){
+  if(game && !game.isInPlayMode() && game.haveAllPlayersJoined()){
     game.start();
   }
   next();
 };
 
+const redirectToWait = function(req, res, next) {
+  let game = req.app.game;
+  let urls = ['/game.html', '/index.html', '/'];
+  let status =game && urls.includes(req.url) && !game.isInPlayMode();
+  if(status){
+    res.redirect('/wait');
+    return;
+  }
+  next();
+};
+
+const forbidActionsForWait = function(req, res, next) {
+  let game = req.app.game;
+  let invalidUrls = ['/gameStatus', '/playerDetails', '/actions',
+    '/changeDetails', '/merge/disposeShares'];
+  if(game && !game.isInPlayMode() && invalidUrls.includes(req.url)) {
+    res.sendStatus(403);
+    return;
+  }
+  next();
+};
+
+const redirectValidPlayer = function(req, res, next) {
+  let game = req.app.game;
+  let playerId = req.cookies.playerId;
+  let urls = ['/', '/index.html', '/create', '/join','/wait'];
+  let status = game && game.isInPlayMode() && game.isValidPlayer(playerId);
+  if(status && urls.includes(req.url)) {
+    res.redirect('/game.html');
+    return;
+  }
+  next();
+};
+
+app.use('/css',express.static('public/css'));
+app.use('/js',express.static('public/js'));
+app.use('/images',express.static('public/images'));
 app.use(express.urlencoded({extended:false}));
 app.use(express.json());
 app.use(cookieParser());
 app.use(logRequest);
-app.use(redirectToHomeIfGameNotCreated);
-app.use(redirectToWaitIfPlayerIsValid);
+app.use(redirectToIndexForNoGame);
+app.use(redirectInvalidPlayer);
 app.use(startGame);
+app.use(redirectToWait);
+app.use(forbidActionsForWait);
+app.use(redirectValidPlayer);
 app.use('/actions',currentPlayerRoute);
 app.get('/isGameExisted',isGameExisted);
 app.get('/wait',getWaitingPage);
