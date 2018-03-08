@@ -18,14 +18,4 @@ describe('Turn ',()=>{
       assert.equal( turn.getCurrentPlayerID(),'200');
     });
   });
-  describe('clearTurn',()=>{
-    it('should make turn sequence as empty',()=>{
-      let playerIDSequence=['180','200'];
-      let turn = new Turn(playerIDSequence);
-      turn.updateTurn();
-      turn.clearTurn();
-      assert.deepEqual( turn.getPlayerIdSequence,[]);//not getter
-      assert.equal( turn.getCurrentPlayerID(),null);
-    });
-  });
 });

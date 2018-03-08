@@ -1,7 +1,11 @@
 class Turn {
-  constructor(playerIDSequence) {
+  constructor(playerIDSequence,defaultAction) {
     this.playerIDSequence=playerIDSequence;
     this.currentPlayerIndex=0;
+    this.defaultAction=defaultAction;
+    this.state={
+      status:defaultAction
+    };
   }
   getCurrentPlayerID(){
     return this.playerIDSequence[this.currentPlayerIndex];
@@ -10,6 +14,7 @@ class Turn {
     this.currentPlayerIndex++;
     let noOfPlayers = this.playerIDSequence.length;
     this.currentPlayerIndex = this.currentPlayerIndex % noOfPlayers;
+    this.state.status=this.defaultAction;
   }
   setState(state){
     this.state=state;
@@ -22,15 +27,6 @@ class Turn {
   }
   getState(){
     return this.state;
-  }
-  isTurnOf(playerId){
-    let currentPlayerID=this.getCurrentPlayerID();
-    return currentPlayerID==playerId;
-  }
-  clearTurn(){
-    this.getPlayerIdSequence=[];
-    this.currentPlayerIndex=null;
-    return ;
   }
 }
 

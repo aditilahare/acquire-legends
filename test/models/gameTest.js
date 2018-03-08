@@ -304,7 +304,8 @@ describe('game test', function() {
       game.placeTile(1, '12A');
       game.placeTile(2, '4B');
       game.placeTile(2, '5B');
-      assert.equal(game.getStatus().state.status,'gameOver');
+      let turnDetails=game.getTurnDetails(0);
+      assert.equal(turnDetails.state.status,'gameOver');
 
 
     });
@@ -378,9 +379,13 @@ describe('game test', function() {
       let expected = {
         hotelsData: [],
         turnDetails: {
+          currentAction:'placeTile',
           currentPlayer: 'pragya',
           otherPlayers: ['pragya', 'aditi'],
-          isMyTurn: true
+          isMyTurn: true,
+          state:{
+            status:'placeTile'
+          }
         }
       };
       let game = new Game(2, tileBox);
@@ -416,7 +421,7 @@ describe('game test', function() {
       game.addPlayer(player2);
       game.addPlayer(player3);
       game.start();
-      assert.deepEqual(game.placeTile(0, '6A').status, 'changeTurn');
+      assert.deepEqual(game.placeTile(0, '6A').status, 'independentTile');
       game.changeCurrentPlayer();
       assert.deepEqual(game.placeTile(0, '7A').status, 'chooseHotel');
       game.startHotel('Zeta', 0);
@@ -477,12 +482,12 @@ describe('game test', function() {
       game.addPlayer(player1);
       game.addPlayer(player2);
       game.start();
-      assert.deepEqual(game.placeTile(0, '6A').status, 'changeTurn');
+      assert.deepEqual(game.placeTile(0, '6A').status, 'independentTile');
       game.changeCurrentPlayer();
       assert.deepEqual(game.placeTile(0, '7A').status, 'chooseHotel');
       game.startHotel('Zeta', 0);
       game.changeCurrentPlayer();
-      assert.deepEqual(game.placeTile(0, '5A').status, 'purchaseShares');
+      assert.deepEqual(game.placeTile(0, '5A').status, 'addedToHotel');
     });
     it('should change turn when player dont have enough money\
     \ to buy shares ', () => {
@@ -507,49 +512,7 @@ describe('game test', function() {
       game.purchaseShares('Quantum', 2, 0);
       game.changeCurrentPlayer();
       game.placeTile(0, '7A');
-      assert.deepEqual(game.turn.state.status, 'changeTurn');
-    });
-    it('should change turn after when player dont have enough money\
-    \ to buy shares ', () => {
-      let expected = {};
-      let game = new Game(2, tileBox);
-      let player1 = new Player(0, 'pragya');
-      let player2 = new Player(1, 'aditi');
-      game.addPlayer(player1);
-      game.addPlayer(player2);
-      game.start();
-      game.placeTile(0, '3A');
-      game.changeCurrentPlayer();
-      game.placeTile(1, '9A');
-      game.changeCurrentPlayer();
-      game.placeTile(0, '4A');
-      game.startHotel('Quantum', 0);
-      game.purchaseShares('Quantum', 3, 0);
-      game.changeCurrentPlayer();
-      game.placeTile(1, '10A');
-      game.startHotel('Zeta', 1);
-      game.changeCurrentPlayer();
-      game.placeTile(0, '5A');
-      game.purchaseShares('Quantum', 3, 0);
-      game.changeCurrentPlayer();
-      game.placeTile(1, '2B');
-      game.changeCurrentPlayer();
-      game.placeTile(0, '6A');
-      game.purchaseShares('Quantum', 3, 0);
-      game.changeCurrentPlayer();
-      game.placeTile(1, '8B');
-      game.changeCurrentPlayer();
-      game.placeTile(0, '7A');
-      game.purchaseShares('Quantum', 2, 0);
-      game.changeCurrentPlayer();
-      game.placeTile(1, '10B');
-      game.changeCurrentPlayer();
-      game.placeTile(0, '8A');
-      game.disposeShares(1, {
-        hotelName: "Zeta",
-        noOfSharesToSell: 1
-      });
-      assert.deepEqual(game.turn.state.status, 'merge');
+      assert.deepEqual(game.turn.state.status, 'placeTile');
     });
     it('merge', () => {
       game = new Game(3, tileBox);
@@ -579,7 +542,6 @@ describe('game test', function() {
       sackson.occupiedTiles = ['7A','6A'];
       sackson.status = true;
       assert.deepEqual(response.status, 'merge');
-      assert.deepEqual(response.expectedActions, ['disposeShares']);
       assert.deepEqual(response.mergingHotels, [sackson]);
 
       assert.deepEqual(response.survivorHotels, [zeta]);
@@ -634,10 +596,9 @@ describe('game test', function() {
       fusion.status = true;
 
       assert.deepEqual(response.status, 'merge');
-      assert.deepEqual(response.expectedActions, ['disposeShares']);
       assert.deepEqual(response.mergingHotels, [sackson, fusion]);
       assert.deepEqual(response.survivorHotels, [zeta]);
-      assert.deepEqual(response.survivorHotel, zeta);
+      // assert.deepEqual(response.survivorHotel, zeta);
 
       let majorityShareHolderPlayerMoney = game.findPlayerById(0).availableMoney;
       assert.equal(majorityShareHolderPlayerMoney, 5000);
@@ -678,9 +639,8 @@ describe('game test', function() {
       let expectedTilesOfSackson = ['7B','7A'];
       sackson.occupiedTiles = expectedTilesOfSackson;
       sackson.status = true;
-      assert.equal(game.updateStatus.getUpdationId(1),3);
-      assert.deepEqual(game.getTurnState().status, 'merge');
-      assert.deepEqual(game.getTurnState().expectedActions, ['disposeShares']);
+      // assert.equal(game.updateStatus.getUpdationId(1),3);
+      assert.deepEqual(game.getTurnState().status, 'disposeShares');
       assert.deepEqual(game.getTurnState().mergingHotels, [zeta]);
       assert.deepEqual(game.getTurnState().survivorHotels, [sackson]);
 
@@ -700,8 +660,7 @@ describe('game test', function() {
       game.market.startHotel('Sackson', tiles);
       game.market.startHotel('a',['12I'])
       game.placeTile(0, '6A');
-      assert.deepEqual(game.getTurnState().status, "Invalid Tile");
-      assert.deepEqual(game.getTurnState().expectedActions, ['placeTile']);
+      assert.deepEqual(game.getTurnState().status, "placeTile");
     });
     it('gameOver condition', () => {
       let game = new Game(4, tileBox);
@@ -732,8 +691,7 @@ describe('game test', function() {
       game.placeTile(2, '10B');
       game.changeCurrentPlayer();
       let response = game.placeTile(0, '6A');
-      assert.deepEqual(response.status, 'purchaseShares');
-      assert.deepEqual(response.expectedActions, ['purchaseShares', 'changeTurn']);
+      assert.deepEqual(response.status, 'addedToHotel');
     });
     it('disposeShares', () => {
       let game = new Game(4, tileBox);
@@ -815,8 +773,7 @@ describe('game test', function() {
       sackson.shares = 23;
       sackson.status = true;
       let status = game.getStatus(0);
-      assert.deepEqual(game.getTurnState().status, 'merge');
-      assert.deepEqual(status.state.expectedActions, ['disposeShares']);
+      assert.deepEqual(game.getTurnState().status, 'disposeShares');
       assert.deepEqual(game.market.getHotel("Sackson"), sackson);
     });
     it('disrtibute game over bonus', () => {
@@ -1113,7 +1070,6 @@ describe('disposeShares', () => {
     game.placeTile(2, '10B');
     game.changeCurrentPlayer();
     let response = game.placeTile(0, '6A');
-
     let zeta = new Hotel('Zeta', 'rgb(236, 222, 34)', 2);
     zeta.occupiedTiles = ['5A','4A','3A','2A','1A','4B'];
     zeta.status = true;
@@ -1126,10 +1082,9 @@ describe('disposeShares', () => {
     fusion.status = true;
 
     assert.deepEqual(response.status, 'merge');
-    assert.deepEqual(response.expectedActions, ['disposeShares']);
     assert.deepEqual(response.mergingHotels, [sackson, fusion]);
     assert.deepEqual(response.survivorHotels, [zeta]);
-    assert.deepEqual(response.survivorHotel, zeta);
+    // assert.deepEqual(response.survivorHotel, zeta);
 
     let majorityShareHolderPlayerMoney = game.findPlayerById(0).availableMoney;
     assert.equal(majorityShareHolderPlayerMoney, 5000);
@@ -1300,32 +1255,4 @@ describe('canSharesBeDeployed', () => {
     assert.isFalse(game.canSharesBeDeployed(0, {hotelName: 'Sackson',noOfSharesToSell: 8}));
     })
   });
-  describe('getUpdationId', () => {
-    it('should return updationId', () => {
-      let game = new Game(3, tileBox);
-      let player1 = new Player(0, 'pragya');
-      let player2 = new Player(1, 'aditi');
-      let player3 = new Player(2, 'praveen');
-      game.addPlayer(player1);
-      game.addPlayer(player2);
-      game.addPlayer(player3);
-      game.start();
-      game.updateStatus.setUpdationId(3);
-      assert.equal(game.getUpdationId(1),3);
-    });
-    it('should return updationId as 0 if player is already served', () => {
-      let game = new Game(3, tileBox);
-      let player1 = new Player(0, 'pragya');
-      let player2 = new Player(1, 'aditi');
-      let player3 = new Player(2, 'praveen');
-      game.addPlayer(player1);
-      game.addPlayer(player2);
-      game.addPlayer(player3);
-      game.start();
-      game.updateStatus.setUpdationId(3);
-      game.getUpdationId(1);
-      assert.equal(game.getUpdationId(1),0);
-    });
-  });
-
 });

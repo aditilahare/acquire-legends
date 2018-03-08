@@ -42,7 +42,7 @@ describe('Market', () => {
       market.startHotel('Zeta',['2B','1A','2A','1B']);
       market.occupiedTiles=['1B','2B','1A','2A','1C','1D'];
       assert.deepEqual(market.placeTile('1C'), {
-        status: "Added to hotel",
+        status: "addedToHotel",
         inactiveHotels:[],
         activeHotels: [
           {

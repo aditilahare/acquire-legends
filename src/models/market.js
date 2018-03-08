@@ -177,17 +177,20 @@ class Market{
     return neighbourOccupiedTiles.length>0
     && neighbourHotelsOfTile.length==0;
   }
-  mergeManager(tile,neighbourHotelsOfTile,response){
+  mergeManager(tile,neighbourHotelsOfTile){
+    let response={};
     let stableHotels = neighbourHotelsOfTile.filter(hotel=>{
       return hotel.getSize()>10;
     });
     if (stableHotels.length>1) {
-      response.status="Invalid Tile";
+      response.status="invalidTile";
     }else {
-      response=this.mergerOfHotel(response,neighbourHotelsOfTile,tile);
+      response=this.mergerOfHotel(neighbourHotelsOfTile,tile);
     }
+    return response;
   }
-  mergerOfHotel(response,neighbourHotelsOfTile,tile){
+  mergerOfHotel(neighbourHotelsOfTile,tile){
+    let response={};
     response.status="merge";
     response.mergingTile=tile;
     let mergerBetween=neighbourHotelsOfTile;
@@ -207,17 +210,16 @@ class Market{
     let response=this.getState();
     if (this.isIndependentTile(tile)) {
       this.placeAsIndependentTile(tile);
-      response.status="Independent";
+      response.status="independentTile";
     }
     if(this.isAdjecentToAnyHotel(tile)) {
       let neighbourHotelsOfTile=this.getNeighbourHotelsOfTile(tile);
       if (neighbourHotelsOfTile.length==1) {
         this.addTileToExistingHotel(tile);
-        response.status="Added to hotel";
+        response.status="addedToHotel";
       }
       if (neighbourHotelsOfTile.length>1) {
-        this.mergeManager(tile,neighbourHotelsOfTile,response);
-        return response;
+        return this.mergeManager(tile,neighbourHotelsOfTile);
       }
     }else if(this.isStartingHotel(tile)){
       response=this.startingOfHotel(response,tile);
@@ -247,7 +249,7 @@ class Market{
       this.addTileToExistingHotel(tile);
     });
     let response=this.getState();
-    response.status="starting hotel";
+    response.status="startHotel";
     response.hotelName=hotel.name;
     return response;
   }

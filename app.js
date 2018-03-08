@@ -12,7 +12,6 @@ const currentPlayerRoute = require('./src/routes/currentPlayerRoute');
 const getAllPlayerNames = require('./src/routes/getAllPlayerNames');
 const isGameExisted = require('./src/routes/isGameExisted');
 const gameStatus = require('./src/routes/gameStatus');
-const changeDetails =require('./src/routes/changeDetails');
 
 const redirectToIndexForNoGame = function(req, res, next) {
   let game = req.app.game;
@@ -40,7 +39,7 @@ const redirectInvalidPlayer= function(req, res, next) {
 
 const startGame = function(req,res,next){
   let game=req.app.game;
-  if(game && !game.isInPlayMode() && game.haveAllPlayersJoined()){
+  if(game && game.isInWaitMode() && game.haveAllPlayersJoined()){
     game.start();
   }
   next();
@@ -48,9 +47,10 @@ const startGame = function(req,res,next){
 
 const redirectToWait = function(req, res, next) {
   let game = req.app.game;
+  let id=req.cookies.playerId;
   let urls = ['/game.html', '/index.html', '/'];
-  let status =game && urls.includes(req.url) && !game.isInPlayMode();
-  if(status){
+  let status =game && urls.includes(req.url) && game.isInWaitMode();
+  if(status && game.isValidPlayer(id)){
     res.redirect('/wait');
     return;
   }
@@ -61,7 +61,7 @@ const forbidActionsForWait = function(req, res, next) {
   let game = req.app.game;
   let invalidUrls = ['/gameStatus', '/playerDetails', '/actions',
     '/changeDetails', '/merge/disposeShares'];
-  if(game && !game.isInPlayMode() && invalidUrls.includes(req.url)) {
+  if(game && game.isInWaitMode() && invalidUrls.includes(req.url)) {
     res.sendStatus(403);
     return;
   }
@@ -102,15 +102,5 @@ app.post('/join',joinGame);
 app.post('/create',createGame);
 app.get('/playerDetails',playerDetails);
 app.get('/gameStatus',gameStatus);
-app.get('/changeDetails',changeDetails);
-app.post('/merge/disposeShares',(req,res)=>{
-  let game=req.app.game;
-  let playerId=req.cookies.playerId;
-  let sharesToDispose=req.body;
-  if(game.canSharesBeDeployed(playerId, sharesToDispose)){
-    game.disposeShares(playerId,sharesToDispose);
-  }
-  res.send(game.getStatus(playerId));
-});
 app.use(express.static('public'));
 module.exports=app;

@@ -3,14 +3,19 @@ let TileBox = require('../../src/models/tileBox.js');
 const Player = require('../../src/models/player.js');
 const mockRandomTiles = require('./mockRandomTiles.js').getTiles;
 
-let tileBox = new TileBox(3,9,mockRandomTiles);
-let game = new Game(3,tileBox);
-let player1 = new Player(0, 'pragya');
-let player2 = new Player(1, 'aditi');
-let player3 = new Player(2, 'praveen');
+let tileBox = new TileBox(12,9,mockRandomTiles);
+let game = new Game(6,tileBox);
+let player1 = new Player(0, 'veera');
+let player2 = new Player(1, 'wulfa');
+let player3 = new Player(2, 'harshad');
+let player4 = new Player(3, 'sachin');
+let player5 = new Player(4, 'aditi');
+let player6 = new Player(5, 'yogi');
 game.addPlayer(player1);
 game.addPlayer(player2);
 game.addPlayer(player3);
+game.addPlayer(player4);
+game.addPlayer(player5);
+game.addPlayer(player6);
 game.start();
-
 module.exports=game;

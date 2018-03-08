@@ -3,10 +3,10 @@ const router = express.Router;
 const app= router();
 
 const placeTile = require('./placeTile');
-const changeTurn = require('./changeTurn');
+
 const chooseHotel = require('./chooseHotel');
 const mergingForTieCase = require('./merging.js');
-const getTurnState = require('./getTurnState');
+
 const purchaseShares = require('./purchaseShares');
 const isCurrentPlayer = function(req){
   let game=req.app.game;
@@ -21,22 +21,32 @@ const doesGameExist = function(req){
 const isExpectedAction = function(req){
   let game=req.app.game;
   let id=req.cookies.playerId;
-  return game.isExpectedAction(req.url.slice(1));
+  let action=req.url.lastIndexOf('/');
+  action=req.url.slice(action+1);
+  return game.isExpectedAction(action);
 };
 
 const verifyCurrentPlayer = function(req,res,next){
+  console.log(isCurrentPlayer(req));
   if(doesGameExist(req)&&isCurrentPlayer(req)&& isExpectedAction(req)) {
     next();
   } else {
     res.sendStatus(403);
   }
 };
-app.get('/turnState',getTurnState);
+
 app.use(verifyCurrentPlayer);
 app.post('/purchaseShares',purchaseShares);
 app.post('/placeTile',placeTile);
 app.post('/chooseHotel',chooseHotel);
 app.post('/chooseHotelForMerge',mergingForTieCase);
-app.get('/changeTurn',changeTurn);
+app.post('/merge/disposeShares',(req,res)=>{
+  let game=req.app.game;
+  let playerId=req.cookies.playerId;
+  let sharesToDispose=req.body;
+  game.disposeShares(playerId,sharesToDispose);
+  res.send(game.getStatus(playerId));
+});
+
 
 module.exports=app;

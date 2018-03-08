@@ -1,56 +1,56 @@
 let actions = {
-  'Independent':function(response,action){
-    response.expectedActions=['purchaseShares','changeTurn'];
-    response.status="changeTurn";
-    if(response.activeHotels.length) {
-      response.status=action || "purchaseShares";
-    }
-    return response;
+  'independentTile':function(response,action){
+    let state={};
+    state.status=action||"purchaseShares";
+    return state;
   },
-  'Added to hotel':function(response,action){
-    response.expectedActions=['purchaseShares','changeTurn'];
-    response.status=action || "purchaseShares";
-    return response;
+  'addedToHotel':function(response,action){
+    let state={};
+    state.status=action || "purchaseShares";
+    return state;
   },
   'merge':function (response, action = undefined) {
-    response.expectedActions=['disposeShares'];
-    response.status='merge';
+    let state=JSON.parse(JSON.stringify(response));
     let mergingHotels=response.mergingHotels;
     let survivorHotels=response.survivorHotels;
+    state.mergingHotels=mergingHotels;
+    state.survivorHotels=survivorHotels;
     if (survivorHotels.length==1) {
-      this.performMergeAction(survivorHotels,mergingHotels,response);
+      let mergeStatus=this.performMergeAction(survivorHotels,mergingHotels);
+      state.status=mergeStatus.status;
+      state.currentMergingHotel=mergeStatus.currentMergingHotel;
+      state.survivorHotel=mergeStatus.survivorHotel;
     } else{
-      response.expectedActions=["chooseHotelForMerge"];
-      response.status="merge";
-      return response;
+      state.status="chooseHotelForMerge";
     }
-    return response;
+    return state;
   },
-  'chooseHotel':function(response,action = undefined){
-    response.expectedActions=['purchaseShares','changeTurn'];
-    response.status=action || "purchaseShares";
+  'chooseHotel':function(response,action){
+    let state={};
+    state.status=action || "purchaseShares";
     if(response.inactiveHotels.length>0){
-      response.expectedActions=['chooseHotel'];
-      response.status="chooseHotel";
+      state.status="chooseHotel";
+      state.tiles=response.tiles;
     }
-    return response;
+    return state;
   },
-  'starting hotel':function(response,action){
-    response.expectedActions=['purchaseShares','changeTurn'];
-    response.status=action || "purchaseShares";
-    return response;
+  'startHotel':function(response,action){
+    let state={};
+    state.status=action || "purchaseShares";
+    return state;
   },
-  'Invalid Tile':function (response,action = undefined) {
+  'invalidTile':function (response,action = undefined) {
+    let state={};
     let tile = this.tileBox.getTiles(1)[0];
     let currentPlayerID = this.turn.getCurrentPlayerID();
     let currentPlayer = this.findPlayerById(currentPlayerID);
     currentPlayer.addTile(tile);
     this.logActivity(`${currentPlayer.name} placed an Invalid tile`);
-    response.expectedActions=['placeTile'];
+    state.status='placeTile';
     let message = `You have placed an invalid tile\n
     Please place a valid tile`;
-    response.message = message;
-    return response;
+    state.message = message;
+    return state;
   }
 };
 
