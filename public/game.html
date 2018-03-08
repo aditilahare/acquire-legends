@@ -27,13 +27,7 @@
         <button type="button" id="buyButton">Buy</button>
       </div>
     </div>
-    <div id="disposeShares" class="hidden">
-      please deploy your shares
-      <input type="text" id="hotelNameOfwhichSharesToSell" name="hotelName"  value="">
-      <input type="text" id="noOfSharesToSell" name="noOfSharesToSell" placeholder="to SELL" value="">
-      <input type="text" id="noOfSharesToExchange" name="noOfSharesToExchange" placeholder="to EXCHANGE" value="">
-      <button type="submit" name="button" onclick="requestdisposeShares()">done</button>
-    </div>
+
     <div id = 'currentActivity' class='currentActivity'>
     </div>
     <div id='turns'>
@@ -64,6 +58,14 @@
 
         </div>
       </div>
+      <div class="modal" id="disposeShares">
+        <div class="modal-content dispose-shares-form" id="disposeSharesForm">
+            <label id="hotelNameOfwhichSharesToSell"></label><br>
+            <input type="text" id="noOfSharesToSell" name="noOfSharesToSell" placeholder="To Sell" value="">
+            <input type="text" id="noOfSharesToExchange" name="noOfSharesToExchange" placeholder="To Exchange" value=""><br>
+            <button type="submit" name="button" onclick="requestdisposeShares()">DISPOSE</button>
+          </div>
+        </div>
       <div id="centercolumn">
         <div>
           <div class='messageBar' id="messageBar">
@@ -93,5 +95,4 @@
     </div>
   </div>
 </body>
-
 </html>

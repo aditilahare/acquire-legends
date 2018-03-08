@@ -156,17 +156,17 @@ const displayForm = function (res,text,id,action) {
 let letPlayerDisposeShares=function(res){
   if (res.turnDetails.shouldIDispose) {
     let disposeSharesOption=getElement('#disposeShares');
-    disposeSharesOption.classList.remove('hidden');
+    disposeSharesOption.style.display='block';
     let hotelName=res.state.currentMergingHotel.name;
     displayFlashMessage(`Please dispose your shares of ${hotelName}`);
-    getElement("#hotelNameOfwhichSharesToSell").value=hotelName;
+    getElement("#hotelNameOfwhichSharesToSell").innerText=hotelName;
   } else {
     let message = 'Waiting for other players to dispose shares';
     displayFlashMessage(message);
   }
 };
 let requestdisposeShares=function(){
-  let hotelName=getElement("#hotelNameOfwhichSharesToSell").value;
+  let hotelName=getElement("#hotelNameOfwhichSharesToSell").innerText;
   let noOfSharesToSell=getElement("#noOfSharesToSell").value;
   let noOfSharesToExchange=getElement("#noOfSharesToExchange").value;
   let dataToSend=`hotelName=${hotelName}&noOfSharesToSell=${noOfSharesToSell}`;
@@ -175,7 +175,7 @@ let requestdisposeShares=function(){
     sendAjaxRequest('POST','/merge/disposeShares',dataToSend,renderGameStatus);
     let disposeSharesOption=getElement('#disposeShares');
     getGameStatus();
-    disposeSharesOption.classList.add('hidden');
+    disposeSharesOption.style.display="none";
   }
 };
 let getElement = function(selector){

@@ -639,3 +639,37 @@ button[name="Start hotel"], select{
 .region h2{
   color: #000000;
 }
+
+.dispose-shares-form{
+  font-size: 22px;
+  background: rgb(151, 119, 77);
+  color: rgba(17, 17, 17, 0.89);
+  border: none;
+}
+
+.dispose-shares-form input{
+  font-family: inherit;
+  font-size: 12px;
+  padding: 3px;
+  font-weight: 300;
+  background-color: #B8CEE9;
+  border: none;
+  border-radius: 2px;
+}
+
+.dispose-shares-form button{
+  font-family: inherit;
+  font-weight: 400;
+  font-size: 14px;
+  margin:7px 0;
+  padding: 5px;
+  background: #d0bea8;
+  border: none;
+  border-radius: 3px;
+  -webkit-appearance:none;
+  cursor: pointer;
+}
+
+.dispose-shares-form button:hover,.dispose-shares-form button:active{
+  opacity: .75;
+}
