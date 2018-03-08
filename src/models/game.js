@@ -56,7 +56,9 @@ class Game {
     let playerShares=this.getPlayerSharesDetails(playerId);
     let player = this.findPlayerById(playerId);
     let noOfSharesToSell = sharesToDeploy.noOfSharesToSell;
-    let bool = player.doesPlayerHasEnoughShares(hotelName,noOfSharesToSell);
+    let noOfSharesToExchange = sharesToDeploy.noOfSharesToExchange;
+    let totalSharesToDispose = noOfSharesToSell + noOfSharesToExchange;
+    let bool = player.doesPlayerHasEnoughShares(hotelName,totalSharesToDispose);
     // playerShares[hotelName]>=sharesToDeploy.noOfSharesToSell;
     return isSameHotel && bool;
   }

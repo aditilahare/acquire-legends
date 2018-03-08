@@ -107,7 +107,9 @@ app.post('/merge/disposeShares',(req,res)=>{
   let game=req.app.game;
   let playerId=req.cookies.playerId;
   let sharesToDispose=req.body;
-  game.disposeShares(playerId,sharesToDispose);
+  if(game.canSharesBeDeployed(playerId, sharesToDispose)){
+    game.disposeShares(playerId,sharesToDispose);
+  }
   res.send(game.getStatus(playerId));
 });
 app.use(express.static('public'));

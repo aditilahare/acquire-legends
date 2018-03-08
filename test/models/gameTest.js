@@ -549,7 +549,7 @@ describe('game test', function() {
         hotelName: "Zeta",
         noOfSharesToSell: 1
       });
-      assert.deepEqual(game.turn.state.status, 'changeTurn');
+      assert.deepEqual(game.turn.state.status, 'merge');
     });
     it('merge', () => {
       game = new Game(3, tileBox);
@@ -809,15 +809,14 @@ describe('game test', function() {
       zeta.occupiedTiles = [];
       zeta.status = false;
       let sackson = new Hotel('Sackson', 'rgb(205, 61, 65)', 2);
-      let expectedTilesOfSackson= ["8A","7A","8B","9B","10B","9C","9A","8C","5A","4A","3A","2A","1A","4B","2B","6C","6B","6A"];
+      let expectedTilesOfSackson= ["8A","7A","8B","9B","10B","9C","9A","8C"];
       sackson.occupiedTiles = expectedTilesOfSackson;
-      sackson.sharePrice = 700;
+      sackson.sharePrice = 600;
       sackson.shares = 23;
       sackson.status = true;
-      console.log("a");
       let status = game.getStatus(0);
-      assert.deepEqual(game.getTurnState().status, 'gameOver');
-      assert.deepEqual(status.state.expectedActions, ['purchaseShares']);
+      assert.deepEqual(game.getTurnState().status, 'merge');
+      assert.deepEqual(status.state.expectedActions, ['disposeShares']);
       assert.deepEqual(game.market.getHotel("Sackson"), sackson);
     });
     it('disrtibute game over bonus', () => {
@@ -870,15 +869,18 @@ describe('game test', function() {
       game.placeTile(0, '6A');
       game.disposeShares(0, {
         hotelName: "Zeta",
-        noOfSharesToSell: 3
+        noOfSharesToSell: 3,
+        noOfSharesToExchange:0
       });
       game.disposeShares(1, {
         hotelName: "Zeta",
-        noOfSharesToSell: 1
+        noOfSharesToSell: 1,
+        noOfSharesToExchange:0
       });
       game.disposeShares(1, {
         hotelName: "Fusion",
-        noOfSharesToSell: 1
+        noOfSharesToSell: 1,
+        noOfSharesToExchange:0
       });
       let zeta = new Hotel('Zeta', 'rgb(236, 222, 34)', 2);
       zeta.occupiedTiles = [];
@@ -891,15 +893,15 @@ describe('game test', function() {
       sackson.status = true;
       let status = game.getStatus(0);
       assert.deepEqual(game.getTurnState().status, 'gameOver');
-      assert.equal(game.findPlayerById(0).getAvailableCash(), 12800);
-      assert.equal(game.findPlayerById(1).getAvailableCash(), 25900);
+      assert.equal(game.findPlayerById(0).getAvailableCash(), 16300);
+      assert.equal(game.findPlayerById(1).getAvailableCash(), 22400);
       assert.equal(game.findPlayerById(2).getAvailableCash(), 6000);
       assert.equal(game.findPlayerById(3).getAvailableCash(), 6000);
       let rankList = [{
-        "cash": 25900,
+        "cash": 22400,
         "name": "aditi"
       }, {
-        "cash": 12800,
+        "cash": 16300,
         "name": "pragya"
       },
       {
@@ -1266,7 +1268,8 @@ describe('canSharesBeDeployed', () => {
     game.createMergingTurn('Zeta');
     assert.isTrue(game.canSharesBeDeployed(0, {
       hotelName: 'Sackson',
-      noOfSharesToSell: 1
+      noOfSharesToSell: 1,
+      noOfSharesToExchange:0
     }));
   })
   it('should give false when player does not have enoungh shares to sell', () => {

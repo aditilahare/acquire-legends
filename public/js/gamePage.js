@@ -175,6 +175,8 @@ let requestdisposeShares=function(){
     sendAjaxRequest('POST','/merge/disposeShares',dataToSend,renderGameStatus);
     let disposeSharesOption=getElement('#disposeShares');
     getGameStatus();
+    // getElement("#noOfSharesToSell").value='';
+    // getElement("#noOfSharesToExchange").value='';
     disposeSharesOption.style.display="none";
   }
 };
