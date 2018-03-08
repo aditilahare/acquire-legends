@@ -99,7 +99,13 @@ actions["merge"]=function(res){
 actions['purchaseShares']=function(res){
   sendAjaxRequest('GET','/gameStatus','',function(){
     let res=JSON.parse(this.responseText);
-    let areSharesAvailable = res.state.activeHotels.reduce((prevBool,hotel)=>{
+    let activeHotels = res.state.activeHotels;
+    if(!activeHotels){
+      activeHotels= res.hotelsData.filter(hotel => {
+        return hotel.status;
+      });
+    }
+    let areSharesAvailable = activeHotels.reduce((prevBool,hotel)=>{
       return prevBool || hotel.shares>0;
     },false);
     if(res.turnDetails.isMyTurn&&areSharesAvailable){
@@ -261,6 +267,7 @@ const processShareDetails = function(sharesDiv,sharesDetails){
     }
   });
 };
+
 const displaySharesDetails = function(sharesDetails){
   let sharesDiv = document.getElementById('playerShares');
   processShareDetails(sharesDiv,sharesDetails);
