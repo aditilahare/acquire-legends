@@ -55,8 +55,8 @@ class Game {
     let isSameHotel=(hotelName==mergingHotelName);
     let playerShares=this.getPlayerSharesDetails(playerId);
     let player = this.findPlayerById(playerId);
-    let noOfSharesToSell = sharesToDeploy.noOfSharesToSell;
-    let noOfSharesToExchange = sharesToDeploy.noOfSharesToExchange;
+    let noOfSharesToSell = +sharesToDeploy.noOfSharesToSell;
+    let noOfSharesToExchange = +sharesToDeploy.noOfSharesToExchange;
     let totalSharesToDispose = noOfSharesToSell + noOfSharesToExchange;
     let bool = player.doesPlayerHasEnoughShares(hotelName,totalSharesToDispose);
     // playerShares[hotelName]>=sharesToDeploy.noOfSharesToSell;
