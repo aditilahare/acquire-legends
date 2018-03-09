@@ -118,8 +118,8 @@ describe('App Test', () => {
       request(app)
         .get('/wait')
         .set('Cookie', 'playerId=0')
-        .expect(302)
-        .expect(/game.html/i)
+        .expect(200)
+        .expect(/waiting for Other Players to join/i)
         .end(done);
     });
     it('should be redirected to /game.html\
@@ -152,8 +152,8 @@ describe('App Test', () => {
         request(app)
           .get('/wait')
           .set('Cookie', 'playerId=0')
-          .expect(302)
-          .expect(/game.html/)
+          .expect(200)
+          .expect(/waiting for Other players to join/i)
           .end(done);
     })
     it('should be redirected to /\

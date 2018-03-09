@@ -70,7 +70,7 @@ const redirectValidPlayer = function(req, res, next) {
   let game = req.app.game;
   let playerId = req.cookies.playerId;
   let urls = ['/', '/index.html', '/create', '/join','/wait'];
-  let status = game && game.isValidPlayer(playerId);
+  let status = game && game.isValidPlayer(playerId)&& game.isInPlayMode();
   if(status && urls.includes(req.url)) {
     res.redirect('/game.html');
     return;
