@@ -424,15 +424,7 @@ padding: 14px;
   justify-content: center;
 }
 
-#cart{
-  display: inline-flex;
-  align-items: center;
-  justify-content:space-around;
-  height: 40px;
-  width: 150px;
-  border:1px solid black;
-  background-color: white;
-}
+
 
 .modal {
     padding: 12px;
@@ -474,13 +466,6 @@ button[name="Start hotel"], select{
 .bg-none{
   margin-left: 0;
   background-color:rgba(207, 177, 156, 0);
-}
-
-#buyButton{
-  width: 40px;
-  height: 21px;
-  color:#000000;
-  font-family: inherit;
 }
 
 .titles{
@@ -621,7 +606,7 @@ button[name="Start hotel"], select{
   color: #000000;
 }
 
-.dispose-shares-form,.inactive-hotels-form,.choose-surv-hotel{
+.dispose-shares-form,.inactive-hotels-form,.choose-surv-hotel,.purchase-shares{
   font-size: 22px;
   background: rgb(151, 119, 77);
   color: rgba(17, 17, 17, 0.89);
@@ -639,7 +624,7 @@ button[name="Start hotel"], select{
 }
 
 .dispose-shares-form button,.inactive-hotels-form button,
-.choose-surv-hotel button{
+.choose-surv-hotel button,.buyButton{
   font-family: inherit;
   font-weight: 500;
   font-size: 14px;
@@ -653,7 +638,8 @@ button[name="Start hotel"], select{
 }
 
 .dispose-shares-form button:hover,.dispose-shares-form button:active,
-.choose-surv-hotel button:hover,.choose-surv-hotel button:active{
+.choose-surv-hotel button:hover,.choose-surv-hotel button:active,
+.buyButton:hover,.buyButton:active{
   opacity: .75;
 }
 
@@ -663,7 +649,7 @@ button[name="Start hotel"], select{
   background-color: rgb(130, 34, 22);
 }
 
-.inactive-hotels-form,.choose-surv-hotel{
+.inactive-hotels-form,.choose-surv-hotel,.purchase-shares{
   display: flex;
   flex-direction: column;
   padding: 25px;
@@ -676,7 +662,7 @@ button[name="Start hotel"], select{
   margin: auto;
 }
 
-.choose-surv-hotel button,.inactive-hotels-form button{
+.choose-surv-hotel button,.inactive-hotels-form button,.buyButton{
   margin: auto;
   margin-top: 8px;
   width: 100px;
@@ -684,4 +670,48 @@ button[name="Start hotel"], select{
 
 .inactive-hotels-form select:focus,.choose-surv-hotel select:focus{
   outline: none;
+}
+
+.purchase-shares{
+  padding: 60px;
+  width:500px;
+  align-items: center;
+}
+.cart{
+  display: inline-flex;
+  align-items: center;
+  justify-content:space-around;
+  width: 120px;
+  padding: 1px 3px;
+  border-bottom: 2px solid rgb(91, 90, 88);
+  background-color: inherit;
+}
+
+.listed-hotels{
+  padding: 10px;
+  display: flex;
+  justify-content: space-around;
+}
+
+.share-button {
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 200;
+  color: #ffffff;
+  background-image: none;
+  border: none;
+  padding: 6px;
+  margin: 3px;
+}
+.share-button:hover{
+  cursor: pointer;
+  opacity: .9;
+}
+.share-button:focus{
+  outline: none;
+}
+h4{
+  font-size: 22px;
+  margin: 5px 0 15px 0;
+  font-weight: 500;
 }

@@ -62,21 +62,19 @@ let letPlayerDisposeShares = function(res) {
   let state = res.turnDetails.state;
   let hotelName = state.currentMergingHotel.name;
   displayFlashMessage(`Please dispose your shares of ${hotelName}`);
-  getElement("#hotelNameOfwhichSharesToSell").value = hotelName;
+  getElement("#hotelNameOfwhichSharesToSell").innerText = hotelName;
 };
 let requestdisposeShares = function() {
-  let hotelName = getElement("#hotelNameOfwhichSharesToSell").value;
+  let hotelName = getElement("#hotelNameOfwhichSharesToSell").innerText;
   let noOfSharesToSell = getElement("#noOfSharesToSell").value || 0;
   let noOfSharesToExchange = getElement("#noOfSharesToExchange").value || 0;
-  let dataToSend = `hotelName=${hotelName}&noOfSharesToSell=${noOfSharesToSell}`;
+  let dataToSend=`hotelName=${hotelName}&noOfSharesToSell=${noOfSharesToSell}`;
   if (noOfSharesToExchange % 2 == 0) {
     dataToSend += `&noOfSharesToExchange=${noOfSharesToExchange}`;
     sendAjaxRequest('POST', '/actions/merge/disposeShares',
       dataToSend, renderGameStatus);
     let disposeSharesOption = getElement('#disposeShares');
     getGameStatus();
-    // getElement("#noOfSharesToSell").value='';
-    // getElement("#noOfSharesToExchange").value='';
     disposeSharesOption.style.display="none";
   }
 };
@@ -102,15 +100,15 @@ const prepareCart = function() {
     return previous;
   }, {});
 };
-const showEndTurn = function() {
-  let element = getElement('#change-turn');
-  element.classList.remove('hidden');
-  element = getElement('#change-turn button').onclick = purchaseShares;
+const showEndTurn = function () {
+  let element=getElement('#change-turn');
+  element.style.display='block';
+  getElement('#buyButton').onclick=purchaseShares;
 };
-const hideEndTurn = function() {
-  let element = getElement('#change-turn');
-  element.classList.add('hidden');
-  element = getElement('#change-turn button').onclick = '';
+const hideEndTurn = function () {
+  let element=getElement('#change-turn');
+  element.style.display='none';
+  element=getElement('#change-turn').onclick='';
 };
 const tableGenerator = function(rows, columns) {
   let grid = '';

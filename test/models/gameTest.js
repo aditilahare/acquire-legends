@@ -322,7 +322,6 @@ describe('game test', function() {
       zeta.availableShares=0;
       game.startHotel('Zeta',1);
       let player = game.findPlayerById(1);
-      // console.log(player);
       assert.deepEqual(player.shares.Zeta,0);
     });
   });

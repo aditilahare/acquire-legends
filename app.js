@@ -17,8 +17,6 @@ const redirectToIndexForNoGame = function(req, res, next) {
   let game = req.app.game;
   let urls=['/create','/isGameExisted','/','/index.html','/favicon.ico'];
   if(!game && !urls.includes(req.url)){
-
-    console.log(req.url);
     res.redirect('/');
     return;
   }
@@ -72,7 +70,7 @@ const redirectValidPlayer = function(req, res, next) {
   let game = req.app.game;
   let playerId = req.cookies.playerId;
   let urls = ['/', '/index.html', '/create', '/join','/wait'];
-  let status = game && game.isInPlayMode() && game.isValidPlayer(playerId);
+  let status = game && game.isValidPlayer(playerId);
   if(status && urls.includes(req.url)) {
     res.redirect('/game.html');
     return;

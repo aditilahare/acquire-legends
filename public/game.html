@@ -18,21 +18,15 @@
   <div class="header">
     <span class="heading">ACQUIRE</span>
     <span id="playerName">
-  </div>
-  <div class="actionPane">
-    <div class='actions'>
-      <div class="hidden" id="listed-hotels">
-      </div>
-      <div class="change-turn hidden" id="change-turn">
-        <div id="cart"></div>
-        <button type="button" id="buyButton">Buy</button>
-      </div>
     </div>
+    <div class="actionPane">
+      <div class='actions'>
+      </div>
 
-    <div id = 'currentActivity' class='currentActivity'>
-    </div>
-    <div id='turns'>
-    </div>
+      <div id = 'currentActivity' class='currentActivity'>
+      </div>
+      <div id='turns'>
+      </div>
     </span>
   </div>
   <div class="row">
@@ -57,19 +51,26 @@
       </div>
       <div class="modal" id="disposeShares">
         <div class="modal-content dispose-shares-form" id="disposeSharesForm">
-            <label id="hotelNameOfwhichSharesToSell"></label><br>
-            <input type="text" id="noOfSharesToSell" name="noOfSharesToSell" placeholder="To Sell" value="">
-            <input type="text" id="noOfSharesToExchange" name="noOfSharesToExchange" placeholder="To Exchange" value=""><br>
-            <button type="submit" name="button" onclick="requestdisposeShares()">DISPOSE</button>
-          </div>
+          <h4>DISPOSE SHARES</h4>
+          <label id="hotelNameOfwhichSharesToSell"></label><br>
+          <input type="text" id="noOfSharesToSell" name="noOfSharesToSell" placeholder="To Sell" value="">
+          <input type="text" id="noOfSharesToExchange" name="noOfSharesToExchange" placeholder="To Exchange" value=""><br>
+          <button type="submit" name="button" onclick="requestdisposeShares()">DISPOSE</button>
         </div>
+      </div>
+      <div class="modal" id="change-turn">
+        <div class="modal-content purchase-shares">
+          <h4>BUY SHARES</h4>
+          <div class="cart" id="cart"></div>
+          <div class="listed-hotels" id="listed-hotels"></div>
+          <button type="button" class="buyButton" id="buyButton">Buy</button>
+        </div>
+      </div>
       <div id="centercolumn">
         <div>
           <div class='messageBar' id="messageBar">
-
           </div>
           <div id='board'  style="height:540px;width:720px;">
-
           </div>
         </div>
       </div>

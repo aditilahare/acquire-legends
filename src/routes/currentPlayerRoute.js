@@ -27,7 +27,6 @@ const isExpectedAction = function(req){
 };
 
 const verifyCurrentPlayer = function(req,res,next){
-  console.log(isCurrentPlayer(req));
   if(doesGameExist(req)&&isCurrentPlayer(req)&& isExpectedAction(req)) {
     next();
   } else {

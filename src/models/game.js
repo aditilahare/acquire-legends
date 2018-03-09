@@ -272,16 +272,13 @@ class Game {
     let state=this.turn.getState();
     let mergingHotels=state.mergingHotels;
     let currentMergingHotel=state.currentMergingHotel;
-    let hotelName=sharesToDeploy.hotelName;
     let noOfSharesToSell=sharesToDeploy.noOfSharesToSell;
-    this.playerSellsShares(playerId,noOfSharesToSell,hotelName);
+    this.playerSellsShares(playerId,noOfSharesToSell,sharesToDeploy.hotelName);
     this.playerExchangesShare(playerId,sharesToDeploy,state);
     this.turn.updateTurn();
     let indexOfMergingHotel=mergingHotels.indexOf(currentMergingHotel);
-    let haveAllPlayersDeployed=(this.turn.getCurrentPlayerIndex()==0);
-    if (haveAllPlayersDeployed) {
-      let haveAllHotelsMerged=((indexOfMergingHotel+1)==mergingHotels.length);
-      if (haveAllHotelsMerged) {
+    if (this.turn.getCurrentPlayerIndex()==0) {
+      if ((indexOfMergingHotel+1)==mergingHotels.length) {
         this.endMergingProcess();
       }else {
         state.currentMergingHotel=mergingHotels[indexOfMergingHotel+1];
