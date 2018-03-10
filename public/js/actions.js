@@ -1,6 +1,10 @@
 const actions={};
-actions['placeTile']=function(){
+actions['placeTile']=function(res){
   enableTilesClick();
+  let state=res.turnDetails.state;
+  if(state.message) {
+    actions['invalidTile'](res);
+  }
 };
 
 actions['chooseHotel']=function(res){
@@ -30,9 +34,9 @@ actions['gameOver'] = function (res) {
   document.getElementById('rankListDisplay').style.display = 'flex';
 };
 
-actions['Invalid Tile'] = function (res) {
+actions['invalidTile'] = function (res) {
   let messageBar = document.getElementById("messageBar");
-  messageBar.innerText = res.state.message;
+  messageBar.innerText = res.turnDetails.state.message;
   messageBar.className = "show";
   setTimeout(()=>{
     messageBar.className = messageBar.className.replace("show", "");

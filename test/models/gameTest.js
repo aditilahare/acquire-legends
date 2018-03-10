@@ -379,6 +379,7 @@ describe('game test', function() {
         hotelsData: [],
         turnDetails: {
           currentAction:'placeTile',
+          "message": "Please place a tile.",
           currentPlayer: 'pragya',
           otherPlayers: ['pragya', 'aditi'],
           isMyTurn: true,
@@ -653,6 +654,9 @@ describe('game test', function() {
       game.addPlayer(player1);
       game.turn = new Turn([0]);
       game.market.hotels = [new Hotel('Zeta'), new Hotel('Sackson'), new Hotel('a')];
+      game.bank.createSharesOfHotel('Zeta',25);
+      game.bank.createSharesOfHotel('Sackson',25);
+      game.bank.createSharesOfHotel('a',25);
       let tiles = ['1A','1C','2A','2B','2C','3A','3B','4A','4B','5A','1B'];
       game.market.startHotel('Zeta', tiles);
       tiles = ['7A','7C','8A','8B','8C','9A','9B','10A','10B','11A','7B'];
@@ -750,6 +754,7 @@ describe('game test', function() {
       game.placeTile(3, '8C');
       game.changeCurrentPlayer();
       game.placeTile(0, '6A')
+      assert.deepEqual(game.getTurnState().status, 'disposeShares');
       game.disposeShares(0, {
         hotelName: "Zeta",
         noOfSharesToSell: 3
@@ -772,8 +777,8 @@ describe('game test', function() {
       sackson.shares = 23;
       sackson.status = true;
       let status = game.getStatus(0);
-      assert.deepEqual(game.getTurnState().status, 'disposeShares');
-      assert.deepEqual(game.market.getHotel("Sackson"), sackson);
+      assert.deepEqual(game.getTurnState().status, 'gameOver');
+      // assert.deepEqual(game.market.getHotel("Sackson"), sackson);
     });
     it('disrtibute game over bonus', () => {
       let game = new Game(4, tileBox);

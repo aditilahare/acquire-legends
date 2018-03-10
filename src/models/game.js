@@ -40,9 +40,13 @@ class Game {
     player.addShares(hotelName, noOfShares);
   }
   canCurrentPlayerBuyShares(){
+    let bank=this.bank;
     let lowestPrice = this.market.getLowestCostPerShare();
-    let activeHotels=this.market.getActiveHotels().length>0;
-    return this.doesCurrentPlayerHasMoney(lowestPrice) && activeHotels;
+    let activeHotels=this.market.getActiveHotels();
+    let areSharesAvailble=activeHotels.some(function(hotel){
+      return bank.doesHotelhaveEnoughShares(hotel.name,1);
+    });
+    return this.doesCurrentPlayerHasMoney(lowestPrice) && areSharesAvailble;
   }
   canSharesBeDeployed(playerId,sharesToDeploy){
     debugger;
@@ -93,12 +97,9 @@ class Game {
     player.deductMoney(money);
   }
   disposeShares(playerId,sharesToDeploy){
-    debugger;
     let player=this.findPlayerById(playerId);
     let hotelName=sharesToDeploy.hotelName;
-    if (this.canSharesBeDeployed(playerId,sharesToDeploy)) {
-      this.letPlayerDisposeShares(playerId,sharesToDeploy);
-    }
+    this.letPlayerDisposeShares(playerId,sharesToDeploy);
   }
   distributeInitialMoney(initialMoney) {
     this.players.forEach(player => {
@@ -211,8 +212,10 @@ class Game {
     turnDetails.currentPlayer = currentPlayerDetails.name;
     turnDetails.otherPlayers = otherPlayers;
     turnDetails.isMyTurn=false;
+    turnDetails.message=this.getOthersMessage(state.status);
     if(currentPlayerDetails.id==id || !this.isInPlayMode()) {
       turnDetails.isMyTurn=true;
+      turnDetails.message=this.getCurrentPlayerMsg(state.status);
       turnDetails.currentAction=state.status;
       turnDetails.state=this.getTurnState();
     }
@@ -434,6 +437,30 @@ class Game {
     let state=this.actions['merge'].call(this,oldResponse);
     this.turn.setState(state);
     return 200;
+  }
+  getCurrentPlayerMsg(action){
+    let state=this.getTurnState();
+    let hotelName=state.currentMergingHotel;
+    let currentMsgs={
+      'placeTile':'Please place a tile.',
+      'chooseHotel':'Please choose a hotel to start.',
+      'purchaseShares':'Please purchase shares.',
+      'chooseHotelForMerge':'Please select a hotel to survive merge.',
+      'disposeShares':`Please dispose shares of ${hotelName}.`
+    };
+    return currentMsgs[action];
+  }
+  getOthersMessage(action){
+    let playerName=this.getCurrentPlayer().name;
+    let msgs={
+      'placeTile':`Waiting for ${ playerName } to place tile.`,
+      'chooseHotel':`Waiting for ${ playerName } to start a hotel.`,
+      'purchaseShares':`Waiting for ${ playerName } to purchase shares.`,
+      'chooseHotelForMerge':`Waiting for ${ playerName } to select \
+      survivor hotel.`,
+      'disposeShares':`Waiting for ${ playerName } to dispose shares.`
+    };
+    return msgs[action];
   }
 }
 module.exports = Game;

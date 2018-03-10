@@ -81,26 +81,6 @@ const displayMoney = function(money){
   return;
 };
 
-const displayCurrentAction = function (turnDetails, expectedAction) {
-  let message = '';
-  if(turnDetails.isMyTurn){
-    message = 'Please ';
-  } else {
-    message = `Waiting for ${turnDetails.currentPlayer} to `;
-  }
-  message += flashMessage[expectedAction];
-  displayFlashMessage(message);
-  return;
-};
-
 const displayFlashMessage = function (message) {
   document.getElementById('currentActivity').innerText=message;
-};
-
-let flashMessage = {
-  'placeTile' : 'place tile',
-  'purchaseShares' : 'purchase shares',
-  'chooseHotel' : 'choose hotel to start',
-  'chooseHotelForMerge' : 'choose hotel for merge',
-  'deployShares' : 'deploy shares',
 };
