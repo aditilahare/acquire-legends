@@ -10,12 +10,32 @@ const createGame = require('./src/routes/createGame');
 const playerDetails = require('./src/routes/playerDetails');
 const currentPlayerRoute = require('./src/routes/currentPlayerRoute');
 const getAllPlayerNames = require('./src/routes/getAllPlayerNames');
-const isGameExisted = require('./src/routes/isGameExisted');
 const gameStatus = require('./src/routes/gameStatus');
+
+const redirectInvalidGameReq = function(req, res, next) {
+  let gameId = req.app.game;
+  let playerId = req.cookies.playerId;
+  let urls=['/','/index.html','/create','/join','/gamesInfo'];
+  if( !req.cookies.gameId && !urls.includes(req.url)){
+    res.redirect('/');
+    return;
+  }
+  next();
+};
+
+const provideGame = function(req, res, next) {
+  let gameManager = req.app.gameManager;
+  let gameId = req.cookies.gameId;
+  let urls = ['/create','/join'];
+  if(gameId && !urls.includes(req.url)){
+    req.app.game = gameManager.getGameById(gameId);
+  }
+  next();
+};
 
 const redirectToIndexForNoGame = function(req, res, next) {
   let game = req.app.game;
-  let urls=['/create','/isGameExisted','/','/index.html','/favicon.ico'];
+  let urls=['/isGameExisted','/','/index.html','/favicon.ico'];
   if(!game && !urls.includes(req.url)){
     res.redirect('/');
     return;
@@ -26,14 +46,13 @@ const redirectToIndexForNoGame = function(req, res, next) {
 const redirectInvalidPlayer= function(req, res, next) {
   let game = req.app.game;
   let playerId = req.cookies.playerId;
-  let urls=['/create','/isGameExisted','/','/index.html','/join'];
+  let urls=['/','/index.html','/join'];
   if(game && !game.isValidPlayer(playerId) && !urls.includes(req.url)){
     res.redirect('/');
     return;
   }
   next();
 };
-
 
 const startGame = function(req,res,next){
   let game=req.app.game;
@@ -45,10 +64,10 @@ const startGame = function(req,res,next){
 
 const redirectToWait = function(req, res, next) {
   let game = req.app.game;
-  let id=req.cookies.playerId;
+  let playerId = req.cookies.playerId;
   let urls = ['/game.html', '/index.html', '/'];
-  let status =game && urls.includes(req.url) && game.isInWaitMode();
-  if(status && game.isValidPlayer(id)){
+  let status =game && game.isValidPlayer(playerId) && !game.isInPlayMode();
+  if(status && urls.includes(req.url)){
     res.redirect('/wait');
     return;
   }
@@ -70,7 +89,7 @@ const redirectValidPlayer = function(req, res, next) {
   let game = req.app.game;
   let playerId = req.cookies.playerId;
   let urls = ['/', '/index.html', '/create', '/join','/wait'];
-  let status = game && game.isValidPlayer(playerId)&& game.isInPlayMode();
+  let status = game && game.isValidPlayer(playerId) && game.isInPlayMode();
   if(status && urls.includes(req.url)) {
     res.redirect('/game.html');
     return;
@@ -84,6 +103,11 @@ app.use('/images',express.static('public/images'));
 app.use(express.urlencoded({extended:false}));
 app.use(express.json());
 app.use(cookieParser());
+app.post('/create',createGame);
+//app.get('/gamesInfo',gamesInfo);
+app.post('/join',joinGame);
+app.use(redirectInvalidGameReq);
+app.use(provideGame);
 app.use(logRequest);
 app.use(redirectToIndexForNoGame);
 app.use(redirectInvalidPlayer);
@@ -92,12 +116,9 @@ app.use(redirectToWait);
 app.use(forbidActionsForWait);
 app.use(redirectValidPlayer);
 app.use('/actions',currentPlayerRoute);
-app.get('/isGameExisted',isGameExisted);
 app.get('/wait',getWaitingPage);
 app.get('/haveAllPlayersJoined',haveAllPlayersJoined);
 app.get('/getAllPlayerNames',getAllPlayerNames);
-app.post('/join',joinGame);
-app.post('/create',createGame);
 app.get('/playerDetails',playerDetails);
 app.get('/gameStatus',gameStatus);
 app.use(express.static('public'));

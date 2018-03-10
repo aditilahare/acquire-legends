@@ -2,6 +2,8 @@ const http=require('http');
 const fs=require('fs');
 const app = require('./app');
 const PORT=process.env.PORT || 8000;
+const GameManager = require('./src/models/gameManager.js');
+app.gameManager = new GameManager();
 
 app.fs=fs;
 

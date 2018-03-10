@@ -25,14 +25,10 @@ const toggleButtons = function() {
   }
 };
 
-const doesGameExisted = function(){
-  sendAjaxRequest('GET','/isGameExisted','',toggleButtons);
-};
-
 const verfifyUserName =function(){
   let form = event.target;
 };
 
 window.onload = function () {
-  doesGameExisted();
+  //doesGameExisted();
 };

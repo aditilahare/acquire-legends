@@ -1,18 +1,18 @@
 const Game = require('../models/game.js');
 const addPlayer = require('./joinGame').addPlayer;
-const isNumberBetween = require('../utils/utilities').isNumberBetween;
+const isValidNumberOfPlayers = require('../utils/utilities').isNumberBetween;
 
 const createGame = function(req, res, next) {
   let body = req.body;
+  let gameManager = req.app.gameManager;
+  let gameId = gameManager.getAvailableIdForGame();
+  req.body.gameId = gameId;
   let numberOfPlayers = body.numberOfPlayers;
-  if(!req.app.game && isNumberBetween(numberOfPlayers,3,6)){
-    let game = new Game(numberOfPlayers);
-    req.app.game = game;
-    addPlayer(req,res,next);
-    return;
-  }
-  res.send('Number of players should be between 3 and 6 / another \
-game is currently running');
+  let game = new Game(numberOfPlayers);
+  gameManager.addGame(game,body.playerName);
+  req.app.game = gameManager.getGameById(gameId);
+  addPlayer(req,res,next);
+  return;
 };
 
 

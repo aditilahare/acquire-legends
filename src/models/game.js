@@ -277,6 +277,9 @@ class Game {
   isInWaitMode() {
     return this.MODE == 'wait';
   }
+  hasEnded() {
+    return this.MODE == "END";
+  }
   isVacant() {
     return this.getPlayerCount() < this.maxPlayers;
   }

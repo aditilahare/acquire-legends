@@ -13,6 +13,10 @@ body{
   background-repeat: no-repeat;
 }
 
+h2{
+  font-weight: 500;
+}
+
 h1{
   color: #C0C0C0;
   font-weight: 500;
@@ -38,6 +42,7 @@ footer{
 }
 
 .loader {
+  padding: 10px;
   align-content: center;
   -webkit-align-content:center;
   margin: auto;
@@ -64,4 +69,15 @@ footer{
 div.container{
   height: 850px;
   width: auto;
+}
+
+.gameId{
+  font-size: 22px;
+  font-weight: 400;
+  padding: 10px;
+}
+
+.gameId span{
+  font-weight: 600;
+  padding: 10px;
 }
