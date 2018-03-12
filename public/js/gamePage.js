@@ -56,20 +56,23 @@ const displayForm = function(res, text, id, action) {
   form.parentNode.style.display = "block";
 };
 
-let letPlayerDisposeShares = function(res) {
+const letPlayerDisposeShares = function(res) {
   let disposeSharesOption = getElement('#disposeShares');
   disposeSharesOption.style.display = 'block';
   let state = res.turnDetails.state;
   let hotelName = state.currentMergingHotel.name;
   displayFlashMessage(`Please dispose your shares of ${hotelName}`);
-  getElement("#hotelNameOfwhichSharesToSell").innerText = hotelName;
+  getElement("#hotelNameOfwhichSharesToDispose").innerText = hotelName;
 };
-let requestdisposeShares = function() {
-  let hotelName = getElement("#hotelNameOfwhichSharesToSell").innerText;
+const requestdisposeShares = function() {
+  let hotelName = getElement("#hotelNameOfwhichSharesToDispose").innerText;
   let noOfSharesToSell = getElement("#noOfSharesToSell").value || 0;
   let noOfSharesToExchange = getElement("#noOfSharesToExchange").value || 0;
   let dataToSend=`hotelName=${hotelName}&noOfSharesToSell=${noOfSharesToSell}`;
-  if (noOfSharesToExchange % 2 == 0) {
+  let bool = noOfSharesToExchange % 2 == 0;
+  bool = bool && noOfSharesToSell>=0;
+  bool = bool && noOfSharesToExchange>=0;
+  if (bool) {
     dataToSend += `&noOfSharesToExchange=${noOfSharesToExchange}`;
     sendAjaxRequest('POST', '/actions/merge/disposeShares',
       dataToSend, renderGameStatus);
@@ -78,10 +81,10 @@ let requestdisposeShares = function() {
     disposeSharesOption.style.display="none";
   }
 };
-let getElement = function(selector) {
+const getElement = function(selector) {
   return document.querySelector(selector);
 };
-let listToHTML = function(list, className, elementName = 'p') {
+const listToHTML = function(list, className, elementName = 'p') {
   let html = list.map((item) => {
     return `<${elementName} class=${className} > ${item} </${elementName}>`;
   }).join('');

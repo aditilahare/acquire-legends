@@ -65,6 +65,20 @@ class Game {
     let bool2 = bank.doesHotelhaveEnoughShares(survivorHotel,SharesToExchange);
     return isSameHotel && bool && bool2;
   }
+  canSharesBePurchased(playerId,sharesToPurchase){
+    let player = this.findPlayerById(playerId);
+    let game = this;
+
+    return Object.keys(sharesToPurchase).reduce((previousBool,hotelName)=>{
+      let noOfShares = sharesToPurchase[hotelName];
+      let sharePrice = this.market.getSharePriceOfHotel(hotelName);
+      let cartValue = sharePrice * noOfShares;
+      let hotelStatus=this.bank.doesHotelhaveEnoughShares(hotelName,noOfShares);
+      let playerStatus = player.doesPlayerHasEnoughMoney(cartValue);
+      let bool = hotelStatus&&playerStatus;
+      return previousBool && bool;
+    },true);
+  }
   changeCurrentPlayer() {
     let tiles = this.tileBox.getTiles(1);
     let currentPlayerID = this.turn.getCurrentPlayerID();
@@ -366,15 +380,11 @@ class Game {
     let player = this.findPlayerById(playerId);
     let sharePrice = this.market.getSharePriceOfHotel(hotelName);
     let cartValue = sharePrice * noOfShares;
-    let hotelStatus = this.bank.doesHotelhaveEnoughShares(hotelName,noOfShares);
-    let playerStatus = player.doesPlayerHasEnoughMoney(cartValue);
-    if(hotelStatus && playerStatus){
-      player.deductMoney(cartValue);
-      this.addSharesToPlayer(playerId, hotelName, noOfShares);
-      this.bank.sellSharesToPlayer(hotelName,noOfShares,playerId,cartValue);
-      this.logActivity(`${player.name} has bought ${noOfShares}\
-        shares of ${hotelName}.`);
-    }
+    player.deductMoney(cartValue);
+    this.addSharesToPlayer(playerId, hotelName, noOfShares);
+    this.bank.sellSharesToPlayer(hotelName,noOfShares,playerId,cartValue);
+    this.logActivity(`${player.name} has bought ${noOfShares}\
+      shares of ${hotelName}.`);
     return;
   }
   setRankList(){
