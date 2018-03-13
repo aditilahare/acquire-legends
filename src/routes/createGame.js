@@ -8,11 +8,14 @@ const createGame = function(req, res, next) {
   let gameId = gameManager.getAvailableIdForGame();
   req.body.gameId = gameId;
   let numberOfPlayers = body.numberOfPlayers;
-  let game = new Game(numberOfPlayers);
-  gameManager.addGame(game,body.playerName);
-  req.app.game = gameManager.getGameById(gameId);
-  addPlayer(req,res,next);
-  return;
+  if(isValidNumberOfPlayers(numberOfPlayers)){
+    let game = new Game(numberOfPlayers);
+    gameManager.addGame(game,body.playerName);
+    req.app.game = gameManager.getGameById(gameId);
+    addPlayer(req,res,next);
+    return;
+  }
+  res.send(422);
 };
 
 

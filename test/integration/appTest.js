@@ -66,6 +66,14 @@ describe('App Test', () => {
         .expect(shouldHaveIdCookie)
         .end(done);
     });
+    it('should not create game when invalid number of players has given', (done) => {
+      delete app.game;
+      request(app)
+        .post('/create')
+        .send('playerName=Aditi&numberOfPlayers=3.5')
+        .expect(422)
+        .end(done);
+    });
   });
   describe('/haveAllPlayersJoined', function() {
     it('should respond with true if all players have joined', function(done) {
