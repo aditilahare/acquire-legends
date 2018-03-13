@@ -63,7 +63,11 @@ const letPlayerDisposeShares = function(res) {
   let hotelName = state.currentMergingHotel.name;
   displayFlashMessage(`Please dispose your shares of ${hotelName}`);
   getElement("#hotelNameOfwhichSharesToDispose").innerText = hotelName;
+  let className = `.shareCard.${hotelName} label`;
+  let noOfSharesToSell = +document.querySelectorAll(className)[1].innerText;
+  getElement("#noOfSharesToSell").value = noOfSharesToSell ;
 };
+
 const requestdisposeShares = function() {
   let hotelName = getElement("#hotelNameOfwhichSharesToDispose").innerText;
   let noOfSharesToSell = getElement("#noOfSharesToSell").value || 0;
@@ -179,6 +183,7 @@ const displaySharesDetails = function(sharesDetails) {
 const displayPlayerDetails = function() {
   playerLastEtag = this.getResponseHeader('etag');
   let playerDetails = JSON.parse(this.responseText);
+  console.log(playerDetails);
   displayTiles(playerDetails.tiles);
   displayMoney(playerDetails.availableMoney);
   displayPlayerName(playerDetails.name);
