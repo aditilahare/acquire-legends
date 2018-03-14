@@ -1,4 +1,11 @@
 const actions={};
+actions[undefined]=function(){
+  // window.location.reload();
+  hideEndTurn();
+  getElement("#inactiveHotelsFormDiv").style.display="none";
+  getElement("#disposeShares").style.display="none";
+  getElement("#tieBreakForm").style.display="none";
+};
 actions['placeTile']=function(res){
   enableTilesClick();
   let state=res.turnDetails.state;

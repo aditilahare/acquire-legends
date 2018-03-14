@@ -65,6 +65,9 @@ class Player {
   doesPlayerHasEnoughShares(hotelName,noOfShares){
     return this.shares[hotelName]>=noOfShares;
   }
+  play(){
+    //do nothing
+  }
 }
 
 module.exports = Player;

@@ -328,7 +328,7 @@ const renderGameStatus = function() {
   updateActivityLog(gameStatus.gameActivityLog);
   displayHotelDetails(gameStatus.hotelsData);
   let action = actions[currentAction];
-  action && action(gameStatus);
+  action(gameStatus);
 };
 
 const getPlayerDetails = function() {
@@ -348,7 +348,7 @@ const actionsPerformed = function() {
   generateTable();
   getPlayerDetails();
   getGameStatus();
-  setInterval(getGameStatus, 1000);
   setInterval(getPlayerDetails, 1000);
+  setInterval(getGameStatus, 1000);
 };
 window.onload = actionsPerformed;

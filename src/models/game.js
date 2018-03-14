@@ -83,11 +83,9 @@ class Game {
     return hotelStatus && playerStatus;
   }
   changeCurrentPlayer() {
-    let tiles = this.tileBox.getTiles(1);
-    let currentPlayerID = this.turn.getCurrentPlayerID();
-    let currentPlayer = this.findPlayerById(currentPlayerID);
-    (tiles[0]) && currentPlayer.addTile(tiles[0]);
+    this.addTileToCurrentPlayer();
     this.turn.updateTurn();
+    this.play();
   }
   createHotels(hotels){
     hotels.forEach((hotel) => {
@@ -169,6 +167,7 @@ class Game {
       state = this.setRankList();
       this.turn.setState(state);
     }else{
+      this.play();
       this.setState(state);
     }
   }
@@ -418,6 +417,7 @@ class Game {
     this.createHotels(HOTEL_DATA);
     this.MODE = 'play';
     this.logActivity(`Game has started.`);
+    this.play();
   }
   startHotel(hotelName,playerId){
     let tiles=this.getTurnState().tiles;
@@ -471,6 +471,19 @@ class Game {
       'disposeShares':`Waiting for ${ playerName } to dispose shares.`
     };
     return msgs[action];
+  }
+  addTileToCurrentPlayer(){
+    let tiles = this.tileBox.getTiles(1);
+    let currentPlayerID = this.turn.getCurrentPlayerID();
+    let currentPlayer = this.findPlayerById(currentPlayerID);
+    (tiles[0])&&currentPlayer.addTile(tiles[0]);
+  }
+  play(){
+    let currentPlayerID = this.turn.getCurrentPlayerID();
+    let currentPlayer = this.findPlayerById(currentPlayerID);
+    setTimeout(()=>{
+      currentPlayer.play(this);
+    },1000);
   }
 }
 module.exports = Game;

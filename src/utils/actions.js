@@ -23,6 +23,7 @@ let actions = {
     } else{
       state.status="chooseHotelForMerge";
     }
+    this.play();
     return state;
   },
   'chooseHotel':function(response,action){
@@ -41,10 +42,9 @@ let actions = {
   },
   'invalidTile':function (response,action = undefined) {
     let state={};
-    let tile = this.tileBox.getTiles(1)[0];
-    let currentPlayerID = this.turn.getCurrentPlayerID();
-    let currentPlayer = this.findPlayerById(currentPlayerID);
-    currentPlayer.addTile(tile);
+    debugger;
+    this.addTileToCurrentPlayer();
+    let currentPlayer=this.getCurrentPlayer();
     this.logActivity(`${currentPlayer.name} placed an Invalid tile`);
     state.status='placeTile';
     let message = `You have placed an invalid tile\n
