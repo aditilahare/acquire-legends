@@ -1199,7 +1199,7 @@ describe('playerSellsShares', () => {
     assert.equal(hotelShares, 23);
   })
 })
-describe('canSharesBeDeployed', () => {
+describe('canSharesBeDisposed', () => {
   it('should give true when player has enoungh shares to sell', () => {
     let game = new Game(4, tileBox);
     let player1 = new Player(0, 'pragya');
@@ -1225,7 +1225,7 @@ describe('canSharesBeDeployed', () => {
     game.changeCurrentPlayer();
     game.placeTile(0, '8A');
     game.createMergingTurn('Zeta');
-    assert.isTrue(game.canSharesBeDeployed(0, {
+    assert.isTrue(game.canSharesBeDisposed(0, {
       hotelName: 'Sackson',
       noOfSharesToSell: 1,
       noOfSharesToExchange:0
@@ -1256,7 +1256,7 @@ describe('canSharesBeDeployed', () => {
     game.changeCurrentPlayer();
     game.placeTile(0, '8A');
     game.createMergingTurn('Zeta');
-    assert.isFalse(game.canSharesBeDeployed(0, {hotelName: 'Sackson',noOfSharesToSell: 8}));
+    assert.isFalse(game.canSharesBeDisposed(0, {hotelName: 'Sackson',noOfSharesToSell: 8}));
     })
   });
 });

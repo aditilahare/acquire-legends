@@ -8,6 +8,7 @@ const chooseHotel = require('./chooseHotel');
 const mergingForTieCase = require('./merging.js');
 
 const purchaseShares = require('./purchaseShares');
+const disposeShares = require('./disposeShares.js');
 const isCurrentPlayer = function(req){
   let game=req.app.game;
   let id=req.cookies.playerId;
@@ -39,14 +40,7 @@ app.post('/purchaseShares',purchaseShares);
 app.post('/placeTile',placeTile);
 app.post('/chooseHotel',chooseHotel);
 app.post('/chooseHotelForMerge',mergingForTieCase);
-app.post('/merge/disposeShares',(req,res)=>{
-  let game=req.app.game;
-  let playerId=req.cookies.playerId;
-  let sharesToDispose=req.body;
-  if(game.canSharesBeDeployed(playerId,sharesToDispose)){
-    game.disposeShares(playerId,sharesToDispose);
-  } res.send(game.getStatus(playerId));
-});
+app.post('/merge/disposeShares',disposeShares);
 
 
 module.exports=app;

@@ -49,13 +49,13 @@ class Game {
     });
     return this.doesCurrentPlayerHasMoney(lowestPrice) && areSharesAvailble;
   }
-  canSharesBeDeployed(playerId,sharesToDeploy){
+  canSharesBeDisposed(playerId,sharesToDeploy){
     let hotelName=sharesToDeploy.hotelName;
     let state=this.turn.getState();
     let currentMergingHotel=state.currentMergingHotel;
     let mergingHotelName=currentMergingHotel.name;
     let survivorHotel=state.survivorHotel.name;
-    let isSameHotel=(hotelName==mergingHotelName);
+    let isSameHotel = (hotelName==mergingHotelName);
     let playerShares=this.getPlayerSharesDetails(playerId);
     let player = this.findPlayerById(playerId);
     let SharesToSell = +sharesToDeploy.noOfSharesToSell;
@@ -63,22 +63,24 @@ class Game {
     let totalSharesToDispose = SharesToSell + SharesToExchange;
     let bool = player.doesPlayerHasEnoughShares(hotelName,totalSharesToDispose);
     let bank = this.bank;
-    let bool2 = bank.doesHotelhaveEnoughShares(survivorHotel,SharesToExchange);
+    let bool2 =bank.doesHotelhaveEnoughShares(survivorHotel,SharesToExchange/2);
     return isSameHotel && bool && bool2;
   }
   canSharesBePurchased(playerId,sharesToPurchase){
     let player = this.findPlayerById(playerId);
-    let game = this;
-
-    return Object.keys(sharesToPurchase).reduce((previousBool,hotelName)=>{
+    let hotelStatus=Object.keys(sharesToPurchase).reduce((prevBool,hotelName)=>{
+      let noOfShares = sharesToPurchase[hotelName];
+      let hotelStatus=this.bank.doesHotelhaveEnoughShares(hotelName,noOfShares);
+      return prevBool && hotelStatus;
+    },true);
+    let cartValue =Object.keys(sharesToPurchase).reduce((prevValue,hotelName)=>{
       let noOfShares = sharesToPurchase[hotelName];
       let sharePrice = this.market.getSharePriceOfHotel(hotelName);
       let cartValue = sharePrice * noOfShares;
-      let hotelStatus=this.bank.doesHotelhaveEnoughShares(hotelName,noOfShares);
-      let playerStatus = player.doesPlayerHasEnoughMoney(cartValue);
-      let bool = hotelStatus&&playerStatus;
-      return previousBool && bool;
-    },true);
+      return prevValue + cartValue;
+    },0);
+    let playerStatus = player.doesPlayerHasEnoughMoney(cartValue);
+    return hotelStatus && playerStatus;
   }
   changeCurrentPlayer() {
     let tiles = this.tileBox.getTiles(1);

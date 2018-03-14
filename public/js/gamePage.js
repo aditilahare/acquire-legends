@@ -36,9 +36,14 @@ const chooseForMergerSurvivour = function(hotels) {
   return html;
 };
 
+const isWholeNumber = function(value){
+  return (+value)>=0 && Number.isSafeInteger(+value);
+};
+
 const purchaseShares = function() {
   let cartDetails = JSON.stringify(prepareCart());
-  sendAjaxRequest('POST', '/actions/purchaseShares', `cart=${cartDetails}`);
+  sendAjaxRequest('POST', '/actions/purchaseShares',
+    `cart=${cartDetails}`,renderGameStatus);
   cart = [];
   getElement('#cart').innerHTML = null;
   getElement('#listed-hotels').classList.add('hidden');
@@ -57,7 +62,9 @@ const displayForm = function(res, text, id, action) {
 };
 
 const letPlayerDisposeShares = function(res) {
+  console.log(res);
   let disposeSharesOption = getElement('#disposeShares');
+  getElement('#promptDisposeShares').style.display = 'none';
   disposeSharesOption.style.display = 'block';
   let state = res.turnDetails.state;
   let hotelName = state.currentMergingHotel.name;
@@ -67,22 +74,36 @@ const letPlayerDisposeShares = function(res) {
   let noOfSharesToSell = +document.querySelectorAll(className)[1].innerText;
   getElement("#noOfSharesToSell").value = noOfSharesToSell ;
 };
-
+const promptDisposeShares = function(){
+  let promptDisposeShares = getElement("#promptDisposeShares");
+  promptDisposeShares.style.display = 'block';
+};
+const showFlashMeassage = function(message){
+  let messageBar = document.getElementById("messageBar");
+  messageBar.innerText = message;
+  messageBar.className = "show";
+  setTimeout(()=>{
+    messageBar.className = messageBar.className.replace("show", "");
+  },3000);
+};
 const requestdisposeShares = function() {
+  getElement('#promptDisposeShares').style.display = 'none';
   let hotelName = getElement("#hotelNameOfwhichSharesToDispose").innerText;
   let noOfSharesToSell = getElement("#noOfSharesToSell").value || 0;
   let noOfSharesToExchange = getElement("#noOfSharesToExchange").value || 0;
   let dataToSend=`hotelName=${hotelName}&noOfSharesToSell=${noOfSharesToSell}`;
+  dataToSend += `&noOfSharesToExchange=${noOfSharesToExchange}`;
   let bool = noOfSharesToExchange % 2 == 0;
-  bool = bool && noOfSharesToSell>=0;
-  bool = bool && noOfSharesToExchange>=0;
+  bool = bool && isWholeNumber(noOfSharesToSell);
+  bool = bool && isWholeNumber(noOfSharesToExchange);
   if (bool) {
-    dataToSend += `&noOfSharesToExchange=${noOfSharesToExchange}`;
     sendAjaxRequest('POST', '/actions/merge/disposeShares',
       dataToSend, renderGameStatus);
     let disposeSharesOption = getElement('#disposeShares');
     getGameStatus();
     disposeSharesOption.style.display="none";
+  } else{
+    showFlashMeassage("Please enter valid details to dispose shares.");
   }
 };
 const getElement = function(selector) {

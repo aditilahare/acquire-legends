@@ -55,7 +55,14 @@
           <label id="hotelNameOfwhichSharesToDispose"></label><br>
           <input type="number" pattern="\+d*" id="noOfSharesToSell" name="noOfSharesToSell" placeholder="To Sell" value="">
           <input type="number"  pattern="\+d*" id="noOfSharesToExchange" name="noOfSharesToExchange" placeholder="To Exchange" value=""><br>
-          <button type="submit" name="button" onclick="requestdisposeShares()">DISPOSE</button>
+          <button type="submit" name="button" onclick="promptDisposeShares()">DISPOSE</button>
+        </div>
+      </div>
+      <div class="modal" id="promptDisposeShares">
+        <div class="modal-content prompt-dispose-shares" id="promptDisposeShares">
+          <h4>Do you really want to dispose your share?</h4>
+          <button type="submit" name="button" onclick="requestdisposeShares()">YES</button>
+          <button type="submit" name="button" onclick="letPlayerDisposeShares()">NO</button>
         </div>
       </div>
       <div class="modal" id="change-turn">
@@ -85,8 +92,7 @@
   <div class="footer">
     <div class="shares" id="playerShares">
     </div>
-    <div id='wallet' class="cash">
-    </div>
+    <div class="cash" id='wallet'></div>
     <div class="tiles">
       <div id='tileBox'>
       </div>

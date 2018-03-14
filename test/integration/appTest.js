@@ -15,6 +15,17 @@ const shouldHaveIdCookie = require('../helpers/rh.js').shouldHaveIdCookie;
 const MockFs = require('../helpers/fsSimulator.js');
 const mockRandomTiles = require('../helpers/mockRandomTiles.js').getTiles;
 
+// const createGameWith = (players, gameCreator, tileBox) => {
+//   let game = new Game(3, tileBox);
+//
+//   players.forEach((player, i) => {
+//     game.addPlayer(new Player(i + 1, player));
+//   });
+//
+//   console.log("created game with:", game, "Game creator:", gameCreator);
+//   return game;
+// }
+
 describe('App Test', () => {
   let tileBox;
   beforeEach(() => {
@@ -619,6 +630,59 @@ describe('App Test', () => {
         .expect(/"currentMergingHotel":{"name":"sackson"/i)
         .expect(/"survivorHotel":{"name":"zeta/i)
         .expect(/"status":"disposeShares"/i)
+        .expect(200)
+        .end(done);
+    })
+    it('should allow current player to dispose shares', function(done) {
+      let manager = app.gameManager;
+      let game = new Game(4, tileBox);
+      game.addPlayer(new Player(1, 'veera'));
+      game.addPlayer(new Player(2, 'gupta'));
+      game.addPlayer(new Player(3, 'sachin'));
+      manager.addGame(game, 'veera');
+      game.start();
+      game.placeTile(1, '4A');
+      game.startHotel('Zeta', 1);
+      game.purchaseShares('Zeta', 3, 1);
+      game.changeCurrentPlayer();
+      game.placeTile(2, '12A');
+      game.changeCurrentPlayer();
+      game.placeTile(3, '8B');
+      game.changeCurrentPlayer();
+      game.placeTile(1, '5A');
+      game.purchaseShares('Zeta', 1, 1);
+      game.changeCurrentPlayer();
+      game.placeTile(2, '11A');
+      game.startHotel('Sackson', 2);
+      game.changeCurrentPlayer();
+      game.placeTile(3, '12B');
+      game.changeCurrentPlayer();
+      game.placeTile(1, '6A');
+      game.purchaseShares('Sackson', 2, 1)
+      game.changeCurrentPlayer();
+      game.placeTile(2, '10A');
+      game.changeCurrentPlayer();
+      game.placeTile(3, '3C');
+      game.changeCurrentPlayer();
+      game.placeTile(1, '7A');
+      game.changeCurrentPlayer();
+      game.placeTile(2, '2B');
+      game.changeCurrentPlayer();
+      game.placeTile(3, '4B');
+      game.changeCurrentPlayer();
+      game.placeTile(1, '8A');
+      game.changeCurrentPlayer();
+      game.placeTile(2, '3B');
+      game.changeCurrentPlayer();
+      game.placeTile(3, '5B');
+      game.changeCurrentPlayer();
+      game.placeTile(1, '9A');
+      request(app)
+        .post('/actions/merge/disposeShares')
+        .set('Cookie', ['playerId=1','gameId=1'])
+        .send(`hotelName=Sackson&noOfSharesToSell=1&noOfSharesToExchange=0`)
+        .expect(/"currentPlayer":"gupta",/i)
+        .expect(/"message":"Waiting for gupta to dispose shares."/i)
         .expect(200)
         .end(done);
     })

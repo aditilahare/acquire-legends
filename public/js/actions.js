@@ -23,6 +23,7 @@ actions['chooseHotelForMerge']=function(res){
 actions['disposeShares']=function(res){
   letPlayerDisposeShares(res);
 };
+
 actions['purchaseShares']=function(res){
   getElement('#listed-hotels').classList.remove('hidden');
   showEndTurn();
@@ -35,11 +36,12 @@ actions['gameOver'] = function (res) {
 };
 
 actions['invalidTile'] = function (res) {
-  let messageBar = document.getElementById("messageBar");
-  messageBar.innerText = res.turnDetails.state.message;
-  messageBar.className = "show";
-  setTimeout(()=>{
-    messageBar.className = messageBar.className.replace("show", "");
-  },3000);
+  showFlashMeassage(res.turnDetails.state.message);
+  // let messageBar = document.getElementById("messageBar");
+  // messageBar.innerText = res.turnDetails.state.message;
+  // messageBar.className = "show";
+  // setTimeout(()=>{
+  //   messageBar.className = messageBar.className.replace("show", "");
+  // },3000);
   getPlayerDetails();
 };

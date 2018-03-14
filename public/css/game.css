@@ -606,7 +606,8 @@ button[name="Start hotel"], select{
   color: #000000;
 }
 
-.dispose-shares-form,.inactive-hotels-form,.choose-surv-hotel,.purchase-shares{
+.dispose-shares-form,.prompt-dispose-shares,.inactive-hotels-form,
+.choose-surv-hotel,.purchase-shares{
   font-size: 22px;
   background: rgb(151, 119, 77);
   color: rgba(17, 17, 17, 0.89);
@@ -624,6 +625,7 @@ button[name="Start hotel"], select{
 }
 
 .dispose-shares-form button,.inactive-hotels-form button,
+.prompt-dispose-shares button,
 .choose-surv-hotel button,.buyButton{
   font-family: inherit;
   font-weight: 500;
@@ -638,6 +640,7 @@ button[name="Start hotel"], select{
 }
 
 .dispose-shares-form button:hover,.dispose-shares-form button:active,
+.prompt-dispose-shares button:hover,.prompt-dispose-shares button:active,
 .choose-surv-hotel button:hover,.choose-surv-hotel button:active,
 .buyButton:hover,.buyButton:active{
   opacity: .75;
