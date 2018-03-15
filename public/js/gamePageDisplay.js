@@ -39,7 +39,7 @@ const getMessage = function (rankList,me) {
   return 'Better Luck Next Time';
 };
 
-const rankListHtmlGenerator=function (rankList,me) {
+const rankListHtmlGenerator = function (rankList,me) {
   let rank = 1;
   let rankListContent = document.getElementById('rankListContent');
   rankListContent.innerHTML=null;
@@ -57,23 +57,22 @@ const rankListHtmlGenerator=function (rankList,me) {
     table.append(tr);
   });
   rankListContent.appendChild(table);
+  toHtml(['End'],'button',rankListContent,'end-button');
+  rankListContent.lastChild.addEventListener('click',endGame);
 };
 
-const toHtml = function (elementList,tag,parent,className='',id='') {
-  return elementList.reduce((parent,value)=>{
-    let element = createNode(tag,value,className,id);
-    parent.appendChild(element);
-    return parent;
-  },parent);
+const stopRequests = function(){
+  clearInterval(getGameStatus);
+  clearInterval(getPlayerDetails);
+};
+const reload = function () {
+  // window.Location();
+  location.href='/';
 };
 
-const createNode = function(tag,value="",className="",id=""){
-  let element = document.createElement(tag);
-  element.setAttribute('class',className);
-  element.setAttribute('id',id);
-  element.setAttribute('value',value);
-  element.appendChild(document.createTextNode(value));
-  return element;
+const endGame = function () {
+  stopRequests();
+  sendAjaxRequest('GET','/endGame','',reload);
 };
 
 const displayMoney = function(money){

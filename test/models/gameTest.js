@@ -473,6 +473,49 @@ describe('game test', function() {
       assert.deepInclude(actual[1], expected);
     });
   });
+  describe('removePlayer()', () => {
+    it('should remove player for valid player id', () => {
+      let game = new Game(2, tileBox);
+      let player1 = new Player(1, 'Frank');
+      let player2 = new Player(2, 'Martin');
+      game.addPlayer(player1);
+      game.addPlayer(player2);
+      let expected = [
+      {
+        "availableMoney": 6000,
+        "id": 2,
+        "name": "Martin",
+        "shares": {
+            "America": 0,
+            "Fusion": 0,
+            "Hydra": 0,
+            "Phoenix": 0,
+            "Quantum": 0,
+            "Sackson": 0,
+            "Zeta": 0
+        },
+        "tiles": [
+              "9A",
+              "10A",
+              "11A",
+              "12A",
+              "1B",
+              "2B"
+            ]
+      }];
+      game.start();
+      game.removePlayer(1);
+      assert.deepEqual(game.players, expected);
+    });
+  });
+  describe('getPlayerLimit()', () => {
+    it('should return  maximum number of players that can join the game',() => {
+      let game = new Game(2, tileBox);
+      let player1 = new Player(1, 'Frank');
+      let player2 = new Player(2, 'Martin');
+      assert.equal(game.getPlayerLimit(),2);
+    });
+  });
   describe('actions', () => {
     it('should add tile to an existing hotel', () => {
       let expected = {};

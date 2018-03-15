@@ -39,6 +39,8 @@ actions['purchaseShares']=function(res){
 actions['gameOver'] = function (res) {
   let state=res.turnDetails.state;
   rankListHtmlGenerator(state.rankList,me);
+  clearInterval(getGameStatus);
+  clearInterval(getPlayerDetails);
   document.getElementById('rankListDisplay').style.display = 'flex';
 };
 

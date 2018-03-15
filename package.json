@@ -34,7 +34,8 @@
   },
   "nyc": {
     "exclude": [
-      "src/models/bot*.js"
+      "src/models/bot*.js",
+      "test/*"
     ]
   }
 }

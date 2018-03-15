@@ -7,7 +7,6 @@ const app = require('../../app.js');
 let Game = require('../../src/models/game.js');
 const GameManager = require('../../src/models/gameManager.js');
 
-
 let TileBox = require('../../src/models/tileBox.js');
 const Player = require('../../src/models/player.js');
 const request = require('supertest');
@@ -15,15 +14,6 @@ const shouldHaveIdCookie = require('../helpers/rh.js').shouldHaveIdCookie;
 const MockFs = require('../helpers/fsSimulator.js');
 const mockRandomTiles = require('../helpers/mockRandomTiles.js').getTiles;
 
-// const createGameWith = (players, gameCreator, tileBox) => {
-//   let game = new Game(3, tileBox);
-//
-//   players.forEach((player, i) => {
-//     game.addPlayer(new Player(i + 1, player));
-//   });
-//
-//   return game;
-// }
 
 describe('App Test', () => {
   let tileBox;
@@ -44,7 +34,8 @@ describe('App Test', () => {
         .expect(shouldHaveIdCookie)
         .end(done);
     });
-    it('should not allow players to join if  maximum players joined', (done) => {
+    it('should not allow players to join if  maximum players joined',
+     (done) => {
       let manager = app.gameManager;
       let game = new Game(1, tileBox);
       game.addPlayer(new Player(1, 'veera'));
@@ -58,16 +49,8 @@ describe('App Test', () => {
     });
   });
   describe('/create', () => {
-    it('should display error message when game is already created ', (done) => {
-      request(app)
-        .post('/create')
-        .send('playerName=Aditi&numberOfPlayers=3')
-        .expect(302)
-        .expect('Location','/wait')
-        .end(done);
-    });
-    it('should create game and add the payer to game ', (done) => {
-      delete app.game;
+    it('should create game, add the player to game and redirect to wait',
+     (done) => {
       request(app)
         .post('/create')
         .send('playerName=Aditi&numberOfPlayers=3')
@@ -85,8 +68,8 @@ describe('App Test', () => {
         .end(done);
     });
   });
-  describe('/haveAllPlayersJoined', function() {
-    it('should respond with true if all players have joined', function(done) {
+  describe('/haveAllPlayersJoined', () => {
+    it('should respond with true if all players have joined', (done) => {
       let manager = app.gameManager;
       let game = new Game(1, tileBox);
       game.addPlayer(new Player(0, 'Frank'));
@@ -100,7 +83,7 @@ describe('App Test', () => {
         .end(done);
     });
     it('should respond with 302 if all players have joined\
-     \and bad cookie', function(done) {
+     \and bad cookie', (done) => {
       let manager = app.gameManager;
       let game = new Game(1, tileBox);
       game.addPlayer(new Player(0, 'Frank'));
@@ -113,7 +96,7 @@ describe('App Test', () => {
         .end(done);
     });
     it('should respond with false if all players\
-       have not joined', function(done) {
+       have not joined', (done) => {
       let manager = app.gameManager;
       let game = new Game(2, tileBox);
       game.addPlayer(new Player(0, 'Frank'));
@@ -127,7 +110,7 @@ describe('App Test', () => {
         .end(done);
     });
     it('should respond with true if all players\
-       have not joined', function(done) {
+       have not joined', (done) => {
       let manager = app.gameManager;
       let game = new Game(2, tileBox);
       game.addPlayer(new Player(0, 'Frank'));
@@ -142,8 +125,8 @@ describe('App Test', () => {
         .end(done);
     });
   });
-  describe('/wait', function() {
-    it('should serve the waiting page', function(done) {
+  describe('/wait', () => {
+    it('should serve the waiting page', (done) => {
       let fs = new MockFs();
       let fileName = './public/waitingPage.html';
       let content = 'Waiting For Other Players To Join';
@@ -162,7 +145,7 @@ describe('App Test', () => {
         .end(done);
     });
     it('should be redirected to /game.html\
-    \ if game has started', function(done) {
+    \ if game has started', (done) => {
       let manager = app.gameManager;
       let game = new Game(2, tileBox);
       game.addPlayer(new Player(0, 'Frank'));
@@ -178,19 +161,30 @@ describe('App Test', () => {
         .end(done);
     })
     it('should be redirected to /\
-    \ if game is not created', function(done) {
+    \ if game is not created and invalid cookie is sent',
+     (done) => {
       app.manager = new GameManager();
       let manager = app.gameManager;
-
       request(app)
         .get('/wait')
-        .set('Cookie', ['playerId=1'])
+        .set('Cookie', ['playerId=555', 'gameId=555'])
         .expect(302)
         .expect('Location', '/')
         .end(done);
     })
     it('should be redirected to /\
-    \ for valid cookie if game has not started', function(done) {
+    \ if game is not created and no cookie is sent',
+     (done) => {
+      app.manager = new GameManager();
+      let manager = app.gameManager;
+      request(app)
+        .get('/wait')
+        .expect(302)
+        .expect('Location', '/')
+        .end(done);
+    })
+    it('should be redirected to /\
+    \ for valid cookie if game has not started', (done) => {
       let manager = app.gameManager;
       let game = new Game(2, tileBox);
       app.fs = new MockFs();
@@ -207,7 +201,7 @@ describe('App Test', () => {
         .end(done);
     })
     it('should be redirected to /\
-    \ for invalid cookie if game is not created', function(done) {
+    \ for invalid cookie if game is not created', (done) => {
       let manager = app.gameManager;
       request(app)
         .get('/wait')
@@ -216,8 +210,8 @@ describe('App Test', () => {
         .end(done);
     })
   });
-  describe('/join.html /wait /game', function() {
-    it('should redirect to / when game is not created', function(done) {
+  describe('/join.html /wait /game', () => {
+    it('should redirect to / when game is not created', (done) => {
       delete app.game;
       let manager = app.gameManager;
       request(app)
@@ -227,9 +221,9 @@ describe('App Test', () => {
         .end(done);
     });
   });
-  describe('/', function() {
+  describe('/', () => {
     it('should redirect to /wait when\
-    \ already registered player comes to', function(done) {
+    \ already registered player comes to', (done) => {
       game = new Game(2, tileBox);
       game.addPlayer(new Player(0, 'veera'));
       app.gameManager.addGame(game, 'veera');
@@ -241,9 +235,9 @@ describe('App Test', () => {
         .end(done);
     });
   });
-  describe('/getPlayerDetails', function() {
+  describe('/getPlayerDetails', () => {
     it('should give details of player with given valid id\
-     when game has started', function(done) {
+     when game has started', (done) => {
       let manager = app.gameManager;
       game = new Game(1, tileBox);
       game.addPlayer(new Player(0, 'veera'));
@@ -335,7 +329,8 @@ describe('App Test', () => {
         .expect(200)
         .end(done);
     });
-    it('should respond with disposeShares status when merger tile is placed', function(done) {
+    it('should respond with disposeShares status when merger tile is placed',
+    function(done) {
       let manager = app.gameManager;
       let game = new Game(4,tileBox);
       let player1 = new Player(0, 'pragya');
@@ -506,6 +501,24 @@ describe('App Test', () => {
         .end(done);
     });
 
+  });
+  describe('/actions/', () => {
+    it('should send 403 for all valid players '+
+    'other than current player', (done) => {
+      let manager = app.gameManager;
+      let game = new Game(3, tileBox);
+      game.addPlayer(new Player(1, 'Frank'));
+      game.addPlayer(new Player(2, 'Martin'));
+      game.addPlayer(new Player(3, 'Nameless'));
+      game.start();
+      manager.addGame(game, 'Frank');
+      request(app)
+      .post('/actions/chooseHotel')
+      .set('Cookie', ['playerId=3','gameId=1'])
+      .send('hotelName=Zeta')
+      .expect(403)
+      .end(done);
+    });
   });
   describe('/chooseHotel', function() {
     it('should respond with inactive hotels', function(done) {
@@ -684,5 +697,139 @@ describe('App Test', () => {
         .expect(200)
         .end(done);
     })
+  });
+  describe('/gamesInfo', () => {
+    it('Should provide the list of games in wait mode', (done) => {
+      let manager = app.gameManager;
+      let game1 = new Game(2, tileBox);
+      let game2 = new Game(2, tileBox);
+      game2.addPlayer(new Player(1, 'Frank'));
+      let game3 = new Game(2, tileBox);
+      game1.MODE = 'play';
+      game3.MODE = 'END';
+      manager.addGame(game1, 'Frank');
+      manager.addGame(game2, 'Martin');
+      manager.addGame(game3, 'Wolverine');
+      let expected = '[{"gameId":"2","createdBy":"Martin",'+
+      'date":"3/12/2018, 6:58:26 PM","playersJoined":293238230982083}]';
+      let expected1 = '[{"gameId":"2","createdBy":"Martin",'+
+      'date":"3/12/2018, 6:58:26 PM","playersJoined":1}]';
+      request(app)
+        .get('/gamesInfo')
+        .expect((res)=>{
+          assert.ok(res.text.match(/playersJoined":1/g));
+          assert.ok(res.text.match(/gameId":"2"/g));
+          assert.ok(res.text.match(/"createdBy":"Martin"/g));
+        })
+        .end(done);
+    });
+  });
+  describe('/endGame', () => {
+    it('game manager should delete the game and clear all cookies', (done) => {
+      let manager = app.gameManager;
+      let game1 = new Game(2, tileBox);
+      let game2 = new Game(2, tileBox);
+      game1.addPlayer(new Player(1, 'Frank'));
+      game1.addPlayer(new Player(2, 'Unknown'));
+      game1.start();
+      game1.MODE = 'END';
+      manager.addGame(game1, 'Frank');
+      manager.addGame(game2, 'Martin');
+      request(app)
+        .get('/endGame')
+        .set('Cookie', ['playerId=1', 'gameId=1'])
+        .expect(302)
+        .expect('Location','/')
+        .expect((res)=>{
+          const keys = Object.keys(res.header);
+          let key = keys.find(k=>k.match(/set-cookie/i));
+          let message=res.headers[key].find(k=>k.match(/playerId=;/));
+          let errorMsg = `Didnot expect Set-Cookie in header of ${keys}`;
+          if(!message) throw new Error(errorMsg);
+        })
+        .expect((res)=>{
+          const keys = Object.keys(res.header);
+          let key = keys.find(k=>k.match(/set-cookie/i));
+          let message=res.headers[key].find(k=>k.match(/gameId=;/));
+          let errorMsg = `Didnot expect Set-Cookie in header of ${keys}`;
+          if(!message) throw new Error(errorMsg);
+        })
+        .expect((res) => {
+          assert.equal(game1.getPlayerCount(), 1);
+          assert.isOk(manager.getGameById(1));
+          assert.isNotOk(game1.isValidPlayer(1));
+          assert.isOk(game1.isValidPlayer(2));
+        })
+        .end(done);
+    });
+    it('should clear all cookies and remove player from the game', (done) => {
+      let manager = app.gameManager;
+      let game1 = new Game(2, tileBox);
+      game1.addPlayer(new Player(1, 'Frank'));
+      game1.addPlayer(new Player(2, 'Unknown'));
+      game1.start();
+      game1.MODE = 'END';
+      manager.addGame(game1, 'Frank');
+      request(app)
+        .get('/endGame')
+        .set('Cookie', ['playerId=1', 'gameId=1'])
+        .expect(302)
+        .expect('Location','/')
+        .expect((res)=>{
+          const keys = Object.keys(res.header);
+          let key = keys.find(k=>k.match(/set-cookie/i));
+          let message=res.headers[key].find(k=>k.match(/playerId=;/));
+          let errorMsg = `Didnot expect Set-Cookie in header of ${keys}`;
+          if(!message) throw new Error(errorMsg);
+        })
+        .expect((res)=>{
+          const keys = Object.keys(res.header);
+          let key = keys.find(k=>k.match(/set-cookie/i));
+          let message=res.headers[key].find(k=>k.match(/gameId=;/));
+          let errorMsg = `Didnot expect Set-Cookie in header of ${keys}`;
+          if(!message) throw new Error(errorMsg);
+        })
+        .expect((res) => {
+          assert.equal(game1.getPlayerCount(), 1);
+          assert.isOk(manager.getGameById(1));
+          assert.isNotOk(game1.isValidPlayer(1));
+          assert.isOk(game1.isValidPlayer(2));
+        })
+        .end(done);
+    });
+    it('should clear all cookies, remove player from the game and remove game '+
+    'from game manager when all players have requested for end game',
+     (done) => {
+      let manager = app.gameManager;
+      let game1 = new Game(1, tileBox);
+      game1.addPlayer(new Player(1, 'Frank'));
+      game1.start();
+      game1.MODE = 'END';
+      manager.addGame(game1, 'Frank');
+      request(app)
+        .get('/endGame')
+        .set('Cookie', ['playerId=1', 'gameId=1'])
+        .expect(302)
+        .expect('Location','/')
+        .expect((res)=>{
+          const keys = Object.keys(res.header);
+          let key = keys.find(k=>k.match(/set-cookie/i));
+          let message=res.headers[key].find(k=>k.match(/playerId=;/));
+          let errorMsg = `Didnot expect Set-Cookie in header of ${keys}`;
+          if(!message) throw new Error(errorMsg);
+        })
+        .expect((res)=>{
+          const keys = Object.keys(res.header);
+          let key = keys.find(k=>k.match(/set-cookie/i));
+          let message=res.headers[key].find(k=>k.match(/gameId=;/));
+          let errorMsg = `Didnot expect Set-Cookie in header of ${keys}`;
+          if(!message) throw new Error(errorMsg);
+        })
+        .expect((res) => {
+          assert.equal(game1.getPlayerCount(), 0);
+          assert.isNotOk(manager.getGameById(1));
+        })
+        .end(done);
+    });
   });
 });

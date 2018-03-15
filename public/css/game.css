@@ -646,7 +646,7 @@ button[name="Start hotel"], select{
 .prompt-dispose-shares button:hover,.prompt-dispose-shares button:active,
 .prompt-start-hotel button:hover,.prompt-start-hotel button:active,
 .choose-surv-hotel button:hover,.choose-surv-hotel button:active,
-.buyButton:hover,.buyButton:active{
+.buyButton:hover,.buyButton:active,.end-button:hover,.end-button:active{
   opacity: .75;
 }
 

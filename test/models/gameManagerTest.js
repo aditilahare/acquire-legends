@@ -1,22 +1,27 @@
 const chai = require('chai');
 const assert = chai.assert;
 
+let TileBox = require('../../src/models/tileBox.js')
 const Game = require('../../src/models/game.js');
 const GameManager = require('../../src/models/gameManager.js');
 const MockDate = require('../helpers/mockDate.js');
+const mockRandomTiles = require('../helpers/mockRandomTiles.js').getTiles;
+
 
 describe('GameManager', () => {
   describe('addGame()', () => {
     it('should add the game and increment currentGameId', () => {
+      let tileBox = new TileBox(12, 9, mockRandomTiles);
       let manager = new GameManager(MockDate);
-      manager.addGame(new Game(2), 'Frank');
+      manager.addGame(new Game(2, tileBox), 'Frank');
       let expectedGames = {
         '1':{
           gameId: 1,
           createdBy: 'Frank',
           date: '11/11/1111',
-          game: new Game(2),
-          playersJoined: 0
+          game: new Game(2, tileBox),
+          playersJoined: 0,
+          maxPlayers : 2
         }
       };
       assert.equal(manager.currentGameId, 2);
@@ -25,11 +30,12 @@ describe('GameManager', () => {
   });
   describe('getGameById()', () => {
     it('should get the game for valid id', () => {
+      let tileBox = new TileBox(12, 9, mockRandomTiles);
       let manager = new GameManager(MockDate);
-      manager.addGame(new Game(2), 'Frank');
-      manager.addGame(new Game(1), 'Martin');
-      let expectedGame = new Game(2);
-      assert.deepEqual(manager.getGameById(1), new Game(2));
+      manager.addGame(new Game(2, tileBox), 'Frank');
+      manager.addGame(new Game(1, tileBox), 'Martin');
+      let expectedGame = new Game(2, tileBox);
+      assert.deepEqual(manager.getGameById(1), expectedGame);
     });
   });
   describe('getGameInfoById', () => {
@@ -41,7 +47,8 @@ describe('GameManager', () => {
         gameId: 1,
         createdBy: 'Frank',
         date: '11/11/1111',
-        playersJoined: 0
+        playersJoined: 0,
+        maxPlayers : 1
       };
       assert.deepEqual(manager.getGameInfoById(1), expectedInfo)
     });
@@ -56,13 +63,15 @@ describe('GameManager', () => {
           gameId: "1",
           createdBy: 'Frank',
           date: '11/11/1111',
-          playersJoined: 0
+          playersJoined: 0,
+          maxPlayers : 1
         },
         {
           gameId: "2",
           createdBy: 'Martin',
           date: '11/11/1111',
-          playersJoined: 0
+          playersJoined: 0,
+          maxPlayers : 2
         } ];
         assert.deepEqual(manager.getAllGamesInfo(), expectedInfo);
     });
@@ -82,7 +91,8 @@ describe('GameManager', () => {
           gameId: "2",
           createdBy: 'Martin',
           date: '11/11/1111',
-          playersJoined: 0
+          playersJoined: 0,
+          maxPlayers : 2
         } ];
         manager.quitGame(1);
         assert.deepEqual(manager.getAllGamesInfo(), expectedInfo);
@@ -113,4 +123,33 @@ describe('GameManager', () => {
       assert.isNotOk(manager.isValidGame(1));
     });
   });
+  describe('getAvailableGamesInfo()',()=>{
+    it('should return information of game which is in wait mode',()=>{
+      let manager = new GameManager(MockDate);
+      let game1 = new Game(1);
+      game1.MODE = 'play';
+      let game2 = new Game(1);
+      let game3 = new Game(1);
+      manager.addGame(game1, 'Sachin');
+      manager.addGame(game2, 'Sachu');
+      manager.addGame(game3, 'Into');
+      let expected = [
+        {
+          gameId:'2',
+          createdBy:'Sachu',
+          date:'11/11/1111',
+          playersJoined: 0,
+          maxPlayers : 1
+        },
+        {
+          gameId:'3',
+          createdBy:'Into'
+          ,date:'11/11/1111',
+          playersJoined: 0,
+          maxPlayers : 1
+        }];
+      assert.deepEqual(manager.getAvailableGamesInfo(),expected);
+
+    })
+  })
 });

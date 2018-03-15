@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:100,200,300,400,500,700" rel="stylesheet">
+    <link rel="stylesheet" href="/css/joinPage.css">
+    <script src="/js/utility.js" charset="utf-8"></script>
+    <script src="/js/ajaxRequest.js" charset="utf-8"></script>
+    <script src="/js/joinPage.js" charset="utf-8"></script>
+    <title>Available Games</title>
+  </head>
+  <body>
+    <header>
+      <h1>ACQUIRE</h1>
+    </header>
+    <section class="join-display">
+      <div id="join" class="modal">
+        <form action="/join" method="post" class="modal-content animate" onsubmit="verfifyUserName()">
+          <div class="closeButton">
+            <span onclick="document.getElementById('join').style.display='none'" class="close" title="Close Modal">&times;</span>
+          </div>
+          <div class="container">
+            <div class="gameIdSelected">Game ID</div>
+            <input type="text" id="gameIdSelected" name="gameId" readonly>
+            <input type="text" id="playerName" placeholder="Enter name" name="playerName" required>
+            <button type="submit">Join</button>
+          </div>
+        </form>
+      </div>
+      <h3>Click to join game</h3>
+      <div class="games-table-div" id="table-place">
+        <table class="games-table" id="games-table">
+        </table>
+      </div>
+    </section>
+    <footer>
+      <h6>Developed and maintained by Legends | &copy;2018</h6>
+    </footer>
+  </body>
+</html>

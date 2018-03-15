@@ -38,19 +38,10 @@
                   </div>
                 </form>
               </div>
-              <input type="button" onclick="document.getElementById('join').style.display='block'"  class='options' id="join-bt" name="button" value="Join"/></br>
-              <div id="join" class="modal">
-                <form action="/join" method="post" class="modal-content animate" onsubmit="verfifyUserName()">
-                  <div class="closeButton">
-                    <span onclick="document.getElementById('join').style.display='none'" class="close" title="Close Modal">&times;</span>
-                  </div>
-                  <div class="container">
-                    <input type="text" id="playerName" placeholder="Enter name" name="playerName" required>
-                    <input type="text" id="gameId" placeholder="Enter game id" name="gameId" required>
-                    <button type="submit">Join</button>
-                  </div>
-                </form>
-              </div>
+              <a href='/joinPage.html'>Join</a>
+                <!-- <input type="submit" class='options' id="join-bt" <a href='/join.html'>Join</a> /></br> -->
+
+
               <input type="button" class='options' value="Rule Book"/></br>
               <input type="button" class='options' value="About"/>
             </center>

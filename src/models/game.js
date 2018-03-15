@@ -10,9 +10,10 @@ const HOTEL_DATA = require('../../data/hotelsData.json');
 const INITIAL_SHARES = 25;
 const INITIAL_MONEY = 100000;
 const STARTING_BALANCE = 6000;
-let tilebox = new TileBox(12,9);
+
 class Game {
-  constructor(maxPlayers,tileBox=tilebox,bank=new Bank(INITIAL_MONEY)) {
+  constructor(maxPlayers,tileBox= new TileBox(12,9),
+    bank=new Bank(INITIAL_MONEY)) {
     this.maxPlayers=maxPlayers;
     this.minPlayers=3;
     this.players=[];
@@ -169,11 +170,13 @@ class Game {
       this.play();
       this.setState(state);
     }
+    !isGameOver(this.market.getActiveHotels())&&this.setState(state);
   }
   findPlayerById(id) {
-    return this.players.find(player => {
+    let player=this.players.find(player => {
       return player.id == id;
     });
+    return player;
   }
   getActivityLog(){
     return this.activityLog;
@@ -202,10 +205,13 @@ class Game {
   }
   getCurrentPlayer() {
     let currentPlayerID = this.turn.getCurrentPlayerID();
-    return this.getPlayerDetails(currentPlayerID);
+    return this.getPlayerDetails(+currentPlayerID);
   }
   getHotel(hotelName){
     return this.market.getHotel(hotelName);
+  }
+  getPlayerLimit(){
+    return this.maxPlayers;
   }
   getPlayerCount() {
     return this.players.length;
@@ -228,7 +234,7 @@ class Game {
     let status={
       independentTiles:this.giveIndependentTiles(),
       hotelsData:this.getAllHotelsDetails(),
-      turnDetails:this.getTurnDetails(playerId),
+      turnDetails:this.getTurnDetails(+playerId),
       gameActivityLog:this.activityLog
     };
     return status;
@@ -309,12 +315,11 @@ class Game {
   performMergeAction(survivorHotels,mergingHotels){
     let response={};
     response.status='disposeShares';
-    let survivorHotel=survivorHotels[0];
     let currentMergingHotel=mergingHotels[0];
     this.oldTurn=this.turn;
     this.turn=this.createMergingTurn(currentMergingHotel.name);
     response.currentMergingHotel=currentMergingHotel;
-    response.survivorHotel=survivorHotel;
+    response.survivorHotel=survivorHotels[0];
     mergingHotels.forEach((mergingHotel)=>{
       this.giveMajorityMinorityBonus(mergingHotel.name);
     });
@@ -338,7 +343,6 @@ class Game {
       this.setState(response);
       this.logActivity(`${player.name} has placed ${playerTile}.`);
     }
-
     if(isGameOver(this.market.getActiveHotels())){
       response=this.setRankList();
       this.turn.setState(response);
@@ -388,12 +392,20 @@ class Game {
       shares of ${hotelName}.`);
     return;
   }
+  removePlayer(playerId){
+    let index = this.players.findIndex((player)=>{
+      return playerId == player.getDetails().id;
+    });
+    this.players.splice(index,1);
+    this.turn.removeFromTurn(+playerId);
+    return;
+  }
   setRankList(){
-    let state={};
-    state.rankList=decidePlayerRank.call(this);
-    state.status="gameOver";
+    this.rankList = this.rankList || decidePlayerRank.call(this);
+    let rankList = this.rankList;
+    let status="gameOver";
     this.MODE="END";
-    return state;
+    return {rankList, status};
   }
   setState(response){
     let action;
@@ -449,13 +461,13 @@ class Game {
   }
   getCurrentPlayerMsg(action){
     let state=this.getTurnState();
-    let hotelName=state.currentMergingHotel;
     let currentMsgs={
       'placeTile':'Please place a tile.',
       'chooseHotel':'Please choose a hotel to start.',
       'purchaseShares':'Please purchase shares.',
       'chooseHotelForMerge':'Please select a hotel to survive merge.',
-      'disposeShares':`Please dispose shares of ${hotelName}.`
+      'disposeShares':`Please dispose shares of ${state.currentMergingHotel}.`,
+      'gameOver':'Game is over'
     };
     return currentMsgs[action];
   }
@@ -467,7 +479,8 @@ class Game {
       'purchaseShares':`Waiting for ${ playerName } to purchase shares.`,
       'chooseHotelForMerge':`Waiting for ${ playerName } to select \
       survivor hotel.`,
-      'disposeShares':`Waiting for ${ playerName } to dispose shares.`
+      'disposeShares':`Waiting for ${ playerName } to dispose shares.`,
+      'gameOver':'Game is over'
     };
     return msgs[action];
   }

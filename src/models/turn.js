@@ -28,6 +28,10 @@ class Turn {
   getState(){
     return this.state;
   }
+  removeFromTurn(playerId){
+    let index = this.playerIDSequence.indexOf(playerId);
+    this.playerIDSequence.splice(index,1);
+  }
 }
 
 module.exports=Turn;

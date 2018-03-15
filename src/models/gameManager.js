@@ -14,7 +14,8 @@ class GameManager {
       createdBy : username,
       date : new this.Date().toLocaleString(),
       game,
-      playersJoined : game.getPlayerCount()
+      playersJoined : game.getPlayerCount(),
+      maxPlayers : game.getPlayerLimit()
     };
     this.currentGameId++;
   }
@@ -29,14 +30,24 @@ class GameManager {
     let game = this.games[gameId];
     let createdBy = game.createdBy;
     let date = game.date;
-    let playersJoined = game.playersJoined;
-    return {gameId,createdBy,date,playersJoined};
+    let playersJoined = game.game.getPlayerCount();
+    let maxPlayers = game.maxPlayers;
+    return {gameId,createdBy,date,playersJoined,maxPlayers};
   }
   getAllGamesInfo(){
     let gameIds = Object.keys(this.games);
     return gameIds.map((gameId)=>{
       return this.getGameInfoById(gameId);
     });
+  }
+  getAvailableGamesInfo(){
+    let gameIds = Object.keys(this.games);
+    return gameIds.reduce((gamesInfo,gameId)=>{
+      if(this.getGameById(gameId).isInWaitMode()){
+        gamesInfo.push(this.getGameInfoById(gameId));
+      }
+      return gamesInfo;
+    },[]);
   }
   quitGame(gameId){
     this.getGameById(gameId).hasEnded() && delete this.games[gameId];

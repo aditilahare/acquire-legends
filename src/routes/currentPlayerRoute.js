@@ -15,10 +15,6 @@ const isCurrentPlayer = function(req){
   return game.isCurrentPlayer(id);
 };
 
-const doesGameExist = function(req){
-  return req.app.game;
-};
-
 const isExpectedAction = function(req){
   let game=req.app.game;
   let id=req.cookies.playerId;
@@ -28,11 +24,11 @@ const isExpectedAction = function(req){
 };
 
 const verifyCurrentPlayer = function(req,res,next){
-  if(doesGameExist(req)&&isCurrentPlayer(req)&& isExpectedAction(req)) {
-    next();
-  } else {
+  if(!isCurrentPlayer(req) || !isExpectedAction(req)) {
     res.sendStatus(403);
+    return;
   }
+  next();
 };
 
 app.use(verifyCurrentPlayer);

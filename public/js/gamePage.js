@@ -120,15 +120,6 @@ const requestdisposeShares = function() {
     showFlashMeassage("Please enter valid details to dispose shares.");
   }
 };
-const getElement = function(selector) {
-  return document.querySelector(selector);
-};
-const listToHTML = function(list, className, elementName = 'p') {
-  let html = list.map((item) => {
-    return `<${elementName} class=${className} > ${item} </${elementName}>`;
-  }).join('');
-  return html;
-};
 
 const changeTurn = function() {
   sendAjaxRequest('GET', '/actions/changeTurn', '', getPlayerDetails);
@@ -333,8 +324,8 @@ const updateGameStatus = function(gameStatus) {
 const renderGameStatus = function() {
   gameLastEtag = this.getResponseHeader('etag');
   let gameStatus = JSON.parse(this.responseText);
+  console.log(gameStatus);
   let currentAction = gameStatus.turnDetails.currentAction;
-  // displayCurrentAction(gameStatus.turnDetails, currentAction);
   displayFlashMessage(gameStatus.turnDetails.message);
   displayIndependentTiles(gameStatus.independentTiles);
   displayTurnDetails(gameStatus.turnDetails);

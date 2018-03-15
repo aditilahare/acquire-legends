@@ -1,4 +1,4 @@
-const hasEveryHotelStable=function(hotels){
+const isEveryHotelStable=function(hotels){
   return hotels.every(hotel=>{
     return hotel.getSize()>10;
   });
@@ -10,7 +10,7 @@ const isAnyAboveFourty=function(hotels){
 };
 const isGameOver=function(activeHotels){
   if (activeHotels.length>0) {
-    return hasEveryHotelStable(activeHotels)||isAnyAboveFourty(activeHotels);
+    return isEveryHotelStable(activeHotels)||isAnyAboveFourty(activeHotels);
   }
   return false;
 };

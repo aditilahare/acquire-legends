@@ -1,3 +1,5 @@
+let chai = require('chai');
+let assert = chai.assert;
 const shouldHaveIdCookie = function (res) {
   let keys = Object.keys(res.headers);
   let key = keys.find((header)=>header.match(/set-cookie/i));
@@ -7,4 +9,13 @@ const shouldHaveIdCookie = function (res) {
   }
 };
 
-exports.shouldHaveIdCookie = shouldHaveIdCookie;
+// const shouldHaveExpiringCookie = (res,name,value)=> {
+//   let cookieText = res.headers['Set-Cookie'];
+//   assert.include(cookieText,`${name}=${value}; Max-Age=`);
+// };
+
+module.exports = {
+  shouldHaveIdCookie
+  //,
+  //shouldHaveExpiringCookie
+}
