@@ -518,8 +518,9 @@ button[name="Start hotel"], select{
   background-color: #fefefe;
   margin:auto;
   /* 5% from the top, 15% from the bottom and centered */
-  border: 1px solid #888;
+  border: 2px solid #000000;
   width: 30%;
+  box-shadow: 10px 10px 10px 10px rgba(0,0,0,.82);
   /* Could be more or less, depending on screen size */
 }
 
@@ -611,7 +612,7 @@ button[name="Start hotel"], select{
   font-size: 22px;
   background: rgb(151, 119, 77);
   color: rgba(17, 17, 17, 0.89);
-  border: none;
+  /* border: none; */
 }
 
 .dispose-shares-form input{
