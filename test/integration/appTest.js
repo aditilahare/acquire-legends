@@ -22,7 +22,6 @@ const mockRandomTiles = require('../helpers/mockRandomTiles.js').getTiles;
 //     game.addPlayer(new Player(i + 1, player));
 //   });
 //
-//   console.log("created game with:", game, "Game creator:", gameCreator);
 //   return game;
 // }
 
@@ -182,7 +181,6 @@ describe('App Test', () => {
     \ if game is not created', function(done) {
       app.manager = new GameManager();
       let manager = app.gameManager;
-      console.log(manager,"hi");
 
       request(app)
         .get('/wait')

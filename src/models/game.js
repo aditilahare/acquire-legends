@@ -17,7 +17,6 @@ class Game {
     this.minPlayers=3;
     this.players=[];
     this.tileBox = tileBox;
-    console.log("this is initial tileBox"+tileBox);
     this.bank=bank;
     this.MODE='wait';
     this.activityLog=[];

@@ -17,7 +17,7 @@ actions['placeTile']=function(res){
 actions['chooseHotel']=function(res){
   let hotels = res.hotelsData.filter((hotel)=>!hotel.status);
   let actionInfo={hotels};
-  displayForm(actionInfo,'Start Hotel','#inactiveHotelsForm',chooseHotel);
+  displayForm(actionInfo,'Start Hotel','#inactiveHotelsForm',promptStartHotel);
 };
 
 actions['chooseHotelForMerge']=function(res){

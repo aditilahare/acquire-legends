@@ -5,12 +5,22 @@ let gameLastEtag = 'ff';
 let playerLastEtag = 'ff';
 
 const chooseHotel = function() {
+  document.getElementById('inactiveHotelsForm').style.display = "none";
+  document.getElementById('promptStartHotel').style.display = "none";
   let hotelName = getElement('#inactiveHotelsForm \
   select[name="hotelName"]').value;
   let data = `hotelName=${hotelName}`;
   sendAjaxRequest('POST', '/actions/chooseHotel', data);
-  document.getElementById('inactiveHotelsFormDiv').style.display = "none";
 };
+
+const promptStartHotel = function(){
+  let promptStartHotel = getElement("#promptStartHotel");
+  promptStartHotel.style.display = 'block';
+  let selectedHotel = getElement('#inactiveHotelsForm \
+  select[name="hotelName"]').value;
+  getElement('#selectedHotelToStart').innerText = selectedHotel;
+};
+
 const dropDownList = function(hotels) {
   let select = createNode('select');
   select.setAttribute('name', 'hotelName');
@@ -61,8 +71,11 @@ const displayForm = function(res, text, id, action) {
   form.parentNode.style.display = "block";
 };
 
+const letPlayerChooseHotel = function(){
+  getElement('#promptStartHotel').style.display = 'none';
+};
+
 const letPlayerDisposeShares = function(res) {
-  console.log(res);
   let disposeSharesOption = getElement('#disposeShares');
   getElement('#promptDisposeShares').style.display = 'none';
   disposeSharesOption.style.display = 'block';
@@ -78,6 +91,7 @@ const promptDisposeShares = function(){
   let promptDisposeShares = getElement("#promptDisposeShares");
   promptDisposeShares.style.display = 'block';
 };
+
 const showFlashMeassage = function(message){
   let messageBar = document.getElementById("messageBar");
   messageBar.innerText = message;
@@ -204,7 +218,6 @@ const displaySharesDetails = function(sharesDetails) {
 const displayPlayerDetails = function() {
   playerLastEtag = this.getResponseHeader('etag');
   let playerDetails = JSON.parse(this.responseText);
-  console.log(playerDetails);
   displayTiles(playerDetails.tiles);
   displayMoney(playerDetails.availableMoney);
   displayPlayerName(playerDetails.name);
