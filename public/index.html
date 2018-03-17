@@ -11,40 +11,11 @@
   </head>
   <body>
     <div class="mainContainer">
-      <center>
         <div class="center">
           <div id="heading">
             <h1>ACQUIRE</h1>
           </div>
-          <div >
-            <center>
-              <input type="button" onclick="document.getElementById('create').style.display='block'"  class='options' name="button" id="create-bt" value="Create"/></br>
-              <div id="create" class="modal">
-                <form class="modal-content animate" action="/create" method="post" onsubmit="verfifyUserName()">
-                  <div class="closeButton">
-                    <span onclick="document.getElementById('create').style.display='none'" class="close" title="Close Modal">&times;</span>
-                  </div>
-                  <div class="container">
-                    <label for='playerName' id="nameLabel">Enter Name</label>
-                    <input type="text" id="playerName" name="playerName" required>
-                    <label for='numberOfPlayers'>Number Of Players</label>
-                    <select class="sel" id="numberOfPlayers" name="numberOfPlayers">
-                      <option value="3">3</option>
-                      <option value="4">4</option>
-                      <option value="5">5</option>
-                      <option value="6">6</option>
-                    </select>
-                    <button type="submit">Create</button>
-                  </div>
-                </form>
-              </div>
-              <input type="button" class='options' value="Join" onclick='redirectToJoinPage()' id="join-bt"/></br>
-              <input type="button" class='options' value="Rule Book"/></br>
-              <input type="button" class='options' value="About"/>
-            </center>
-          </div>
         </div>
-        <div >
           <center>
             <input type="button" onclick="document.getElementById('create').style.display='block'"  class='options' name="button" id="create-bt" value="Create"/></br>
             <div id="create" class="modal">
@@ -221,8 +192,6 @@
                                                 <input type="button" class='options' value="About"/>
                                               </center>
                                             </div>
-                                          </div>
-                                        </center>
                                       </div>
                                     </body>
                                     </html>
