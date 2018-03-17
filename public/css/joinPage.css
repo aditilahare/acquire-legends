@@ -1,4 +1,5 @@
 body{
+  height: 800px;;
   font-family: 'Montserrat', sans-serif;
 background: rgba(179, 101, 62, 1);
 background: -moz-radial-gradient(center, ellipse cover, rgba(179, 101, 62, 1) 0%, rgba(0, 0, 0, 1) 100%);
@@ -13,7 +14,8 @@ font-weight: 200;
 color: rgb(219, 214, 214);
 }
 table td{
-  border: 2px solid #000000;
+  /*border: 2px solid #000000;*/
+  border:0px;
   text-align: center;
 }
 header h1{
@@ -168,4 +170,12 @@ button:hover {
   text-align: center;
   color: #000000;
   font-weight: 400;
+}
+
+.back-to-home{
+  display: flex;
+  justify-content: center;
+}
+.back-to-home button{
+  width: 100px;
 }

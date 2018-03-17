@@ -29,6 +29,14 @@ const verfifyUserName =function(){
   let form = event.target;
 };
 
+const redirectToJoinPage = function() {
+  location.href = '/joinPage.html';
+};
+const reload = function () {
+  // window.Location();
+  location.href='/';
+};
+
 window.onload = function () {
   //doesGameExisted();
 };
