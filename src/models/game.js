@@ -205,7 +205,7 @@ class Game {
   }
   getCurrentPlayer() {
     let currentPlayerID = this.turn.getCurrentPlayerID();
-    return this.getPlayerDetails(+currentPlayerID);
+    return this.getPlayerDetails(currentPlayerID);
   }
   getHotel(hotelName){
     return this.market.getHotel(hotelName);

@@ -324,7 +324,6 @@ const updateGameStatus = function(gameStatus) {
 const renderGameStatus = function() {
   gameLastEtag = this.getResponseHeader('etag');
   let gameStatus = JSON.parse(this.responseText);
-  console.log(gameStatus);
   let currentAction = gameStatus.turnDetails.currentAction;
   displayFlashMessage(gameStatus.turnDetails.message);
   displayIndependentTiles(gameStatus.independentTiles);
