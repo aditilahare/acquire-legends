@@ -250,3 +250,21 @@ label{
   float: left;
   padding-top:17px;
 }
+
+.rule-container{
+  padding: 80px 30px;
+  height: inherit;
+  width: 80%;
+  text-align: left;
+  overflow: scroll;
+}
+.rules{
+  font-weight: 300;
+}
+
+.rules h1{
+  font-size: 60px;
+  color: #00000f;
+  font-weight: 400;
+  text-shadow: none;
+}
