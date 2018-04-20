@@ -4,7 +4,6 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "test": "mocha --recursive ",
     "coverage": "nyc --reporter=html _mocha --recursive",
     "lint": "eslint .",
     "start": "node server.js",
