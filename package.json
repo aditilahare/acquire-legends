@@ -4,12 +4,12 @@
   "description": "",
   "main": "server.js",
   "scripts": {
+    "test": "mocha --recursive ",
     "coverage": "nyc --reporter=html _mocha --recursive",
     "lint": "eslint .",
     "start": "node server.js",
     "nodemon": "nodemon -i public -i logs -i test",
-    "test-game": "TEST=true node ./testGame",
-     "test": "./node_modules/.bin/mocha --compilers ts:typescript-require"
+    "test-game": "TEST=true node ./testGame"
   },
   "repository": {
     "type": "git",
@@ -30,7 +30,8 @@
   },
   "devDependencies": {
     "chai": "^4.1.2",
-    "supertest": "^3.0.0"
+    "supertest": "^3.0.0",
+    "mocha": "2.5.3"
   },
   "nyc": {
     "exclude": [
