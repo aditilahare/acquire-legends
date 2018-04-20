@@ -9,7 +9,7 @@
     "start": "node server.js",
     "nodemon": "nodemon -i public -i logs -i test",
     "test-game": "TEST=true node ./testGame",
-    "test": "./node_modules/.bin/mocha"
+     "test": "./node_modules/.bin/mocha --compilers ts:typescript-require"
   },
   "repository": {
     "type": "git",
