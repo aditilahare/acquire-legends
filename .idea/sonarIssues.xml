@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="issues">
+    <option name="index">
+      <map>
+        <entry key="/Dummy.txt">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$USER_HOME$/IdeaProjects/CL-Heroku-API/build.gradle">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$USER_HOME$/IdeaProjects/CL-Heroku-API/clientlink-batch/src/main/java/com/mckinsey/clientlink/batch/job/email/EmailFeedNotificationJob.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$USER_HOME$/IdeaProjects/CL-Heroku-API/clientlink-batch/src/main/resources/application.properties">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$USER_HOME$/IdeaProjects/CL-Heroku-API/clientlink-batch/src/main/resources/templates/ycar-feed.template">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$USER_HOME$/IdeaProjects/CL-Heroku-API/init.sh">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$USER_HOME$/IdeaProjects/CL-Heroku-API/src/main/java/com/mckinsey/clientlink/email/dispatch/event/EmailDispatchedEvent.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$USER_HOME$/IdeaProjects/CL-Heroku-API/src/main/java/com/mckinsey/clientlink/knowledge/controller/KnowledgeArticleController.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$USER_HOME$/IdeaProjects/CL-Heroku-API/src/main/java/com/mckinsey/clientlink/security/authentication/controller/AuthenticationController.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$USER_HOME$/IdeaProjects/CL-Heroku-API/src/main/resources/db/heroku-prod/migration/V20180704105237__Create_Knowledge_Activity_Total_Reads_Shares.sql">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$USER_HOME$/IdeaProjects/CL-Heroku-API/src/main/resources/db/heroku-prod/migration/V20180704105426__Create_Knowledge_Activity_Total_Contact_Reads_Shares.sql">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$USER_HOME$/IdeaProjects/CL-Heroku-API/src/main/resources/db/heroku-prod/migration/V20180704105547__Create_Knowledge_Activity_Timeline.sql">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$USER_HOME$/IdeaProjects/CL-Heroku-API/src/main/resources/db/heroku-prod/migration/V20180704105800__Create_Referencing_Func_On_Knowledge_Disseminated_Trigger.sql">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$USER_HOME$/IdeaProjects/CL-Heroku-API/src/main/resources/db/heroku-prod/migration/V20180704110002__Create_Trigger_On_Knowledge_Disseminated.sql">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$USER_HOME$/IdeaProjects/CL-Heroku-API/src/main/resources/db/heroku-prod/migration/V20180704110132__Create_Referencing_Func_On_YCAR_Trigger.sql">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$USER_HOME$/IdeaProjects/CL-Heroku-API/src/main/resources/db/heroku-prod/migration/V20180704110216__Create_Trigger_On_YCAR.sql">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$USER_HOME$/IdeaProjects/CL-Heroku-API/src/test/java/com/mckinsey/clientlink/email/dispatch/controller/EmailControllerWithWireMockIntegrationTest.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/Dockerfile">
+          <value>
+            <set />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>
