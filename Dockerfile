@@ -1,8 +1,4 @@
+FROM gocd/gocd-agent-alpine-3.8:v18.10.0
 
-## specify the node base image with your desired version node:<version> specify the node base image
-FROM node:7
-# replace this with your application's default port
-EXPOSE 8888
-
-CMD ["ls"]
+RUN apk add npm && apk add docker
 
